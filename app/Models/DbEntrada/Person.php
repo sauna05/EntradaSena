@@ -21,10 +21,15 @@ class Person extends Model
         return $this->hasMany(EntranceExit::class);
     }
 
-    //Una persona puede tener varios usuarios (roles diferentes de aprendiz e instructor)
+    //Una persona puede tener varios usuarios 
+    //(osea, personas con roles diferentes de aprendiz e instructor)
     public function users(){
         return $this->hasMany(User::class);
     }   
 
+    //Una persona PUEDE tener varias notificaciones de inasistencia
+    public function notifications_absences(){
+        return $this->hasMany(Notification_absence::class);
+    }
 
 }
