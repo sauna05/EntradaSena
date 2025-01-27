@@ -2,10 +2,12 @@
 
 namespace App\Models\DbEntrada;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
+    use HasFactory;
     protected $connection = 'db_entrada';
     protected $table = 'people';
     protected $guarded = [];
