@@ -1,0 +1,46 @@
+body{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    background-color: gainsboro;
+
+    /* Esto asegura que el contenedor ocupe el 100% de la altura de la ventana */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+}
+
+/* content es el contenedor de todas las paginas, se le aplica un 
+flex 1 para que ocupe todo el espacio disponible y así el footer quede siempre abajo */
+.content{
+    flex: 1;
+}
+
+.header{
+    background-color: white;
+}
+
+.header-container{
+    display: flex;
+    height: 20vh;
+    align-items: center;
+}
+
+.logo-header{
+    padding: 2vw;
+    height: 5rem;
+}
+
+.footer{
+    background-color: white;
+}
+.footer-container{
+display: flex;
+justify-content: center;
+align-items: center;
+height: 10vh;
+}
+
+.logo-footer{
+    height: 8vh
+}

@@ -5,8 +5,11 @@ namespace Database\Seeders;
 use App\Models\User;
 use Database\Seeders\DbEntrada\PersonSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
+use Database\Seeders\DbEntrada\UserSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +18,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+
+      //Seeders para la base de datos de la entrada
+        Config::set('database.default', 'db_entrada');
+        DB::connection('db_entrada')->beginTransaction();
+        
+        $this->call([
+        RoleSeeder::class,
+        PersonSeeder::class,
+        UserSeeder::class
+      ]); 
+      DB::connection('db_entrada')->commit();
+
+      //Seeders para la base de datos de programación
+      Config::set('database.default','db_programacion');
+      DB::connection('db_programacion')->beginTransaction();
 
       $this->call([
-        RoleSeeder::class,
-        PersonSeeder::class
+
       ]);
+      DB::connection('db_programacion')->commit();
+
+      
     }
 }
