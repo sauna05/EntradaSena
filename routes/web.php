@@ -10,4 +10,4 @@ Route::get('/', function () {
 });
 
 
-Route::get('error',[UserController::class,'error']);
+    Route::get('error',[UserController::class,'error']);
