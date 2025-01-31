@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Database\Seeders\DbEntrada\PersonSeeder;
+use Database\Seeders\DbEntrada\PositionSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
 use Database\Seeders\DbEntrada\UserSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder
         DB::connection('db_entrada')->beginTransaction();
         
         $this->call([
+        PositionSeeder::class,
         RoleSeeder::class,
         PersonSeeder::class,
         UserSeeder::class

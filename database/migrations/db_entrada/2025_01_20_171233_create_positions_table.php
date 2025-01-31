@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_entrada')->create('roles', function (Blueprint $table) {
+        Schema::connection('db_entrada')->create('positions', function (Blueprint $table) {
             $table->id();
-            $table->string("role");
+            $table->string('position');
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('positions');
     }
 };

@@ -14,10 +14,16 @@ class Person extends Model
 
 
     //Una persona posee un rol(pertenece a un rol)
-    public function roles(){
-        return $this->belongsTo(Role::class);
-    }
+    // public function roles(){
+    //     return $this->belongsTo(Role::class);
+    // }
 
+
+    //Una persona tiene un cargo
+    public function positions(){
+        return $this->belongsTo(Position::class);
+    }
+    
     //Una persona tiene muchas entradas y salidas
     public function entrances_exits(){
         return $this->hasMany(EntranceExit::class);

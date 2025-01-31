@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('last_assistance');
             $table->text('motive')->nullable();
             $table->enum('state',['pendiente','respondida']);
+            $table->boolean('readed')->default(false);
             $table->timestamps();
         });
     }

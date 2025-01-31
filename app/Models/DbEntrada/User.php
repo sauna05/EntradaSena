@@ -3,13 +3,17 @@
 namespace App\Models\DbEntrada;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Model
+class User  extends Authenticatable
 {
+    //HasRoles para identificar que usará roles de la manera en que se usan en la dependencia spatie-permissions
+    use HasRoles, HasFactory; 
+   
 
-    use HasFactory;
-
+    protected $guard_name = 'web';
+    
     #Nombre de la base de datos
     protected $connection = 'db_entrada';
 
@@ -21,6 +25,17 @@ class User extends Model
         'user_name',
         'password'
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
+
+    protected $casts = [
+        'password' => 'hashed'
+    ];
+
+
 
 
     //Un usuario pertece a una persona

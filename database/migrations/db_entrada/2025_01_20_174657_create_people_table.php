@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::connection('db_entrada')->create('people', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_role')->constrained('roles')->onUpdate('cascade');
+            $table->foreignId('id_position')->constrained('positions')->onUpdate('cascade');
             $table->string('document_number',12)->unique();
             $table->string('name');
             $table->date('start_date');

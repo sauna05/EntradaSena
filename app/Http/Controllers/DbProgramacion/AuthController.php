@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\DbEntrada;
+namespace App\Http\Controllers\DbProgramacion;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-
     public function login(Request $request){
-        
+       
         $data = $request->validate([
             'user_name'=> 'required',
             'password' => 'required'
@@ -18,16 +17,22 @@ class AuthController extends Controller
 
         if(Auth::attempt($data)){
             $user = Auth::user();
-            
-            if($user->hasRole('Administrador')){
-                return view('pages.entrance.admin_entrance');
-            }else if($user->hasRole('Aprendiz')){
-                return view('pages.entrance.aprentice_entrance');
-            }           
 
+            if($user->hasRole('Administrador')){
+                return view('pages.programming.programming');
+            }else if($user->hasRole('Aprendiz')){
+                Auth::logout();
+
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login');
+
+            }
         }else{
-            return "Y vos quien sos?";
+            dd("Andate de aqui, hacker");
         }
+
     }
 
     public function logout(Request $request){
@@ -37,6 +42,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+
     }
-  
 }
