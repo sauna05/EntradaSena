@@ -13,9 +13,14 @@ return [
     |
     */
 
+    // 'defaults' => [
+    //     'guard' => env('AUTH_GUARD', 'web'),
+    //     'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+    // ],
+
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => 'web',
+        'passwords' => 'users',
     ],
 
     /*
@@ -66,6 +71,14 @@ return [
             //Yo añadí el dbEntrada, cualquier cosa quitarlo
         ],
 
+
+        'providers' => [
+            'users' => [
+                'driver' => 'eloquent',
+                'model' => App\Models\DbEntrada\User::class,
+                //Yo añadí el dbEntrada, cualquier cosa quitarlo
+            ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -112,5 +125,5 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
-
+    ]
 ];

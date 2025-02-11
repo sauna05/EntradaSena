@@ -19,29 +19,24 @@ class AuthController extends Controller
             $user = Auth::user();
 
             if($user->hasRole('Administrador')){
-                return view('pages.programming.programming');
-            }else if($user->hasRole('Aprendiz')){
-                Auth::logout();
 
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-
-                return redirect()->route('login');
+                return redirect()->route('programming.admin');
 
             }
+            // else if($user->hasRole('Aprendiz')){
+            // //Cierra la sesión en caso de ser aprendiz
+            //     Auth::logout();
+
+            //     $request->session()->invalidate();
+            //     $request->session()->regenerateToken();
+            //     return redirect()->route('login');
+            // }
+            
         }else{
-            dd("Andate de aqui, hacker");
+            return "Andate de aqui, hacker()";
         }
 
     }
 
-    public function logout(Request $request){
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
-
-    }
+    
 }

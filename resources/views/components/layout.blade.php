@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="{{asset($page_style)}}">
     {{-- css de los botones --}}
     <link rel="stylesheet" href="{{asset('css/components/buttons.css')}}">
+    {{-- css de los navbar --}}
+    <link rel="stylesheet" href="{{asset('css/components/navbar.css')}}">
+
 
 </head>
 <body>
@@ -20,6 +23,13 @@
             <img src="{{asset('logoSena.png')}}" alt="Logo Sena" class="logo-header">
             <h1 class="texto-header">Centro Agroempresarial Y Acuícola </h1>
         </div>
+
+        @auth
+             <form action="{{route('logout')}}" method="POST">
+                @csrf
+                <x-button type="submit">Logout</x-button>
+            </form>
+        @endauth
     </header>
 
     <main class="content">

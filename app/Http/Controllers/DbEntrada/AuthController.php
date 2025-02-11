@@ -18,15 +18,25 @@ class AuthController extends Controller
 
         if(Auth::attempt($data)){
             $user = Auth::user();
-            
+            $request->session()->regenerate();
+            Auth::shouldUse('web');
+
             if($user->hasRole('Administrador')){
-                return view('pages.entrance.admin_entrance');
+
+                return redirect()->route('entrance.people.index');
+
+            }else if($user->hasRole('Acceso-Entrada')){
+
+                return redirect()->route('entrance.create');
+                
             }else if($user->hasRole('Aprendiz')){
-                return view('pages.entrance.aprentice_entrance');
+                
+           
             }           
 
         }else{
-            return "Y vos quien sos?";
+            return "USUARIO NO ENCONTRADO"; // (IMPORTANTE) en un futuro, hacer que envíe al login con
+            // mensaje de error de que el usuario no existe
         }
     }
 

@@ -43,12 +43,26 @@ use Spatie\Permission\Models\Permission;
         $role9 = Role::create(['name' => 'Instructor']);
 
 
-        Permission::create(['name'=>'entrance.index'])->syncRoles([$role1,$role2]);
+        //Permisos del modulo de la entrada
+        Permission::create(['name' => 'entrance.create'])->syncRoles([$role3]);
+        Permission::create(['name' => 'entrance.store'])->syncRoles([$role3]);
 
-        Permission::create(['name' => 'programming.index'])->syncRoles([$role1, $role4]);
+        //Permisos del modulo de administración de la entrada
+        Permission::create(['name' => 'entrance.admin'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.people.index'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.people.create'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.people.store'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.people.update'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.people.delete'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.excel.upload'])->syncRoles([$role1, $role2]);
 
 
-        Permission::create(['name' => 'apprentice.index'])->assignRole($role9);
+        //Permisos del modulo de Programación
+        Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role4]);
+
+
+        //Permisos del modulo de entrada de los aprendices
+        Permission::create(['name' => 'apprentice.show'])->assignRole($role8);
 
 
 

@@ -34,11 +34,36 @@ class PersonSeeder extends Seeder
         Person::create([
             'id_position' => 3,
             'document_number' => '123456789',
-            'name' => 'Robin J',
+            'name' => 'Robin Daniel Jimenez Florez',
             'start_date' => '2023-1-23',
             'end_date' => '2025-04-22',
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        Person::create([
+            'id_position' => 3,
+            'document_number' => '1005188631',
+            'name' => 'Wendy Yulieth Perez Navarro',
+            'start_date' => '2023-1-23',
+            'end_date' => '2025-04-22',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+
+        Person::create([
+            'id_position' => 3,
+            'document_number' => '1043434038',
+            'name' => 'Leidi Esther Lizcano Arroyo',
+            'start_date' => '2023-1-23',
+            'end_date' => '2025-04-22',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        
+
+      
     }
 }

@@ -4,8 +4,4 @@
 
     <h1>Bienvenido al apartado de programación, señor admin</h1>
 
-    <form action="{{route('programming-logout')}}" method="POST">
-        @csrf
-        <x-button type="submit">Logout</x-button>
-    </form>
 </x-layout>

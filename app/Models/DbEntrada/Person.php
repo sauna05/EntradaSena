@@ -20,8 +20,8 @@ class Person extends Model
 
 
     //Una persona tiene un cargo
-    public function positions(){
-        return $this->belongsTo(Position::class);
+    public function position(){
+        return $this->belongsTo(Position::class,'id_position');
     }
     
     //Una persona tiene muchas entradas y salidas

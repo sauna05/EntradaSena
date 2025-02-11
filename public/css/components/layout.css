@@ -8,6 +8,7 @@ body{
     display: flex;
     flex-direction: column;
     min-height: 100vh; 
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 /* content es el contenedor de todas las paginas, se le aplica un 
@@ -27,7 +28,7 @@ flex 1 para que ocupe todo el espacio disponible y así el footer quede siempre 
 }
 
 .logo-header{
-    padding: 2vw;
+    padding: 0 2vh;
     height: 5rem;
 }
 

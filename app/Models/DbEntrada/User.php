@@ -22,6 +22,7 @@ class User  extends Authenticatable
 
     #Campos que pueden ser llenados desde el software
     protected $fillable = [
+        'id_person',
         'user_name',
         'password'
     ];
