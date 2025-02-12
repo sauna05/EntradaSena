@@ -86,7 +86,7 @@ document.getElementById("fileInput").addEventListener("change", function (event)
         console.log("Enviando a Laravel:", jsonData); // Verifica en la consola
 
         // Enviar datos a Laravel con Fetch
-        fetch("/entrance/upload/excel/people", {
+        fetch("{{route('entrance.excel.upload')}}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -94,14 +94,25 @@ document.getElementById("fileInput").addEventListener("change", function (event)
             },
             body: JSON.stringify({ people: jsonData }) // Enviar como JSON
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Respuesta de Laravel:", data);
-            alert("Importación completada correctamente!");
-        })
-        .catch(error => {
-            console.error("Error en la importación:", error);
-        });
+        .then(async response => {
+    const text = await response.text(); // Obtiene la respuesta como texto
+    console.log("RAW RESPONSE:", text); // Muestra la respuesta en consola
+    
+    try {
+        return JSON.parse(text); // Intenta convertirlo a JSON
+    } catch (error) {
+        throw new Error("No se pudo parsear JSON. Laravel devolvió HTML en vez de JSON.");
+    }
+    })
+    .then(data => {
+        console.log("Respuesta de Laravel:", data);
+        alert("Importación completada correctamente!");
+    })
+    .catch(error => {
+        console.error("Error en la importación:", error);
+    });
+
+
     };
 
     reader.readAsArrayBuffer(file);

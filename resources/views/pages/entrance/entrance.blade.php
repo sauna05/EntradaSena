@@ -36,7 +36,7 @@
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
                 $.ajax({
-                    url: '/entrance/store',
+                    url: "{{route('entrance.store')}}",
                     type: 'POST',
                     data: {
                         document_number: documentNumber,

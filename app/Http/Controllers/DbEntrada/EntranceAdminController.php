@@ -7,6 +7,8 @@ use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use App\Models\DbEntrada\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 
 class EntranceAdminController extends Controller
@@ -52,8 +54,96 @@ class EntranceAdminController extends Controller
 
     }
 
-    public function storePeopleExcel(){
-        return response()->json(['success' => true, 'message' => 'Datos recibidos correctamente']);
-        
+    public function storePeopleExcel(Request $request)
+    {
+        set_time_limit(600);
+        ini_set('memory_limit', '1024M');
+
+        try {
+            Log::info('Iniciando importación de personas...');
+
+            // Validación básica
+            $data = $request->validate([
+                'people' => 'required|array',
+                'people.*.NUMERO_DOCUMENTO' => 'required|max:13',
+                'people.*.NOMBRES' => 'nullable|string',
+                'people.*.APELLIDOS' => 'nullable|string',
+                'people.*.FECHA_INICIO' => 'nullable|date',
+                'people.*.FECHA_FINALIZACION' => 'nullable|date|after_or_equal:people.*.FECHA_INICIO',
+            ]);
+
+            Log::info('Total registros recibidos:', ['cantidad' => count($data['people'])]);
+
+            // Eliminar duplicados dentro del archivo Excel
+            $people = collect($data['people'])->unique('NUMERO_DOCUMENTO')->values()->toArray();
+            Log::info('Personas únicas en el archivo:', ['cantidad' => count($people)]);
+
+            // Obtener los documentos que ya están en la BD
+            $documentosExistentes = Person::pluck('document_number')->flip();
+            Log::info('Total documentos en la BD:', ['cantidad' => count($documentosExistentes)]);
+
+            $nuevosRegistros = 0;
+            $errores = [];
+
+            DB::beginTransaction();
+
+            foreach ($people as $row) {
+                try {
+                    // Si el documento ya existe en BD, lo ignoramos
+                    if (isset($documentosExistentes[$row['NUMERO_DOCUMENTO']])) {
+                        continue;
+                    }
+
+                    // Crear persona
+                    $persona = Person::create([
+                        'document_number' => $row['NUMERO_DOCUMENTO'],
+                        'id_position' => 3,
+                        'name' => trim(($row['NOMBRES'] ?? '') . " " . ($row['APELLIDOS'] ?? '')),
+                        'start_date' => $row['FECHA_INICIO'] ?? null,
+                        'end_date' => $row['FECHA_FINALIZACION'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
+                    // Crear usuario vinculado
+                    User::create([
+                        'id_person' => $persona->id,
+                        'user_name' => $persona->document_number,
+                        'password' => bcrypt($persona->document_number),
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
+                    $nuevosRegistros++;
+                    Log::info('Persona registrada:', ['document' => $persona->document_number, 'name' => $persona->name]);
+
+                    // Agregar el documento al array de existentes para evitar futuros duplicados
+                    $documentosExistentes[$row['NUMERO_DOCUMENTO']] = true;
+                } catch (\Exception $e) {
+                    // Guardar error sin detener el proceso
+                    $errores[] = ['document' => $row['NUMERO_DOCUMENTO'], 'error' => $e->getMessage()];
+                    Log::error('Error con el documento ' . $row['NUMERO_DOCUMENTO'] . ': ' . $e->getMessage());
+                }
+            }
+
+            DB::commit();
+            Log::info('Importación finalizada.', ['total_registrados' => $nuevosRegistros, 'total_errores' => count($errores)]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Importación completada',
+                'registrados' => $nuevosRegistros,
+                'errores' => $errores
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error en la importación: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error en la importación',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 }

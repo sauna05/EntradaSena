@@ -19,8 +19,8 @@ Route::post('logout', [EntranceAuthController::class, 'logout'])->name('logout')
 Route::post('entrance/login',[EntranceAuthController::class,'login'])->name('entrance-login');
 
 //Modulo Entrada
-Route::get('/entrance',[EntranceExitController::class, 'create'])->middleware('can:entrance.create')->name('entrance.create');
-Route::post('/entrance/store',[EntranceExitController::class, 'store'])->middleware('can:entrance.store');
+Route::get('/entrance',[EntranceExitController::class,  'create'])->middleware('can:entrance.create')->name('entrance.create');
+Route::post('/entrance/store',[EntranceExitController::class, 'store'])->middleware('can:entrance.store')->name('entrance.store');
 
 //Modulo Entrada - Administrador
 //Primera vista del administrador
@@ -28,7 +28,7 @@ Route::get('entrance/admin/people',[EntranceAdminController::class, 'peopleIndex
 Route::get('entrance/admin/people/create',[EntranceAdminController::class,'peopleCreate'])->middleware('can:entrance.people.create')->name('entrance.people.create');
 Route::post('entrance/admin/people/store', [EntranceAdminController::class, 'peopleStore'])->middleware('can:entrance.people.store')->name('entrance.people.store');
 
-Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload');
+Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload')->name('entrance.excel.upload');
 
 //Modulo Entrada - Aprendiz
 
