@@ -1,6 +1,8 @@
 <x-layout>
     {{-- libreria para leer excel desde la web --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    {{-- token csrf para que se puedan pasar los datos por la url sin actualizar la pagina --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- Archivo CSS de la pagina --}}
     <x-slot:page_style>css/pages/start_page.css</x:slot-page_style>
     {{-- Titulo de la pagina --}}
@@ -45,7 +47,7 @@
 
 <div>
     <h5>Si desea registrar varios aprendices al mismo tiempo</h5>
-    <form action="{{route('entrance.excel.upload')}}" id="excelForm" method="POST" enctype="multipart/form-data">
+    <form  id="excelForm" method="POST" enctype="multipart/form-data">
         @csrf
 
         <input type="file" accept=".xlsx, .xls" name="excel_file" id="fileInput" style="display: none"  >
@@ -57,28 +59,60 @@
     document.getElementById('uploadButton').addEventListener('click', function() {
     document.getElementById('fileInput').click(); // Abre el selector de archivos
 });
-
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    let file = event.target.files[0];
-    
+document.getElementById("fileInput").addEventListener("change", function (event) {
+    const file = event.target.files[0];
     if (!file) return;
 
-    let reader = new FileReader();
-    reader.readAsBinaryString(file);
+    const reader = new FileReader();
 
-    reader.onload = function(e) {
-        let data = e.target.result;
-        let workbook = XLSX.read(data, { type: 'binary' });
-        let sheetName = workbook.SheetNames[0]; // Obtiene la primera hoja
-        let sheet = workbook.Sheets[sheetName];
-        let jsonData = XLSX.utils.sheet_to_json(sheet); // Convierte a JSON
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
 
-        console.log(jsonData); // 📌 Aquí ves los datos en consola (para probar)
-        
-        // Enviar al servidor
-        // sendDataToServer(jsonData);
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        let jsonData = XLSX.utils.sheet_to_json(sheet, { raw: false });
+
+        // Convertir fechas al formato correcto YYYY-MM-DD
+        jsonData = jsonData.map(row => {
+            if (row.FECHA_INICIO && typeof row.FECHA_INICIO === "string") {
+                row.FECHA_INICIO = formatDate(row.FECHA_INICIO);
+            }
+            if (row.FECHA_FINALIZACION && typeof row.FECHA_FINALIZACION === "string") {
+                row.FECHA_FINALIZACION = formatDate(row.FECHA_FINALIZACION);
+            }
+            return row;
+        });
+
+        console.log("Enviando a Laravel:", jsonData); // Verifica en la consola
+
+        // Enviar datos a Laravel con Fetch
+        fetch("/entrance/upload/excel/people", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content") // Token CSRF
+            },
+            body: JSON.stringify({ people: jsonData }) // Enviar como JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Respuesta de Laravel:", data);
+            alert("Importación completada correctamente!");
+        })
+        .catch(error => {
+            console.error("Error en la importación:", error);
+        });
     };
+
+    reader.readAsArrayBuffer(file);
 });
+
+// 🔥 Función para convertir fechas en formato MM/DD/YY a YYYY-MM-DD
+function formatDate(fecha) {
+    const date = new Date(fecha);
+    return date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+}
+
 </script>
 
 </x-layout> 

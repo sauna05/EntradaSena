@@ -51,4 +51,9 @@ class EntranceAdminController extends Controller
         
 
     }
+
+    public function storePeopleExcel(){
+        return response()->json(['success' => true, 'message' => 'Datos recibidos correctamente']);
+        
+    }
 }

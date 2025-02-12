@@ -12,7 +12,12 @@ class Person extends Model
     protected $table = 'people';
     protected $guarded = [];
 
-
+    //los datos de fecha se convertirán automaticamente en
+    //formatos validos para laravel y la base de datos
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date'
+    ];
     //Una persona posee un rol(pertenece a un rol)
     // public function roles(){
     //     return $this->belongsTo(Role::class);
