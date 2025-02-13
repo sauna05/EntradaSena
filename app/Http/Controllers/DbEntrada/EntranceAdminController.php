@@ -13,9 +13,21 @@ use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 
 class EntranceAdminController extends Controller
 {
-    public function peopleIndex()
+    public function peopleIndex(Request $request)
     {
-        return view('pages.entrance.admin.people_index');
+        $search = $request->input('search');
+
+        $person = Person::with('position')->where(function($query) use ($search){
+            $query->where('document_number','like',"%$search%")->orWhere('name','like',"%$search%");
+        }
+        )->paginate(20)->appends(['search'=>$search]);
+            
+        return view('pages.entrance.admin.people_index',['person'=> $person]);
+    }
+
+    public function peopleShow($id){
+        $person = Person::findOrFail($id);
+        return view('pages.entrance.admin.people_show',['person'=>$person]);
     }
 
     public function peopleCreate(){

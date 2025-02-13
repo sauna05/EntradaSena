@@ -54,9 +54,10 @@ use Spatie\Permission\Models\Permission;
         Permission::create(['name' => 'entrance.people.store'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.people.update'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.people.delete'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.people.show'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.excel.upload'])->syncRoles([$role1, $role2]);
 
-
+        
         //Permisos del modulo de Programación
         Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role4]);
 

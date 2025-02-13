@@ -27,6 +27,7 @@ Route::post('/entrance/store',[EntranceExitController::class, 'store'])->middlew
 Route::get('entrance/admin/people',[EntranceAdminController::class, 'peopleIndex']) ->middleware('can:entrance.people.index')->name('entrance.people.index');
 Route::get('entrance/admin/people/create',[EntranceAdminController::class,'peopleCreate'])->middleware('can:entrance.people.create')->name('entrance.people.create');
 Route::post('entrance/admin/people/store', [EntranceAdminController::class, 'peopleStore'])->middleware('can:entrance.people.store')->name('entrance.people.store');
+Route::get('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleShow'])->middleware('can:entrance.people.show')->name('entrance.people.show');
 
 Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload')->name('entrance.excel.upload');
 
