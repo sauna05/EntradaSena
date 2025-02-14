@@ -26,7 +26,9 @@ class EntranceAdminController extends Controller
     }
 
     public function peopleShow($id){
+        
         $person = Person::findOrFail($id);
+
         return view('pages.entrance.admin.people_show',['person'=>$person]);
     }
 
@@ -66,6 +68,41 @@ class EntranceAdminController extends Controller
 
     }
 
+    public function peopleEdit($id){
+        $person = Person::findOrFail($id);
+        $positions = Position::all();
+        return view('pages.entrance.admin.people_edit',['person'=>$person,'positions'=>$positions]);
+    }
+
+
+
+    public function peopleUpdate(Request $request, $id){
+        $data = $request->validate([
+            'id_position' => 'required',
+            'name' => 'required',
+            'document_number' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required'
+
+        ]);
+
+        $personToUpdate = Person::findOrFail($id);
+        
+        $personToUpdate->update([
+            'id_position' => $data['id_position'],
+            'name' => $data['name'],
+            'document_number' => $data['document_number'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+        ]);
+
+            return redirect()->route('entrance.people.index')->with('message', 'Datos actualizados exitosamente!');
+
+    }
+
+
+
+
     public function storePeopleExcel(Request $request)
     {
         set_time_limit(600);
@@ -101,7 +138,7 @@ class EntranceAdminController extends Controller
 
             foreach ($people as $row) {
                 try {
-                    // Si el documento ya existe en BD, lo ignoramos
+                    // Si el documento ya existe en db, lo ignoramos
                     if (isset($documentosExistentes[$row['NUMERO_DOCUMENTO']])) {
                         continue;
                     }

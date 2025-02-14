@@ -118,7 +118,7 @@ document.getElementById("fileInput").addEventListener("change", function (event)
     reader.readAsArrayBuffer(file);
 });
 
-// 🔥 Función para convertir fechas en formato MM/DD/YY a YYYY-MM-DD
+// Función para convertir fechas en formato MM/DD/YY a YYYY-MM-DD
 function formatDate(fecha) {
     const date = new Date(fecha);
     return date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
