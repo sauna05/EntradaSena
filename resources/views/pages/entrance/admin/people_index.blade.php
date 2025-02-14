@@ -18,7 +18,7 @@
     {{-- de momento al buscar personas se cargará la pagina --}}
    <form method="GET" action="{{ route('entrance.people.index') }}" class="search-form">
             <div>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar Persona...">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Ingrese el documento o el nombre de la persona">
                 <x-button type="submit" >Buscar</x-button>
             </div>
     </form>
