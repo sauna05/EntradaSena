@@ -1,0 +1,5 @@
+.form-create-people{
+    display: flex;
+    margin: 0 2vw;
+    justify-content:space-between;
+}

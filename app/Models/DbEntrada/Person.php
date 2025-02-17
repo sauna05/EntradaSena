@@ -40,6 +40,10 @@ class Person extends Model
         return $this->hasMany(User::class);
     }   
 
+    //Los días que puede venir una persona al centro de formación
+    public function days_available(){
+        return $this->belongsToMany(DayAvailable::class,'people_days_available','id_person','id_day_available');
+    }
     //Una persona PUEDE tener varias notificaciones de inasistencia
     public function notifications_absences(){
         return $this->hasMany(Notification_absence::class);

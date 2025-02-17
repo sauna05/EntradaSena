@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\DbEntrada\DayAvailable;
 use Database\Seeders\DbEntrada\PersonSeeder;
 use Database\Seeders\DbEntrada\PositionSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
@@ -28,7 +29,8 @@ class DatabaseSeeder extends Seeder
         PositionSeeder::class,
         RoleSeeder::class,
         PersonSeeder::class,
-        UserSeeder::class
+        UserSeeder::class,
+        DayAvailable::class
       ]); 
       DB::connection('db_entrada')->commit();
 
