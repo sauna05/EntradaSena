@@ -30,8 +30,8 @@ Route::post('entrance/admin/people/store', [EntranceAdminController::class, 'peo
 Route::get('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleShow'])->middleware('can:entrance.people.show')->name('entrance.people.show');
 Route::get('entrance/admin/people/{id}/edit', [EntranceAdminController::class, 'peopleEdit'])->middleware('can:entrance.people.edit')->name('entrance.people.edit');
 Route::put('entrance/admin/people/{id}',[EntranceAdminController::class, 'peopleUpdate'])->middleware('can:entrance.people.update')->name('entrance.people.update');
+Route::delete('entrance/admin/people/{id}',[EntranceAdminController::class,'peopleDelete'])->middleware('can:entrance.people.delete')->name('entrance.people.delete');
 Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload')->name('entrance.excel.upload');
-
 //Modulo Entrada - Aprendiz
 
 

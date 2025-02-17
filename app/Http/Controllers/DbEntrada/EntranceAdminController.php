@@ -86,8 +86,6 @@ class EntranceAdminController extends Controller
         return view('pages.entrance.admin.people_edit',['person'=>$person,'positions'=>$positions,'days_available'=>$days_available]);
     }
 
-
-
     public function peopleUpdate(Request $request, $id){
         $data = $request->validate([
             'id_position' => 'required',
@@ -110,6 +108,23 @@ class EntranceAdminController extends Controller
         $personToUpdate->days_available()->sync($request->days);
 
             return redirect()->route('entrance.people.index')->with('message', 'Datos actualizados exitosamente!');
+
+    }
+
+    public function peopleDelete($id){
+        $person = Person::findOrFail($id);
+
+        if($person){
+            $person->days_available()->detach();
+            if($person->user){
+                $person->user->delete();
+            }
+            $person->delete();
+            return redirect()->route('entrance.people.index')->with('message', 'Persona eliminada correctamente');
+
+        }
+
+        return redirect()->route('entrance.people.index')->with('message', 'Persona no encontrada');
 
     }
 

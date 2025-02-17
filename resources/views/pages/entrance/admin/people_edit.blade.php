@@ -60,8 +60,10 @@
         </section>
 </form> 
 
-<form action="" method="POST">
-
+<form action="{{route('entrance.people.delete',$person->id)}}" method="POST">
+    @csrf
+    @method('DELETE')
+    <x-button class="btn" type="submit">Eliminar</x-button>
 </form>
 
 </x-layout> 
