@@ -48,8 +48,8 @@ class EntranceAdminController extends Controller
            'id_position' => 'required',
            'document_number' => 'required',
            'name' => 'required',
-           'start_date' => 'required',
-           'end_date' => 'required',
+           'start_date' => 'required|date',
+           'end_date' => 'required|date|after_or_equal:start_date'
            
 
         ]);
@@ -92,8 +92,7 @@ class EntranceAdminController extends Controller
             'name' => 'required',
             'document_number' => 'required',
             'start_date' => 'required',
-            'end_date' => 'required'
-
+            'end_date' => 'required|date|after_or_equal:start_date'
         ]);
 
         $personToUpdate = Person::findOrFail($id);
