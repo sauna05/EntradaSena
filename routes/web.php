@@ -1,10 +1,8 @@
 <?php
 
-<<<<<<< HEAD
 use App\Http\Controllers\DbEntrada\AssistanceController;
-=======
+
 use App\Http\Controllers\DbEntrada\ApprenticeController ;
->>>>>>> main
 use App\Http\Controllers\DbEntrada\AuthController as EntranceAuthController;
 use App\Http\Controllers\DbEntrada\EntranceAdminController;
 use App\Http\Controllers\DbEntrada\EntranceExitController;

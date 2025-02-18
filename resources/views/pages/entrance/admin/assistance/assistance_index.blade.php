@@ -1,6 +1,6 @@
 <x-layout>
     {{-- Archivo CSS de la pagina --}}
-    <x-slot:page_style>css/pages/entrance/admin/people_index.css</x-slot:page_style>
+    <x-slot:page_style>css/pages/assistance/assistance_index.css</x-slot:page_style>
     {{-- Titulo de la pagina --}}
     <x-slot:title>CAA</x-slot:title>
     {{-- Header - Navbar --}}
@@ -75,97 +75,5 @@
             </tbody>
         </table>
     </div>
-
-    <style>
-        .container {
-            max-width: 90%;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .table {
-            width: 100%;
-            margin-bottom: 1rem;
-            color: #212529;
-        }
-
-        .table-bordered {
-            border: 1px solid #dee2e6;
-        }
-
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #dee2e6;
-            padding: 0.75rem;
-            vertical-align: top;
-            text-align: left;
-        }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .thead-dark th {
-            color: #fff;
-            background-color: #343a40;
-            border-color: #454d55;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-
-        .d-flex {
-            display: flex;
-        }
-
-        .justify-content-between {
-            justify-content: space-between;
-        }
-
-        .align-items-center {
-            align-items: center;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.35em 0.65em;
-            font-size: 0.75em;
-            font-weight: 700;
-            line-height: 1;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.25rem;
-        }
-
-        .bg-primary {
-            background-color: #007bff;
-        }
-
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .btn-outline-secondary:hover {
-            color: #fff;
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .form-select {
-            width: auto;
-            margin-right: 10px;
-        }
-    </style>
 
 </x-layout>
