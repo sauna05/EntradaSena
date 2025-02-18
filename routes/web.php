@@ -1,6 +1,10 @@
 <?php
 
+<<<<<<< HEAD
+use App\Http\Controllers\DbEntrada\AssistanceController;
+=======
 use App\Http\Controllers\DbEntrada\ApprenticeController ;
+>>>>>>> main
 use App\Http\Controllers\DbEntrada\AuthController as EntranceAuthController;
 use App\Http\Controllers\DbEntrada\EntranceAdminController;
 use App\Http\Controllers\DbEntrada\EntranceExitController;
@@ -35,6 +39,15 @@ Route::delete('entrance/admin/people/{id}',[EntranceAdminController::class,'peop
 Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload')->name('entrance.excel.upload');
 //Modulo Entrada - Aprendiz
 Route::get('entrance/apprentice/{id}',[ApprenticeController::class, 'show']) ->name('apprentice.show');
+
+
+
+
+
+
+//rutas de Asistencias Admin
+
+Route::get('entrance/admin/assistance',[AssistanceController::class,'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
 
 
 
