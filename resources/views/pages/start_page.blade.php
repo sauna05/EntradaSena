@@ -27,10 +27,10 @@
         </div>
     </form>
     {{--  VERIFICACION DE ERRORES Y ADEMAS LOS MUESTRA EN LA PARTE PRINCIPAL DE EL LOGIN :)   --}}
-    @if ($errors->has('asistencia.user_name'))
+    @if ($errors->has('entrance.user_name'))
     <div>
         <ul>
-            <li>{{ $errors->first('asistencia.user_name') }}</li>
+            <li>{{ $errors->first('entrance.user_name') }}</li>
         </ul>
     </div>
 @endif
@@ -63,10 +63,10 @@
         </div>
 
     </form>
-    @if ($errors->has('programacion.user_name'))
+    @if ($errors->has('programming.user_name'))
     <div>
         <ul>
-            <li>{{ $errors->first('programacion.user_name') }}</li>
+            <li>{{ $errors->first('programming.user_name') }}</li>
         </ul>
     </div>
 @endif
