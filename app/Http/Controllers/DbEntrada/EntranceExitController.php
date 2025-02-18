@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DbEntrada;
 use App\Http\Controllers\Controller;
 use App\Models\DbEntrada\EntranceExit;
 use App\Models\DbEntrada\Person;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\isNull;
@@ -36,6 +37,28 @@ class EntranceExitController extends Controller
 
         $person = Person::where('document_number', $data['document_number'])->first();
 
+        //Si la fecha actual no está dentro del rango de fechas de inicio y final de la persona en el centro de formación
+        //No se le dará permiso
+        if (($person->start_date > now() || $person->end_date < now()) || false) {
+            return response()->json([
+                'action' => "ACCESO RESTRINGIDO",
+                'position' => "NULO",
+                'name' => "NULO"
+            ]);
+        }
+
+        //Se obtiene el día de hoy en ingles EJ Martes = Tuesday
+        $currentDay = Carbon::now()->format('l');
+
+        $isAvailable = $person->days_available()->where('day_english', $currentDay)->exists();
+        
+        if(!$isAvailable){
+            return response()->json([
+                'action' => "NO PUEDE ACCEDER HOY AL CENTRO DE FORMACIÓN",
+                'position' => "NULO",
+                'name' => "NULO"
+            ]);
+        }
 
         //ultima asistencia de la persona
         $last_assistance = EntranceExit::where('id_person',$person->id)

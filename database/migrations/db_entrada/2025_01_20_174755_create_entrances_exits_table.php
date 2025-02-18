@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::connection('db_entrada')->create('entrances_exits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_person')->constrained('people')->onUpdate('cascade');
+            $table->foreignId('id_person')->constrained('people')->onUpdate('cascade')->onDelete('cascade');
             $table->dateTime('date_time');
             $table->enum('action',['entrada','salida'])->default('entrada');
             $table->timestamps();
