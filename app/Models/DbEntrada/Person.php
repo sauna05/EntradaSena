@@ -11,6 +11,8 @@ class Person extends Model
     protected $connection = 'db_entrada';
     protected $table = 'people';
     protected $guarded = [];
+    
+
 
     //los datos de fecha se convertirán automaticamente en
     //formatos validos para laravel y la base de datos

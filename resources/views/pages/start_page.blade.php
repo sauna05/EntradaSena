@@ -26,6 +26,16 @@
             </section>
         </div>
     </form>
+    {{--  VERIFICACION DE ERRORES Y ADEMAS LOS MUESTRA EN LA PARTE PRINCIPAL DE EL LOGIN :)   --}}
+    @if ($errors->has('asistencia.user_name'))
+    <div>
+        <ul>
+            <li>{{ $errors->first('asistencia.user_name') }}</li>
+        </ul>
+    </div>
+@endif
+
+
 
  
     <form action="{{route('programming-login')}}" method="POST">
@@ -39,7 +49,7 @@
 
             <section>
                 <div>
-                    <label for="user_name">Usuario</label>
+                    <label for="user_name" class="name">Usuario</label>
                     <input type="text" id="user_name" name="user_name">
                 </div>
 
@@ -53,5 +63,14 @@
         </div>
 
     </form>
+    @if ($errors->has('programacion.user_name'))
+    <div>
+        <ul>
+            <li>{{ $errors->first('programacion.user_name') }}</li>
+        </ul>
+    </div>
+@endif
+
+  
 
 </x-layout>
