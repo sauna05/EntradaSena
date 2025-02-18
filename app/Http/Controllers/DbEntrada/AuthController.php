@@ -31,14 +31,19 @@ class AuthController extends Controller
                 
             }else if($user->hasRole('Aprendiz')){
                 
-           
+                return redirect()->route('apprentice.show', ['id' => Auth::user()->id]);
+
             }           
 
         }else{
-            return "USUARIO NO ENCONTRADO"; // (IMPORTANTE) en un futuro, hacer que envíe al login con
-            // mensaje de error de que el usuario no existe
+            return redirect()->route('login')->withErrors([
+                'entrance.user_name' => 'Las credenciales proporcionadas son incorrectas.'
+            ])->withInput();
+            
+           
         }
-    }
+    
+}
 
     public function logout(Request $request){
         Auth::logout();
