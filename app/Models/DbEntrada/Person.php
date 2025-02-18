@@ -30,8 +30,9 @@ class Person extends Model
     }
     
     //Una persona tiene muchas entradas y salidas
-    public function entrances_exits(){
-        return $this->hasMany(EntranceExit::class);
+    public function entrances_exits()
+    {
+        return $this->hasMany(EntranceExit::class, 'id_person'); 
     }
 
     //Una persona puede tener varios usuarios 
