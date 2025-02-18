@@ -1,3 +1,33 @@
+## AL CLONAR
+
+### Comandos a ejecutar:
+
+composer install
+npm install
+
+
+crear las bases de datos db_entrada y db_programacion
+con:
+php artisan migrate --path=Database\Migrations\db_entrada --database=db_entrada
+php artisan migrate --path=Database\Migrations\db_programacion --database=db_programacion
+
+validar la creación y crear seedders
+con:
+
+php artisan migrate:fresh --seed  --path=Database\Migrations\db_entrada --database=db_entrada
+php artisan migrate:fresh --seed  --path=Database\Migrations\db_eprogramacion --database=db_programacion
+
+
+### cualquier cosa, correr comandos de limpieza
+
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+php artisan route:clear
+php artisan clear-compiled
+php artisan event:clear
+php artisan config:cache
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
