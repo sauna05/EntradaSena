@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::connection('db_entrada')->create('days_available', function (Blueprint $table) {
             $table->id();
             $table->string('day');
+            $table->string('day_english');
             $table->timestamps();
         });
     }
