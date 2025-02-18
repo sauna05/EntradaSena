@@ -1,1 +1,9 @@
+.data-people-container{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 2vw;
+}
 
+.data-person-days-available{
+    text-align: center;
+}

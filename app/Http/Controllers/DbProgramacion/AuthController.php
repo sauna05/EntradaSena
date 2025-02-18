@@ -33,7 +33,10 @@ class AuthController extends Controller
             // }
             
         }else{
-            return "Andate de aqui, hacker()";
+            return redirect()->route('login')->withErrors([
+                'programming.user_name' => 'Las credenciales proporcionadas son incorrectas.'
+            ])->withInput();
+            
         }
 
     }

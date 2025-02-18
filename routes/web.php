@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\DbEntrada\AssistanceController;
+
+use App\Http\Controllers\DbEntrada\ApprenticeController ;
 use App\Http\Controllers\DbEntrada\AuthController as EntranceAuthController;
 use App\Http\Controllers\DbEntrada\EntranceAdminController;
 use App\Http\Controllers\DbEntrada\EntranceExitController;
@@ -28,10 +31,22 @@ Route::get('entrance/admin/people',[EntranceAdminController::class, 'peopleIndex
 Route::get('entrance/admin/people/create',[EntranceAdminController::class,'peopleCreate'])->middleware('can:entrance.people.create')->name('entrance.people.create');
 Route::post('entrance/admin/people/store', [EntranceAdminController::class, 'peopleStore'])->middleware('can:entrance.people.store')->name('entrance.people.store');
 Route::get('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleShow'])->middleware('can:entrance.people.show')->name('entrance.people.show');
-
+Route::get('entrance/admin/people/{id}/edit', [EntranceAdminController::class, 'peopleEdit'])->middleware('can:entrance.people.edit')->name('entrance.people.edit');
+Route::put('entrance/admin/people/{id}',[EntranceAdminController::class, 'peopleUpdate'])->middleware('can:entrance.people.update')->name('entrance.people.update');
+Route::delete('entrance/admin/people/{id}',[EntranceAdminController::class,'peopleDelete'])->middleware('can:entrance.people.delete')->name('entrance.people.delete');
 Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload')->name('entrance.excel.upload');
-
 //Modulo Entrada - Aprendiz
+Route::get('entrance/apprentice/{id}',[ApprenticeController::class, 'show']) ->name('apprentice.show');
+
+
+
+
+
+
+//rutas de Asistencias Admin
+
+Route::get('entrance/admin/assistance',[AssistanceController::class,'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
+
 
 
 //Programación ------------------------------------------------------------------------

@@ -60,7 +60,8 @@
                     <td>{{$p->start_date->format('d/m/Y')}}</td>
                     <td>{{$p->end_date->format('d/m/Y')}}</td>
                     <td><a href="{{route('entrance.people.show',$p->id)}}">
-                            <img src="{{asset('icons/edit.png')}}" alt="" class="icon">
+                            {{-- <img src="{{asset('icons/edit.png')}}" alt="" class="icon"> --}}
+                            Ver
                         </a>
                     </td>
                 </tr>

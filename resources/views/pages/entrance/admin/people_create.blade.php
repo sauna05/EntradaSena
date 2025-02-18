@@ -4,7 +4,7 @@
     {{-- token csrf para que se puedan pasar los datos por la url sin actualizar la pagina --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- Archivo CSS de la pagina --}}
-    <x-slot:page_style>css/pages/start_page.css</x:slot-page_style>
+    <x-slot:page_style>css/pages/entrance/admin/people_create.css</x:slot-page_style>
     {{-- Titulo de la pagina --}}
     <x-slot:title>CAA</x:slot-title>
     {{-- Header - Navbar --}}
@@ -12,38 +12,59 @@
 
     <h1>Formulario de Registro para el modulo de entrada</h1>
 
-   <form action="{{route('entrance.people.store')}}" method="POST">
+   <form action="{{route('entrance.people.store')}}" method="POST" class="form-create-people">
     @csrf
-    <div>
-        <label for="id_position">Posición</label>
-        <select name="id_position" id="id_position">
-            <option value="">Seleccione una Posición</option>
-            @foreach ($positions as $id => $position)
-                <option value="{{$id}}">{{$position}}</option>
-            @endforeach
-        </select>
-    </div>
-   
-    <div>
-        <label for="document_number">Numero de Documento</label>
-        <input type="text" name="document_number" id="document_number" >
-    </div>
-
-    <div>
-        <label for="name">Nombre Completo</label>
-        <input type="text" name="name" id="name">
-    </div>
+    <section>
+        <div>
+            <label for="id_position">Posición</label>
+            <select name="id_position" id="id_position">
+                <option value="">Seleccione una Posición</option>
+                @foreach ($positions as $id => $position)
+                    <option value="{{$id}}">{{$position}}</option>
+                @endforeach
+            </select>
+        </div>
     
-    <div>
-        <label for="start_date">Fecha de Inicio</label>
-        <input type="date" name="start_date" id="start_date">
-    </div>
-    <div>
-        <label for="end_date">Fecha de Inicio</label>
-        <input type="date" name="end_date" id="end_date">
-    </div>
+        <div>
+            <label for="document_number">Numero de Documento</label>
+            <input type="text" name="document_number" id="document_number" >
+        </div>
+
+        <div>
+            <label for="name">Nombre Completo</label>
+            <input type="text" name="name" id="name">
+        </div>
+        
+        <div>
+            <label for="start_date">Fecha de Inicio</label>
+            <input type="date" name="start_date" id="start_date">
+        </div>
+        <div>
+            <label for="end_date">Fecha de Finalización</label>
+            <input type="date" name="end_date" id="end_date">
+        </div>
     <x-button type="submit">Enviar</x-button>
+
+    </section>
+
+
+    <section>
+        @foreach ($days_available as $day)
+        <div>
+            <label for="day_{{$day->id}}">{{$day->day}}</label>
+            <input type="checkbox" value="{{$day->id}}"
+
+            {{ ($day->day !== 'Sabado' && $day->day !== 'Domingo') ? 'checked' : '' }} 
+            name="days[]" id="{{$day->id}}" >
+
+        </div>
+        @endforeach
+
+    </section>
 </form>
+
+
+{{-- Formulario para Registrar varios aprendices desde un excel --}}
 
 <div>
     <h5>Si desea registrar varios aprendices al mismo tiempo</h5>
@@ -118,7 +139,7 @@ document.getElementById("fileInput").addEventListener("change", function (event)
     reader.readAsArrayBuffer(file);
 });
 
-// 🔥 Función para convertir fechas en formato MM/DD/YY a YYYY-MM-DD
+// Función para convertir fechas en formato MM/DD/YY a YYYY-MM-DD
 function formatDate(fecha) {
     const date = new Date(fecha);
     return date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
