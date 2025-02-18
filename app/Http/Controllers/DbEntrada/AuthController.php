@@ -31,8 +31,8 @@ class AuthController extends Controller
                 
             }else if($user->hasRole('Aprendiz')){
                 
-                return redirect()->route('apprentice.show', ['id' => Auth::user()->id]);
-
+                return redirect()->route('apprentice.show');
+           
             }           
 
         }else{
