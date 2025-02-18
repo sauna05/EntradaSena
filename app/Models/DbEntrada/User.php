@@ -38,6 +38,13 @@ class User  extends Authenticatable
 
 
 
+    public function person()
+    {
+        return $this->hasOne(Person::class, 'document_number', 'name'); 
+    }
+
+
+
 
     //Un usuario pertece a una persona
     public function people(){
