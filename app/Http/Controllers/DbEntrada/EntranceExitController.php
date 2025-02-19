@@ -37,15 +37,19 @@ class EntranceExitController extends Controller
 
         $person = Person::where('document_number', $data['document_number'])->first();
 
+        //Se toma la posición de la persona
+        $position = $person->position->position;
+
         //Si la fecha actual no está dentro del rango de fechas de inicio y final de la persona en el centro de formación
         //No se le dará permiso
         if (($person->start_date > now() || $person->end_date < now()) || false) {
             return response()->json([
                 'action' => "ACCESO RESTRINGIDO",
-                'position' => "NULO",
-                'name' => "NULO"
+                'position' => "No forma parte del centro actualmente",
+                'name' => $person->name
             ]);
         }
+      
 
         //Se obtiene el día de hoy en ingles EJ Martes = Tuesday
         $currentDay = Carbon::now()->format('l');
@@ -55,8 +59,8 @@ class EntranceExitController extends Controller
         if(!$isAvailable){
             return response()->json([
                 'action' => "NO PUEDE ACCEDER HOY AL CENTRO DE FORMACIÓN",
-                'position' => "NULO",
-                'name' => "NULO"
+                'position' => $position,
+                'name' => $person->name
             ]);
         }
 
