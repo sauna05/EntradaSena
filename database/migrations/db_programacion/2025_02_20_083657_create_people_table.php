@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_position')->constrained('positions')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('id_town')->constrained('towns')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('document_number');
+            $table->string('document_number')->unique();
             $table->string('name');
             $table->string('email');
             $table->string('address');

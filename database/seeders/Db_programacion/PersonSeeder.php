@@ -18,9 +18,24 @@ class PersonSeeder extends Seeder
             'id_town' => 1,
             'document_number' => '1111111111',
             'name' => 'Marlon Saenz',
-            'start_date' => '2024-12-4',
-            'end_date' => '2030-12-24',
+            'email' => 'Marlonsaenz@gmail.com',
+            'address' => 'Calle 20#32-43',
+            'phone_number' => '300123123',
             'created_at' => now(),
             'updated_at' => now()
-        ]);    }
+        ]);
+
+        Person::create([
+            'id_position' => 3,
+            'id_town' => 4,
+            'document_number' => '1043434038',
+            'name' => 'Leidi Esther Lizcano Arroyo',
+            'email' => 'lizcanoleidi@gmail.com',
+            'address' => 'Calle 432-433',
+            'phone_number' => '300123123',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+    
+    }
 }
