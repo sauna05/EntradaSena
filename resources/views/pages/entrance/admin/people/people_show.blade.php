@@ -8,7 +8,7 @@
    
 
     <section class="data-people-container">
-
+        {{-- <h2>{{$email}}</h2> --}}
         <div>
             <h2>Datos de la persona seleccionada</h2>
             
