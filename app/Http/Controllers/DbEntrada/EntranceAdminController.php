@@ -7,6 +7,7 @@ use App\Models\DbEntrada\DayAvailable;
 use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use App\Models\DbEntrada\User;
+use App\Models\DbProgramacion\Person as DbProgramacionPerson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,6 +32,7 @@ class EntranceAdminController extends Controller
         
         $person = Person::with('days_available')->findOrFail($id);
 
+        // $email = DbProgramacionPerson::where('document_number',$person->document_number)->pluck('email');
         return view('pages.entrance.admin.people.people_show',['person'=>$person]);
     }
 
