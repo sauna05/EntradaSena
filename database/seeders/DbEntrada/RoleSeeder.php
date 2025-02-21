@@ -65,6 +65,7 @@ use Spatie\Permission\Models\Permission;
 
         //permisos para Asistencia
         Permission::create(['name' => 'entrance.assistance.index'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.assistance.show'])->syncRoles([$role1, $role2]);
 
         //Permisos del modulo de Programación
         Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role4]);
