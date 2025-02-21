@@ -46,7 +46,7 @@ Route::get('entrance/apprentice/{id}',[ApprenticeController::class, 'show']) ->n
 //rutas de Asistencias Admin
 
 Route::get('entrance/admin/assistance',[AssistanceController::class,'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
-
+Route::get('entrance/admin/assistance/{id}',[AssistanceController::class,'showPeoples'])->middleware('can:entrance.assistance.show')->name('entrance.assistance.show');
 
 
 //Programación ------------------------------------------------------------------------

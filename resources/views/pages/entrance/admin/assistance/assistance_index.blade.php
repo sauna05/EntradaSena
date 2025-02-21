@@ -6,13 +6,13 @@
     {{-- Header - Navbar --}}
     <x-entrance_navbar></x-entrance_navbar>
 
-    <div class="container">
+    <div class="container mt-5">
         <h1 class="text-center mb-4">
             Lista de Asistencias - {{ now()->format('Y-m-d') }}
         </h1>
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3>Cantidad de personas: <span class="badge bg-primary">{{ $formattedPersons->count() }}</span></h3>
+            <h3>Cantidad de Asistencias: <span class="badge bg-primary">{{ count($formattedPersons) }}</span></h3>
 
             <form method="GET" action="{{ route('entrance.assistance.index') }}" class="d-flex align-items-center">
                 <!-- Select para filtrar por posición -->
@@ -26,7 +26,7 @@
                 </select>
 
                 <!-- Campo de fecha -->
-                <input type="date" name="filter_date" class="form-control me-2" max="{{ now()->toDateString() }}" value="{{ request('filter_date') }}" onchange="this.form.submit()">
+                <input type="date" name="filter_date" class="form-control me-2" max="{{ now()->toDateString() }}" value="{{ request('filter_date', now()->toDateString()) }}" onchange="this.form.submit()">
 
                 <!-- Formulario de búsqueda -->
                 <div class="input-group">
@@ -36,44 +36,61 @@
             </form>
         </div>
 
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Puesto</th>
-                    <th>Asistencia por día</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($formattedPersons as $person)
-                    <tr>
-                        <td>{{ $person['name'] }}</td>
-                        <td>{{ $person['position'] }}</td>
-                        <td>
-                            @forelse ($person['daily_data'] as $data)
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        Entrada: {{ $data['entrada'] ?? 'Sin registro' }}
-                                    </div>
-                                    <div>
-                                        Salida: {{ $data['salida'] ?? 'No ha escaneado salida' }}
-                                    </div>
-                                </div>
-                                @if (!$loop->last)
-                                    <hr>
-                                @endif
-                            @empty
-                                <div class="text-center">Sin asistencias registradas para este día.</div>
-                            @endforelse
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-center">No se encontraron asistencias.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+        @if (isset($noAttendanceMessage) && $noAttendanceMessage)
+            <div class="alert alert-warning text-center">Hoy no se han registrado asistencias.</div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover shadow-sm">
+                    <thead class="thead-dark text-center">
+                        <tr>
+                            <th>documento</th>
+                            <th>Nombre</th>
+                            <th>Posicion</th>
+                            <th>Entrada y Salida</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($formattedPersons as $person)
+                            <tr>
+                                <td>{{ $person['document_number']}}</td>
+                                <td>{{ $person['name'] }}</td>
+                                <td>{{ $person['position'] }}</td>
+                                <td>
+                                    @forelse ($person['daily_data'] as $data)
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                Entrada: {{ $data['entrada'] ?? 'Sin registro' }}
+                                            </div>
+                                            <div>
+                                                Salida: {{ $data['salida'] ?? 'No ha escaneado salida' }}
+                                            </div>
+                                        </div>
+                                        @if (!$loop->last)
+                                            <hr>
+                                        @endif
+                                    @empty
+                                        <div class="text-center">Sin asistencias registradas para este día.</div>
+                                    @endforelse
+                                </td>
+
+                                <td class="text-center">
+                                    <a href="{{ route('entrance.assistance.show', $person['id']) }}" class="btn btn-primary btn-sm">
+                                        Ver más
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No se encontraron asistencias.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 
 </x-layout>
+
+
