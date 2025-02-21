@@ -7,6 +7,7 @@ use App\Models\DbEntrada\DayAvailable;
 use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use App\Models\DbEntrada\User;
+use App\Models\DbProgramacion\Person as DbProgramacionPerson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,20 +25,21 @@ class EntranceAdminController extends Controller
         }
         )->paginate(20)->appends(['search'=>$search]);
             
-        return view('pages.entrance.admin.people_index',['person'=> $person]);
+        return view('pages.entrance.admin.people.people_index',['person'=> $person]);
     }
 
     public function peopleShow($id){
         
         $person = Person::with('days_available')->findOrFail($id);
 
-        return view('pages.entrance.admin.people_show',['person'=>$person]);
+        // $email = DbProgramacionPerson::where('document_number',$person->document_number)->pluck('email');
+        return view('pages.entrance.admin.people.people_show',['person'=>$person]);
     }
 
     public function peopleCreate(){
         $positions = Position::pluck('position','id');
         $days_available = DayAvailable::all();
-        return view('pages.entrance.admin.people_create',['positions'=> $positions, 'days_available'=>$days_available]);
+        return view('pages.entrance.admin.people.people_create',['positions'=> $positions, 'days_available'=>$days_available]);
     }
 
     public function peopleStore(Request $request){
@@ -81,7 +83,7 @@ class EntranceAdminController extends Controller
         $person = Person::findOrFail($id);
         $positions = Position::all();
         $days_available =  DayAvailable::all();
-        return view('pages.entrance.admin.people_edit',['person'=>$person,'positions'=>$positions,'days_available'=>$days_available]);
+        return view('pages.entrance.admin.people.people_edit',['person'=>$person,'positions'=>$positions,'days_available'=>$days_available]);
     }
 
     public function peopleUpdate(Request $request, $id){

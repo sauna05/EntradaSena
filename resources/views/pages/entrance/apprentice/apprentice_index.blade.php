@@ -6,9 +6,10 @@
    <h2>HOLAAAA <p>Usuario: {{ $user->user_name }}</p>
     <p>Nombre: {{ optional($person)->name ?? 'Nombre no disponible' }}</p>
     </h2> 
-<form >
-    @csrf
-    <x-button type="submit" >Cambiar Contraseña</x-button>
-</form>
+    <form action="{{ route('password.change') }}" method="GET">
+        @csrf
+        <x-button type="submit">Cambiar Contraseña</x-button>
+    </form>
+    
     
 </x-layout>

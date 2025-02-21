@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_entrada')->create('people', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('people', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_position')->constrained('positions')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('document_number',12)->unique();
+            $table->foreignId('id_town')->constrained('towns')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('document_number')->unique();
             $table->string('name');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->string('email');
+            $table->string('address');
+            $table->string('phone_number');
             $table->timestamps();
         });
     }

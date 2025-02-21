@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_entrada')->create('days_available', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('towns', function (Blueprint $table) {
             $table->id();
-            $table->string('day');
-            $table->string('day_english');
+            $table->string('town');
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('days_available');
+        Schema::dropIfExists('towns');
     }
 };

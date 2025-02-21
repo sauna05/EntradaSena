@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\Db_programacion\PersonSeeder as Db_programacionPersonSeeder;
+use Database\Seeders\Db_programacion\PositionSeeder as Db_programacionPositionSeeder;
+use Database\Seeders\Db_programacion\TownSeeder;
 use Database\Seeders\DbEntrada\DayAvailable;
 use Database\Seeders\DbEntrada\PersonSeeder;
 use Database\Seeders\DbEntrada\PositionSeeder;
@@ -39,7 +42,9 @@ class DatabaseSeeder extends Seeder
       DB::connection('db_programacion')->beginTransaction();
 
       $this->call([
-
+       Db_programacionPositionSeeder::class,
+       TownSeeder::class,
+       Db_programacionPersonSeeder::class
       ]);
       DB::connection('db_programacion')->commit();
 

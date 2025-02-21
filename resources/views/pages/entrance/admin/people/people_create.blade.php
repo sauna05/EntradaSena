@@ -54,7 +54,7 @@
             <label for="day_{{$day->id}}">{{$day->day}}</label>
             <input type="checkbox" value="{{$day->id}}"
 
-            {{ ($day->day !== 'Sabado' && $day->day !== 'Domingo') ? 'checked' : '' }} 
+            {{ ($day->day !== 'Sábado' && $day->day !== 'Domingo') ? 'checked' : '' }} 
             name="days[]" id="{{$day->id}}" >
 
         </div>
@@ -116,6 +116,7 @@ document.getElementById("fileInput").addEventListener("change", function (event)
             body: JSON.stringify({ people: jsonData }) // Enviar como JSON
         })
         .then(async response => {
+    alert("Iniciando Importación de datos, por favor no interactuar con la pagina hasta nuevo aviso!");
     const text = await response.text(); // Obtiene la respuesta como texto
     console.log("RAW RESPONSE:", text); // Muestra la respuesta en consola
     
