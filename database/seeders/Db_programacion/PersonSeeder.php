@@ -25,6 +25,18 @@ class PersonSeeder extends Seeder
             'updated_at' => now()
         ]);
 
+        
+        Person::create([
+            'id_position' => 3,
+            'id_town' => 1,
+            'document_number' => '123456789',
+            'name' => 'Robin Daniel Jimenez Florez',
+            'email' => 'robindannjf@gmail.com',
+            'address' => 'Calle 19#17-06',
+            'phone_number' => '3006045694',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
         Person::create([
             'id_position' => 3,
             'id_town' => 4,
