@@ -2,12 +2,16 @@
 
 namespace App\Models\DbEntrada;
 
+use App\Models\DbProgramacion\Person as DbProgramacionPerson;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Person extends Model
 {
     use HasFactory;
+    use Notifiable;
+
     protected $connection = 'db_entrada';
     protected $table = 'people';
     protected $guarded = [];
@@ -49,7 +53,15 @@ class Person extends Model
     }
     //Una persona PUEDE tener varias notificaciones de inasistencia
     public function notifications_absences(){
-        return $this->hasMany(Notification_absence::class);
+        return $this->hasMany(NotificationAbsence::class);
     }
+
+    //El correo está en otra base de datos, con esto de obtendrá el correo automaticamnete
+    public function routeNotificationForMail()
+    {
+        return DbProgramacionPerson::where('document_number', $this->document_number)
+            ->value('email');
+    }
+
 
 }

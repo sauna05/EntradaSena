@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::connection('db_entrada')->create('notifications_absences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_person')->constrained('people')->onUpdate('cascade');
-            $table->date('last_assistance');
+            $table->dateTime('last_assistance');
             $table->text('motive')->nullable();
             $table->enum('state',['pendiente','respondida']);
             $table->boolean('readed')->default(false);
