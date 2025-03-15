@@ -63,15 +63,20 @@ class CheckAbsences extends Command
             // if (!$last_date || $last_date->lessThan($iteractive_date)) {
             // }
             if(!$last_date || $last_date->lessThan($iteractive_date)){
-                NotificationAbsence::updateOrCreate([
-                    'id_person' => $person->id,
-                    'last_assistance' => $iteractive_date,
-                ],
-            [
-                'state' => 'pendiente',
-                'readed' => false
-            ]);
 
+                //Verificar si ya tiene inasistencia la persona
+                $absence = NotificationAbsence::where('id_person',$person->id)->first();
+                
+                if(is_null($absence) || !$absence){
+                    NotificationAbsence::updateOrCreate([
+                        'id_person' => $person->id,
+                        'last_assistance' => $iteractive_date,
+                        ],
+                    [
+                        'state' => 'pendiente',
+                        'readed' => false
+                    ]);
+                }
                 $this->info($person->name . " tiene inasistencia");
 
               

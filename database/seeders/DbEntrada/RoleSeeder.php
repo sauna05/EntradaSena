@@ -58,9 +58,11 @@ use Spatie\Permission\Models\Permission;
         Permission::create(['name' => 'entrance.excel.upload'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.people.edit'])->syncRoles([$role1, $role2]);
 
-        
-        
 
+        //permisos para inasistencias
+        Permission::create(['name' => 'entrance.absence.index'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.absence.show'])->syncRoles([$role1, $role2]);
+        
 
 
         //permisos para Asistencia

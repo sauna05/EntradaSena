@@ -5,6 +5,11 @@
     <form action="entrance/login" method="POST">
         @csrf
 
+       @if (session('message'))
+    <div>
+        {{ session('message') }}
+    </div>
+        @endif
         <div>
             <section>
                 <p>Asistencia</p>

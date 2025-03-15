@@ -10,9 +10,8 @@ class NotificationAbsence extends Model
     protected $table = 'notifications_absences';
     protected $guarded = [];
 
-
     public function person()
     {
-        return $this->belongsTo(Person::class);
+        return $this->belongsTo(Person::class,"id_person");
     }
 }

@@ -22,7 +22,6 @@ class AbsenceNotification extends Notification
 
     /**
      * Get the notification's delivery channels.
-     *
      * @return array<int, string>
      */
     public function via(object $notifiable): array
@@ -39,7 +38,7 @@ class AbsenceNotification extends Notification
                     ->subject("Inasistencia Prolongada")
                     ->greeting("Hola, {$this->person->name}")
                     ->line("Hemos detectado que no has registrado asistencia en los últimos dos días hábiles.")
-                    ->action('Justificar Inasistencia', url("/justificar-inasistencia/{$this->person->id}"))
+                    ->action('Justificar Inasistencia', url(route('entrance.absence.answer',$this->person->id)))
                     ->line('Por favor completa el formulario para evitar sanciones.');
     }
 
