@@ -33,6 +33,8 @@ use Spatie\Permission\Models\Permission;
 
         $role2 =Role::create(['name'=>'Admin-Entrada']);
         $role3= Role::create(['name' => 'Acceso-Entrada']);
+        
+        $role4 = Role::create(['name' => 'Apoyo-Coordinacion-Juicios-Evaluativos']);
 
         $role4 = Role::create(['name' => 'Admin-Programacion']);
         $role5 = Role::create(['name' => 'Sofia-Programacion']);

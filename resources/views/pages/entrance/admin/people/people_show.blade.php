@@ -14,7 +14,7 @@
             
             <p>Nombre: {{$person->name}}</p>
             <p>Numero de documento: {{$person->document_number}}</p>
-            <p>Posicion: {{$person->position->position}}</p>
+            <p>Posicion: {{$person->position->name}}</p>
             <p>Fecha de inicio: {{$person->start_date->format('Y/m/d')}}</p>
             <p>Fecha de Finalizacion: {{$person->end_date->format('Y/m/d')}}</p>
         </div> 
@@ -23,7 +23,7 @@
             <h2>Días que puede ir la persona al centro</h2>
 
             @foreach ($person->days_available as $day)
-                <li>{{$day->day}}</li>
+                <li>{{$day->name}}</li>
             @endforeach
         </div>
     </section>

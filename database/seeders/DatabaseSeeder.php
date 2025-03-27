@@ -2,15 +2,20 @@
 
 namespace Database\Seeders;
 
+use App\Models\DbProgramacion\Instructor;
+use App\Models\DbProgramacion\Speciality;
 use App\Models\User;
-use Database\Seeders\Db_programacion\PersonSeeder as Db_programacionPersonSeeder;
-use Database\Seeders\Db_programacion\PositionSeeder as Db_programacionPositionSeeder;
-use Database\Seeders\Db_programacion\TownSeeder;
+use Database\Seeders\DbProgramacion\PersonSeeder as Db_programacionPersonSeeder;
+use Database\Seeders\DbProgramacion\PositionSeeder as Db_programacionPositionSeeder;
+use Database\Seeders\DbProgramacion\TownSeeder;
 use Database\Seeders\DbEntrada\DayAvailable;
 use Database\Seeders\DbEntrada\PersonSeeder;
 use Database\Seeders\DbEntrada\PositionSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
 use Database\Seeders\DbEntrada\UserSeeder;
+use Database\Seeders\DbProgramacion\InstructorSeeder;
+use Database\Seeders\DbProgramacion\LinkTypeSeeder;
+use Database\Seeders\DbProgramacion\SpecialitySeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
@@ -44,7 +49,9 @@ class DatabaseSeeder extends Seeder
       $this->call([
        Db_programacionPositionSeeder::class,
        TownSeeder::class,
-       Db_programacionPersonSeeder::class
+       Db_programacionPersonSeeder::class,
+       LinkTypeSeeder::class,
+       SpecialitySeeder::class,
       ]);
       DB::connection('db_programacion')->commit();
 

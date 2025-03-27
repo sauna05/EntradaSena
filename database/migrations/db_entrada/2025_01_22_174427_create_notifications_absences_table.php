@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('id_person')->constrained('people')->onUpdate('cascade');
             $table->dateTime('last_assistance');
             $table->text('motive')->nullable();
+            $table->string('excuse_image')->nullable();
             $table->enum('state',['pendiente','respondida']);
             $table->boolean('readed')->default(false);
             $table->timestamps();

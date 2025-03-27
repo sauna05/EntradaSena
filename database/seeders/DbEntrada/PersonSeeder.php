@@ -62,8 +62,14 @@ class PersonSeeder extends Seeder
             'updated_at' => now()
         ]);
 
-        
-
-      
+        Person::create([
+            'id_position' => 3,
+            'document_number' => '321321321',
+            'name' => 'JoseGay Andres Ronaldo',
+            'start_date' => '2023-1-23',
+            'end_date' => '2025-04-22',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }
