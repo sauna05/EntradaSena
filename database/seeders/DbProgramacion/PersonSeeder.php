@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Db_programacion;
+namespace Database\Seeders\DbProgramacion;
 
 use App\Models\DbProgramacion\Person;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -44,6 +44,18 @@ class PersonSeeder extends Seeder
             'name' => 'Leidi Esther Lizcano Arroyo',
             'email' => 'lizcanoleidi@gmail.com',
             'address' => 'Calle 432-433',
+            'phone_number' => '300123123',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        Person::create([
+            'id_position' => 3,
+            'id_town' => 4,
+            'document_number' => '321321321',
+            'name' => 'JoseGay Andres Ronaldo',
+            'email' => 'joseandressolano2003@gmail.com',
+            'address' => 'Calle lgtv-433',
             'phone_number' => '300123123',
             'created_at' => now(),
             'updated_at' => now()

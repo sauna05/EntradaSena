@@ -46,7 +46,7 @@ class CheckAbsences extends Command
                 $last_date = Carbon::parse($last_assistance->date_time);
             }
 
-            $days_available = $person->days_available()->pluck('day_english');
+            $days_available = $person->days_available()->pluck('name_english');
 
             $days_elapsed = 0;
             $iteractive_date = $today->copy();

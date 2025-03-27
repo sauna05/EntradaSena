@@ -13,12 +13,12 @@
         <section>
             <h2>Modificación de datos</h2>
             <div>
-                <label for="id_position">Posición</label>
+                <label for="id_position">Cargo</label>
                 <select name="id_position" id="id_position">
-                    <option value="">Seleccione una Posición</option>
-                    @foreach($positions as $id => $p)
-                        <option value="{{ $p->id }}" {{ $person->id_position == $p->id ? 'selected' : '' }}>
-                            {{ $p->position}}
+                    <option value="">Seleccione un cargo</option>
+                    @foreach($positions as $id => $position)
+                        <option value="{{ $position->id }}" {{ $person->id_position == $position->id ? 'selected' : '' }}>
+                            {{ $position->name}}
                         </option>
                     @endforeach
                 </select>
@@ -52,7 +52,7 @@
 
             @foreach($days_available as $day)
                 <div>
-                    <label for="{{ $day->id }}">{{ $day->day }}</label>
+                    <label for="{{ $day->id }}">{{ $day->name }}</label>
                     <input type="checkbox" name="days[]" value="{{ $day->id }}" 
                     {{ $person->days_available->contains('id', $day->id) ? 'checked' : '' }} id="{{ $day->id }}">
                 </div>

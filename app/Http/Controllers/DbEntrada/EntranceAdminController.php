@@ -7,11 +7,14 @@ use App\Models\DbEntrada\DayAvailable;
 use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use App\Models\DbEntrada\User;
+use App\Models\DbProgramacion\Instructor;
+use App\Models\DbProgramacion\LinkType;
 use App\Models\DbProgramacion\Person as DbProgramacionPerson;
+use App\Models\DbProgramacion\Speciality;
+use App\Models\DbProgramacion\Town;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 
 class EntranceAdminController extends Controller
 {
@@ -37,43 +40,114 @@ class EntranceAdminController extends Controller
     }
 
     public function peopleCreate(){
-        $positions = Position::pluck('position','id');
+        $positions = Position::pluck('name','id');
         $days_available = DayAvailable::all();
-        return view('pages.entrance.admin.people.people_create',['positions'=> $positions, 'days_available'=>$days_available]);
+        $towns = Town::all();
+        $specialities = Speciality::all();
+        $link_types = LinkType::all();
+        return view('pages.entrance.admin.people.people_create',
+        ['positions'=> $positions,
+         'days_available'=>$days_available,
+         'towns'=>$towns,
+         'specialities' => $specialities,
+         'link_types' => $link_types
+        ]);
     }
 
     public function peopleStore(Request $request){
-
-        //Creacion de la persona
-        $data = $request->validate([
             //Datos de la persona
+            $request->validate([
            'id_position' => 'required',
+           'id_town' => 'required', 
            'document_number' => 'required',
-           'name' => 'required',
-           'start_date' => 'required|date',
-           'end_date' => 'required|date|after_or_equal:start_date'
+            'name' => 'required',
+            'phone_number' => 'required',
+            'start_date' => 'required|date',
+           'end_date' => 'required|date|after_or_equal:start_date',
+            
         ]);
 
-    
+        //Buscar el Id del cargo (de la vista se saca el nombre para prevenir errores a futuro)
+        $position = Position::where('name', $request->id_position)->first();
+        
         //Si ya la persona se registró, cancelar
-        if(Person::where('document_number',$data['document_number'])->exists()){
+        if(Person::where('document_number',$request->document_number)->exists()){
             return redirect()->route('entrance.people.index')->with('message', 'Ya existe una persona en el centro con este numero de documento');
         }
+        //El registro db_entrada (No importa el rol)
+        $person = Person::create([
+            'id_position' => $position->id,
+            'name' => $request->name,
+            'document_number' => $request->document_number,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
+        ]);
+        
+        //Se vinculan los días de la semana que puede venir (por defecto lunes a viernes)
+        $person->days_available()->sync($request->days);
 
-        $person = Person::create($data);
-        //Creacion del usuario si es aprendiz
-        if(trim($person->position->position) === 'Aprendiz'){
-                $user = User::create([
-                'id_person' => $person->id,
-                'user_name' => $person->document_number,
-                'password' => bcrypt($person->document_number)
-            ]);
-            $user->assignRole('Aprendiz');
+
+        switch($request->id_position){
+            case "Aprendiz":
+                
+                if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
+                    return redirect()->route('entrance.people.index')->with('message', 'El aprendiz ya está registrado en la programación.');
+                }
+
+                $personProg = DbProgramacionPerson::create([
+                    'document_number'=> $request->document_number,
+                    'name'=> $request->name,
+                    'id_position' => $position->id,
+                    'id_town' => $request->id_town,
+                    'email' => $request->email ,
+                    'address' => $request->address ,
+                    'phone_number' => $request->phone_number 
+                ]);
+                break;
+
+            case "Instructor":
+
+                if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
+                    return redirect()->route('entrance.people.index')->with('message', 'El instructor ya está registrado en la programación.');
+                }
+
+                $personProg = DbProgramacionPerson::create([
+                    'id_position' => $position->id,
+                    // 'id_link_type' => $instructor['id_link_type'],
+                    // 'id_speciality' => $instructor['id_speciality'],
+                    'document_number' => $request->document_number,
+                    'name' => $request->name,
+                    'id_town' => $request->id_town,
+                    'email' => $request->email,
+                    'address' => $request->address,
+                    'phone_number' => $request->phone_number
+                ]);
+
+                // $instructor = $request->validate([
+                //     'id_link_type' => 'required',
+                //     'id_speciality' => 'required',
+                // ]);
+
+                // Instructor::create([
+
+                // ]);
+                break;
+
+            default:
+                    break;  
         }
+        // //Creacion del usuario si es aprendiz
+        // if(trim($person->position->position) === 'Aprendiz'){
+        //         $user = User::create([
+        //         'id_person' => $person->id,
+        //         'user_name' => $person->document_number,
+        //         'password' => bcrypt($person->document_number)
+        //     ]);
+        //     $user->assignRole('Aprendiz');
+        // }
 
         //Asignar los días que vendrá la persona
 
-        $person->days_available()->sync($request->days);
 
         return redirect()->route('entrance.people.index')->with('message','Persona Registrada Correctamente');
         

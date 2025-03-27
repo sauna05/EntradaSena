@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_programacion')->create('towns', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('apprentice_status', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('towns');
+        Schema::dropIfExists('apprentice_status');
     }
 };

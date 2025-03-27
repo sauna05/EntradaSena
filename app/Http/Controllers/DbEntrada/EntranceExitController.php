@@ -94,6 +94,8 @@ class EntranceExitController extends Controller
                 'date_time' => now(),
                 'action' => $action
             ]);
+            //Si no cae en ninguno de los casos anteriores
+            //Es entrada normal
         }else{
             EntranceExit::create([
                 'id_person' => $person->id,

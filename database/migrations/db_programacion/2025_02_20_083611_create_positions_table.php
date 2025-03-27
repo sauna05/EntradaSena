@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::connection('db_programacion')->create('positions', function (Blueprint $table) {
             $table->id();
-            $table->string('position');
+            $table->string('name');
             $table->timestamps();
         });
     }

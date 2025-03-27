@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Db_programacion;
+namespace Database\Seeders\DbProgramacion;
 
 use App\Models\DbProgramacion\Town;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,27 +14,27 @@ class TownSeeder extends Seeder
     public function run(): void
     {
         Town::create([
-            "town"=> "Fonseca"
+            "name"=> "Fonseca"
         ]);
 
         Town::create([
-            "town" => "Distracción"
+            "name" => "Distracción"
         ]);
 
         Town::create([
-            "town" => "Barrancas"
+            "name" => "Barrancas"
         ]);
 
         Town::create([
-            "town" => "Hatonuevo"
+            "name" => "Hatonuevo"
         ]);
 
         Town::create([
-            "town" => "San Juan del Cesar"
+            "name" => "San Juan del Cesar"
         ]);
 
         Town::create([
-            "town" => "Riohacha"
+            "name" => "Riohacha"
         ]);
     }
 }
