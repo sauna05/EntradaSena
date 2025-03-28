@@ -16,7 +16,7 @@
             <h3 class="text-secondary">Información del Usuario</h3>
             <p><strong>Nombre:</strong> {{ $person->name }}</p>
             <p><strong>Documento:</strong> {{ $person->document_number }}</p>
-            <p><strong>Posicion:</strong> {{ $person->position->position ?? 'Sin puesto asignado' }}</p>
+            <p><strong>Cargo:</strong> {{ $person->position->name ?? 'Sin puesto asignado' }}</p>
         </div>
 
         <!-- Historial de asistencias -->

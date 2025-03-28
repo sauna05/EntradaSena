@@ -1,5 +1,5 @@
 <x-layout>
-    <x-slot:page_style>css/pages/entrance.css</x-slot-page_style>
+    <x-slot:page_style>css\pages\entrance\entrance.css</x-slot-page_style>
     <x-slot:title>CAA</x-slot-title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,7 +16,7 @@
     </div>
 
     <h2>Nombre: <span id="name"></span></h2>
-    <h2>Posicion: <span id="position"></span></h2>
+    <h2>Cargo: <span id="position"></span></h2>
 
     <script>
         function updateHour() {

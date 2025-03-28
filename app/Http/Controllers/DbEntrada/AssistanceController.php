@@ -79,7 +79,7 @@ class AssistanceController extends Controller
                     'id' => $person->id,
                     'name' => $person->name,
                     'document_number'=>$person->document_number,
-                    'position' => $person->position->position ?? 'Sin puesto',
+                    'position' => $person->position->name ?? 'Sin puesto',
                     'daily_data' => $dailyData,
                 ];
             });

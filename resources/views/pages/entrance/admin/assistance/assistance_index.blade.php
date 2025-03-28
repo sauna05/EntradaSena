@@ -20,7 +20,7 @@
                     <option value="">Todos los puestos</option>
                     @foreach ($positions as $position)
                         <option value="{{ $position->id }}" {{ request('position_id') == $position->id ? 'selected' : '' }}>
-                            {{ $position->position }}
+                            {{ $position->name }}
                         </option>
                     @endforeach
                 </select>
@@ -45,7 +45,7 @@
                         <tr>
                             <th>documento</th>
                             <th>Nombre</th>
-                            <th>Posicion</th>
+                            <th>Cargo</th>
                             <th>Entrada y Salida</th>
                             <th>Acción</th>
                         </tr>

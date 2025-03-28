@@ -77,7 +77,7 @@
             <select name="id_town" id="id_town">
                 <option value="">Seleccione un Municipio</option>
                 @foreach ($towns as $id => $town)
-                    <option value="{{$id}}">{{$town->name}}</option>
+                    <option value="{{$town->id}}">{{$town->name}}</option>
                 @endforeach
             </select>
         </div>

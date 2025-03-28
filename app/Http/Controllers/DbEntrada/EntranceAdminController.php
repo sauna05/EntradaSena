@@ -55,7 +55,7 @@ class EntranceAdminController extends Controller
     }
 
     public function peopleStore(Request $request){
-            //Datos de la persona
+        //Datos de la persona
             $request->validate([
            'id_position' => 'required',
            'id_town' => 'required', 
@@ -106,7 +106,7 @@ class EntranceAdminController extends Controller
                 break;
 
             case "Instructor":
-
+                
                 if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
                     return redirect()->route('entrance.people.index')->with('message', 'El instructor ya está registrado en la programación.');
                 }

@@ -54,7 +54,7 @@ class EntranceExitController extends Controller
         //Se obtiene el día de hoy en ingles EJ Martes = Tuesday
         $currentDay = Carbon::now()->format('l');
 
-        $isAvailable = $person->days_available()->where('day_english', $currentDay)->exists();
+        $isAvailable = $person->days_available()->where('name_english', $currentDay)->exists();
         
         if(!$isAvailable){
             return response()->json([
@@ -105,7 +105,7 @@ class EntranceExitController extends Controller
         }
 
         //Se toma la posición de la persona
-        $position = $person->position->position;
+        $position = $person->position->name;
 
          return response()->json([
             'action' => $action,
