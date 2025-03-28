@@ -7,7 +7,10 @@ use App\Models\DbEntrada\DayAvailable;
 use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use App\Models\DbEntrada\User;
+use App\Models\DbProgramacion\Apprentice;
+use App\Models\DbProgramacion\ApprenticeStatus;
 use App\Models\DbProgramacion\Instructor;
+use App\Models\DbProgramacion\InstructorStatus;
 use App\Models\DbProgramacion\LinkType;
 use App\Models\DbProgramacion\Person as DbProgramacionPerson;
 use App\Models\DbProgramacion\Speciality;
@@ -45,12 +48,14 @@ class EntranceAdminController extends Controller
         $towns = Town::all();
         $specialities = Speciality::all();
         $link_types = LinkType::all();
+        $instructor_status = InstructorStatus::all();
         return view('pages.entrance.admin.people.people_create',
         ['positions'=> $positions,
          'days_available'=>$days_available,
          'towns'=>$towns,
          'specialities' => $specialities,
-         'link_types' => $link_types
+         'link_types' => $link_types,
+         'instructor_status' => $instructor_status
         ]);
     }
 
@@ -94,6 +99,7 @@ class EntranceAdminController extends Controller
                     return redirect()->route('entrance.people.index')->with('message', 'El aprendiz ya está registrado en la programación.');
                 }
 
+                //Registrar el aprendiz en db_programacion
                 $personProg = DbProgramacionPerson::create([
                     'document_number'=> $request->document_number,
                     'name'=> $request->name,
@@ -103,18 +109,33 @@ class EntranceAdminController extends Controller
                     'address' => $request->address ,
                     'phone_number' => $request->phone_number 
                 ]);
+                
+                $apprenticeStatus = ApprenticeStatus::where('name','En Formación')->first();
+
+                //Se registra en la tabla aprendiz de db_programacion
+                Apprentice::create([
+                    'id_person' => $personProg->id,
+                    'id_status' => $apprenticeStatus->id,
+                ]);
                 break;
 
             case "Instructor":
                 
                 if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
                     return redirect()->route('entrance.people.index')->with('message', 'El instructor ya está registrado en la programación.');
-                }
+                }   
+                $instructorData = $request->validate([
+                    'id_link_type' => 'required',
+                    'id_speciality' => 'required',
+                    'id_instructor_status' => 'required',
+                    'assigned_hours' => 'required',
+                    'months_contract' => 'required',
+                    'hours_day' => 'required'
+                ]);
 
+                //Se registra al instructor en db_programacion en la tabla People
                 $personProg = DbProgramacionPerson::create([
                     'id_position' => $position->id,
-                    // 'id_link_type' => $instructor['id_link_type'],
-                    // 'id_speciality' => $instructor['id_speciality'],
                     'document_number' => $request->document_number,
                     'name' => $request->name,
                     'id_town' => $request->id_town,
@@ -122,31 +143,32 @@ class EntranceAdminController extends Controller
                     'address' => $request->address,
                     'phone_number' => $request->phone_number
                 ]);
-
-                // $instructor = $request->validate([
-                //     'id_link_type' => 'required',
-                //     'id_speciality' => 'required',
-                // ]);
-
-                // Instructor::create([
-
-                // ]);
+                //Se registra al instructor en db_progrmacion en la tabla Instructors
+                Instructor::create([
+                    'id_person' => $personProg->id,
+                    'id_status' => $instructorData['id_instructor_status'],
+                    'id_link_type' => $instructorData['id_link_type'],
+                    'id_speciality' => $instructorData['id_speciality'],
+                    'assigned_hours' => $instructorData['assigned_hours'],
+                    'months_contract'  => $instructorData['months_contract'],
+                    'hours_day' => $instructorData['hours_day'],
+                ]);
                 break;
 
-            default:
-                    break;  
-        }
-        // //Creacion del usuario si es aprendiz
-        // if(trim($person->position->position) === 'Aprendiz'){
-        //         $user = User::create([
-        //         'id_person' => $person->id,
-        //         'user_name' => $person->document_number,
-        //         'password' => bcrypt($person->document_number)
-        //     ]);
-        //     $user->assignRole('Aprendiz');
-        // }
 
-        //Asignar los días que vendrá la persona
+            default:
+                return back()->with('error', 'Cargo no válido');
+        }
+        //Creacion del usuario 
+                $user = User::create([
+                'id_person' => $person->id,
+                'user_name' => $person->document_number,
+                'password' => bcrypt($person->document_number)
+            ]);
+                $user->assignRole($request->id_position);
+        
+
+        //As    ignar los días que vendrá la persona
 
 
         return redirect()->route('entrance.people.index')->with('message','Persona Registrada Correctamente');

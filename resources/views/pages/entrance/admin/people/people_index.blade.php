@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Posición</th>
+                    <th>Cargo</th>
                     <th>Numero de Documento</th>
                     <th>Nombre</th>
                     <th>Fecha de Inicio</th>
@@ -54,7 +54,7 @@
                     
                 <tr>
                     <td>{{$p->id}}</td>
-                    <td>{{$p->position->position}}</td>
+                    <td>{{$p->position->name}}</td>
                     <td>{{$p->document_number}}</td>
                     <td>{{$p->name}}</td>
                     <td>{{$p->start_date->format('d/m/Y')}}</td>
