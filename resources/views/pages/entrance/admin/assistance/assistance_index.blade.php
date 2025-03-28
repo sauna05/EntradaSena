@@ -24,7 +24,7 @@
                         </option>
                     @endforeach
                 </select>
-
+                
                 <!-- Campo de fecha -->
                 <input type="date" name="filter_date" class="form-control me-2" max="{{ now()->toDateString() }}" value="{{ request('filter_date', now()->toDateString()) }}" onchange="this.form.submit()">
 

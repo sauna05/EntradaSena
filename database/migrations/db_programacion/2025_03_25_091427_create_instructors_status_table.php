@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_programacion')->create('instructor_status', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('instructors_status', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->string('name');
             $table->timestamps();
         });
     }

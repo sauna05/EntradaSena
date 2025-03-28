@@ -13,7 +13,9 @@ use Database\Seeders\DbEntrada\PersonSeeder;
 use Database\Seeders\DbEntrada\PositionSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
 use Database\Seeders\DbEntrada\UserSeeder;
+use Database\Seeders\DbProgramacion\ApprenticeStatusSeeder;
 use Database\Seeders\DbProgramacion\InstructorSeeder;
+use Database\Seeders\DbProgramacion\InstructorStatusSeeder;
 use Database\Seeders\DbProgramacion\LinkTypeSeeder;
 use Database\Seeders\DbProgramacion\SpecialitySeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -47,11 +49,13 @@ class DatabaseSeeder extends Seeder
       DB::connection('db_programacion')->beginTransaction();
 
       $this->call([
-       Db_programacionPositionSeeder::class,
-       TownSeeder::class,
-       Db_programacionPersonSeeder::class,
-       LinkTypeSeeder::class,
-       SpecialitySeeder::class,
+        Db_programacionPositionSeeder::class,
+        TownSeeder::class,
+        Db_programacionPersonSeeder::class,
+        LinkTypeSeeder::class,
+        SpecialitySeeder::class,
+        InstructorStatusSeeder::class,
+        ApprenticeStatusSeeder::class
       ]);
       DB::connection('db_programacion')->commit();
 

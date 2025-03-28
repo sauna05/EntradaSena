@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::connection('db_programacion')->create('competencies', function (Blueprint $table) {
             $table->id();
-            $table->string('competence_name');
+            $table->string('name');
             $table->integer('duration_hours');
             $table->timestamps();
         });

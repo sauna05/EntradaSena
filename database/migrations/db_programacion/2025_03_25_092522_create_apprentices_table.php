@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::connection('db_programacion')->create('apprentices', function (Blueprint $table) {
             $table->id();
             $table->foreignId("id_person")->constrained('people')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId("id_status")->constrained('apprentice_status')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId("id_status")->constrained('apprentices_status')->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
         });
