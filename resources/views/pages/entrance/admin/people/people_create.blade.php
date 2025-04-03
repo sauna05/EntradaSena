@@ -10,7 +10,7 @@
     {{-- Header - Navbar --}}
     <x-entrance_navbar></x-entrance_navbar>
 
-    <h1>Formulario de Registro para el modulo de entrada</h1>
+    <h1>Formulario de Registro Personas</h1>
 
    <form action="{{route('entrance.people.store')}}" method="POST" class="form-create-people">
     @csrf
