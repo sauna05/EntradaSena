@@ -13,6 +13,7 @@ use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\InstructorStatus;
 use App\Models\DbProgramacion\LinkType;
 use App\Models\DbProgramacion\Person as DbProgramacionPerson;
+use App\Models\DbProgramacion\Position as DbProgramacionPosition;
 use App\Models\DbProgramacion\Speciality;
 use App\Models\DbProgramacion\Town;
 use Illuminate\Http\Request;
@@ -231,9 +232,16 @@ class EntranceAdminController extends Controller
         set_time_limit(600);
         ini_set('memory_limit', '2048M');
 
+        $id_position_apprentice_entrance= Position::where('name','Aprendiz')->first();
+        $id_position_apprentice_programming = DbProgramacionPosition::where('name', 'Aprendiz')->first();
+
+        $towns_dictionary = Town::pluck('id', 'name')
+            ->mapWithKeys(fn($id, $name) => [strtolower($name) => $id])
+            ->toArray();
+
         try {
             Log::info('Iniciando importación de personas...');
-            // Validación básica
+            // Validación de columnas del excel
             $data = $request->validate([
                 'people' => 'required|array',
                 'people.*.NUMERO_DOCUMENTO' => 'required|max:13',
@@ -241,6 +249,10 @@ class EntranceAdminController extends Controller
                 'people.*.APELLIDOS' => 'nullable|string',
                 'people.*.FECHA_INICIO' => 'nullable|date',
                 'people.*.FECHA_FINALIZACION' => 'nullable|date|after_or_equal:people.*.FECHA_INICIO',
+                'people.*.MUNICIPIO' => 'nullable|string',
+                'people.*.NUMERO_CELULAR' => 'nullable|string',
+                'people.*.CORREO' => 'nullable|string',
+                'people.*.DIRECCION' => 'nullable|string',
             ]);
 
             Log::info('Total registros recibidos:', ['cantidad' => count($data['people'])]);
@@ -260,15 +272,16 @@ class EntranceAdminController extends Controller
 
             foreach ($people as $row) {
                 try {
+                    $town_id = null;
                     // Si el documento ya existe en db, lo ignoramos
                     if (isset($documentosExistentes[$row['NUMERO_DOCUMENTO']])) {
                         continue;
                     }
 
-                    // Crear persona
+                    // Crear persona em db_personas - people
                     $person = Person::create([
                         'document_number' => $row['NUMERO_DOCUMENTO'],
-                        'id_position' => 3,
+                        'id_position' => $id_position_apprentice_entrance->id,
                         'name' => trim(($row['NOMBRES'] ?? '') . " " . ($row['APELLIDOS'] ?? '')),
                         'start_date' => $row['FECHA_INICIO'] ?? null,
                         'end_date' => $row['FECHA_FINALIZACION'] ?? null,
@@ -279,7 +292,7 @@ class EntranceAdminController extends Controller
                     $days = [1,2,3,4,5];
                     $person->days_available()->sync($days);
 
-                    // Crear usuario vinculado
+                    // Crear usuario vinculado en db_personas
                     User::create([
                         'id_person' => $person->id,
                         'user_name' => $person->document_number,
@@ -288,6 +301,25 @@ class EntranceAdminController extends Controller
                         'updated_at' => now()
                     ]);
 
+                    //Verificaion del municipio con un array de municipios(towns) creado arriba
+
+                    $town_name = strtolower($row['MUNICIPIO']);
+                    
+                    if(isset($towns_dictionary[$town_name])){
+                        $town_id = $towns_dictionary[$town_name];
+                    }
+
+                    DbProgramacionPerson::create([
+                        'document_number' => $row['NUMERO_DOCUMENTO'],
+                        'id_position' => $id_position_apprentice_programming->id,
+                        'name' => trim(($row['NOMBRES'] ?? '') . " " . ($row['APELLIDOS'] ?? '')),
+                        'address' => trim($row['CORREO'] ?? ''),
+                        'phone_number' => trim($row['NUMERO_CELULAR'] ?? ''),
+                        'id_town' => $town_id ?? null,
+                        'email' => trim($row['CORREO']),
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
 
                     $nuevosRegistros++;
                     Log::info('Persona registrada:', ['document' => $person->document_number, 'name' => $person->name]);
