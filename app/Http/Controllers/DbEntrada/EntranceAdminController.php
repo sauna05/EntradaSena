@@ -234,7 +234,7 @@ class EntranceAdminController extends Controller
 
         $id_position_apprentice_entrance= Position::where('name','Aprendiz')->first();
         $id_position_apprentice_programming = DbProgramacionPosition::where('name', 'Aprendiz')->first();
-
+        $id_status_apprentice = ApprenticeStatus::where('name','En Formacion')->first();
         $towns_dictionary = Town::pluck('id', 'name')
             ->mapWithKeys(fn($id, $name) => [strtolower($name) => $id])
             ->toArray();
@@ -309,7 +309,7 @@ class EntranceAdminController extends Controller
                         $town_id = $towns_dictionary[$town_name];
                     }
 
-                    DbProgramacionPerson::create([
+                   $personProg = DbProgramacionPerson::create([
                         'document_number' => $row['NUMERO_DOCUMENTO'],
                         'id_position' => $id_position_apprentice_programming->id,
                         'name' => trim(($row['NOMBRES'] ?? '') . " " . ($row['APELLIDOS'] ?? '')),
@@ -320,6 +320,16 @@ class EntranceAdminController extends Controller
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
+
+
+                    //Se registra en la tabla aprendices
+                    Apprentice::create([
+                        'id_person' => $personProg->id,
+                        'id_status' => $id_status_apprentice->id,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
 
                     $nuevosRegistros++;
                     Log::info('Persona registrada:', ['document' => $person->document_number, 'name' => $person->name]);
