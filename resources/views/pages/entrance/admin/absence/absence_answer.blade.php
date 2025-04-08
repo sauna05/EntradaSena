@@ -24,11 +24,14 @@
     </div>
 
     <section class="container ">
-        <form action="{{route('entrance.absence.update.answer',$absence->person->id)}}" method="POST">
+        <form action="{{route('entrance.absence.update.answer',$absence->person->id)}}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div>
                 <textarea name="motive" id="motive" cols="30" rows="10" placeholder="Ejemplo: Se me dificultó acceder al Centro de Formación porque..."></textarea>
+            </div>
+             <div>
+                <input type="file" name="excuse_image" id="excuse_image">
             </div>
             <input type="submit" value="Enviar">
             

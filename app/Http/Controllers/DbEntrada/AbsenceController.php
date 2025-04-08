@@ -69,20 +69,34 @@ class AbsenceController extends Controller
     public function AbsenceUpdateAnswered(Request $request,$id)
     {
         $data = $request->validate([
-            'motive' => 'required'
+            'motive' => 'required',
+            'excuse_image' => 'nullable'
         ]);
 
         $absence = NotificationAbsence::first()->where('id_person',$id);
-
+        
+        //Si se envió una imagen
+        if($data['image']){
+            $image = $request->file('excuse_image');
+            $name_image = uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('excuse_images', $name_image, 'public');
+         
         $absence->update([
             'state' => 'respondida',
+            'excuse_image' => $name_image,
             'motive' => $data["motive"]
         ]);
-
+        //Sino
+        }else{
+            $absence->update([
+                'state' => 'respondida',
+                'motive' => $data["motive"]
+            ]);
+        }
+        
         return redirect()->route('login')->with("message", "Respondido Exitosamente");
 
     }
-
 
     public function AbsenceUpdateReaded(Request $request, $id)
     {
