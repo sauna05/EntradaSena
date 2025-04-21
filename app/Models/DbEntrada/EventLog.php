@@ -7,13 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class EventLog extends Model
 {
     protected $connection = 'db_entrada';
-
     protected $table = 'events_log';
 
-    protected $fillable = [
-        'name',
-        'executed_at',
-    ];
+    protected $guarded = [];
 
     public $timestamps = false;
 }
