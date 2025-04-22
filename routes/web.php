@@ -45,7 +45,6 @@ Route::get('/entrance/assistance/index', [AssistanceController::class, 'assistan
 //Modulo Entrada - Aprendiz
 Route::get('entrance/apprentice/{id}', [ApprenticeController::class, 'show'])->name('apprentice.show');
 
-
 //Modulo Entrada - Inasistencias
 Route::get('entrance/admin/absences', [AbsenceController::class, 'absenceIndex'])->middleware('can:entrance.absence.index')->name('entrance.absence.index');
 Route::get('entrance/admin/absences/{id}', [AbsenceController::class, 'absenceShow'])->middleware('can:entrance.absence.show')->name('entrance.absence.show');

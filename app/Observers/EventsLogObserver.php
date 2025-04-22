@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\DbEntrada\EventLog;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class EventsLogObserver
 {
@@ -12,7 +13,11 @@ class EventsLogObserver
      */
     public function created(EventLog $eventLog): void
     {
-        if ($eventLog->event_name === 'inasistencias_generadas') {
+        Log::info('Observer  detectó un evento: ' . $eventLog->name);
+
+        if ($eventLog->name == 'inasistencias_generadas') {
+            Log::info('Se ejecutará el comando de envío de correos');
+
             Artisan::call('app:send-absence-mails');
         }
     }
