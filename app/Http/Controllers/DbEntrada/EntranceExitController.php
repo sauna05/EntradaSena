@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DbEntrada\EntranceExit;
 use App\Models\DbEntrada\Person;
 use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\isNull;
@@ -19,14 +20,14 @@ class EntranceExitController extends Controller
     public function store(Request $request){
         //Registrar la entrada
         // Obtener el número de documento  de la persona para buscar a la persona
-        
+
         //si la persona no existe en la db, mostrar que no existe
         //Si la persona si existe, agregar el registro en la tabla entrances_exits
-        
+
         //Si es el primer registro de la persona en el día, se le guarda entrada,
-        //si ya tiene registro en ese mismo día, se le guarda salida y se repite el ciclo 
-        
-        //Si la fecha acutual no está entre el 
+        //si ya tiene registro en ese mismo día, se le guarda salida y se repite el ciclo
+
+        //Si la fecha acutual no está entre el
         //rango de fechas de entrada-salida en la db, saldrá la entrada prohibida
 
         //luego tomar los datos de esa persona para luego mostrarlos en el front-end de la pagina de la entrada
@@ -49,13 +50,13 @@ class EntranceExitController extends Controller
                 'name' => $person->name
             ]);
         }
-      
+
 
         //Se obtiene el día de hoy en ingles EJ Martes = Tuesday
         $currentDay = Carbon::now()->format('l');
 
         $isAvailable = $person->days_available()->where('name_english', $currentDay)->exists();
-        
+
         if(!$isAvailable){
             return response()->json([
                 'action' => "NO PUEDE ACCEDER HOY AL CENTRO DE FORMACIÓN",
@@ -68,10 +69,10 @@ class EntranceExitController extends Controller
         $last_assistance = EntranceExit::where('id_person',$person->id)
         ->orderBy('date_time', 'desc')
         ->first();
-        
+
         //La acción es 'entrada' por defecto(se registra primero entrada todos los días)
         $action = "entrada";
-        
+
         //Si es la primera vez que la persona registra asistencia
         if (is_null($last_assistance)) {
            EntranceExit::create([

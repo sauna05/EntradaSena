@@ -34,14 +34,14 @@ class DatabaseSeeder extends Seeder
       //Seeders para la base de datos de la entrada
         Config::set('database.default', 'db_entrada');
         DB::connection('db_entrada')->beginTransaction();
-        
+
         $this->call([
         PositionSeeder::class,
         RoleSeeder::class,
         PersonSeeder::class,
         UserSeeder::class,
         DayAvailable::class
-      ]); 
+      ]);
       DB::connection('db_entrada')->commit();
 
       //Seeders para la base de datos de programación
@@ -59,6 +59,6 @@ class DatabaseSeeder extends Seeder
       ]);
       DB::connection('db_programacion')->commit();
 
-      
+
     }
 }

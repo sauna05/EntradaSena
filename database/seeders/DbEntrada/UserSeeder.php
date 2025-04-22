@@ -2,10 +2,11 @@
 
 namespace Database\Seeders\DbEntrada;
 
-use App\Models\DbEntrada\User;
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Hash;
 use Str;
 
@@ -23,13 +24,16 @@ class UserSeeder extends Seeder
         // ]);
 
         User::create([
-            'id_person'=> 1, 'user_name' => 'MarlonSaenz', 'password' => bcrypt("123123")
+            'id_person' => 1,
+            'user_name' => 'MarlonSaenz',
+            'password' => bcrypt("123123")
         ])->assignRole('Administrador');
 
         User::create([
             'id_person' => 1,
             'user_name' => 'msentrada',
             'password' => bcrypt("123123")
+            #Sena2025
         ])->assignRole('Acceso-Entrada');
 
         User::create([
@@ -49,6 +53,5 @@ class UserSeeder extends Seeder
             'user_name' => '1043434038',
             'password' => bcrypt("1043434038")
         ])->assignRole('Aprendiz');
-        
     }
 }
