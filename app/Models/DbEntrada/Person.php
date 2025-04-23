@@ -15,7 +15,7 @@ class Person extends Model
     protected $connection = 'db_entrada';
     protected $table = 'people';
     protected $guarded = [];
-    
+
 
 
     //los datos de fecha se convertirán automaticamente en
@@ -31,28 +31,39 @@ class Person extends Model
 
 
     //Una persona tiene un cargo
-    public function position(){
-        return $this->belongsTo(Position::class,'id_position');
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'id_position');
     }
-    
+
     //Una persona tiene muchas entradas y salidas
     public function entrances_exits()
     {
-        return $this->hasMany(EntranceExit::class, 'id_person'); 
+        return $this->hasMany(EntranceExit::class, 'id_person');
     }
 
-    //Una persona puede tener varios usuarios 
+    public function People_days_available()
+    {
+        return $this->hasMany(People_days_available::class, 'id_person');
+    }
+
+
+
+    //Una persona puede tener varios usuarios
     //(osea, personas con roles diferentes de aprendiz e instructor)
-    public function users(){
+    public function users()
+    {
         return $this->hasMany(User::class);
-    }   
+    }
 
     //Los días que puede venir una persona al centro de formación
-    public function days_available(){
-        return $this->belongsToMany(DayAvailable::class,'people_days_available','id_person','id_day_available');
+    public function days_available()
+    {
+        return $this->belongsToMany(DayAvailable::class, 'people_days_available', 'id_person', 'id_day_available');
     }
     //Una persona PUEDE tener varias notificaciones de inasistencia
-    public function notifications_absences(){
+    public function notifications_absences()
+    {
         return $this->hasMany(NotificationAbsence::class);
     }
 
@@ -62,6 +73,4 @@ class Person extends Model
         return DbProgramacionPerson::where('document_number', $this->document_number)
             ->value('email');
     }
-
-
 }

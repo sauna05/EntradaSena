@@ -9,15 +9,16 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">
             Lista de Asistencias -
-            @if (request('week'))
-                @php
-                    [$start, $end] = explode('|', request('week'));
-                @endphp
+            @if (!empty($filterAllAssist))
+                Todas las asistencias
+            @elseif (request('week'))
+                @php [$start, $end] = explode('|', request('week')); @endphp
                 Semana del {{ date('d/m/Y', strtotime($start)) }} al {{ date('d/m/Y', strtotime($end)) }}
             @else
                 {{ request('filter_date', now()->format('Y-m-d')) }}
             @endif
         </h1>
+
 
 
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -35,16 +36,24 @@
                     @endforeach
                 </select>
 
+                <div class="form-check form-switch me-2">
+                    <input class="form-check-input" type="checkbox" id="toggleWeekFilter">
+                    <label class="form-check-label" for="toggleWeekFilter">Filtrar por semana</label>
+                </div>
+
                 <!-- Select para filtrar por semana -->
-                <select id="weekSelect" name="week" class="form-select me-2" onchange="this.form.submit()">
-                    <option value="">Todas las semanas</option>
+                <select id="weekSelect" name="week" class="form-select me-2" disabled onchange="this.form.submit()">
+                    <option value="">Filtrar por semana</option>
+
                 </select>
 
-
+                <a href="{{ route('entrance.assistance.all') }}">todas las asistencias</a>
 
                 <!-- Campo de fecha -->
                 <input type="date" name="filter_date" class="form-control me-2" max="{{ now()->toDateString() }}"
                     value="{{ request('filter_date', now()->toDateString()) }}" onchange="this.form.submit()">
+
+
 
                 <!-- Formulario de búsqueda -->
                 <div class="input-group">
@@ -67,6 +76,7 @@
                             <th>Cargo</th>
                             <th>Entrada y Salida</th>
                             <th>Tiempo en el centro</th>
+                            <th>Fecha</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -96,6 +106,10 @@
                                 <td class="text-center">
                                     {{ $person['total_time'] ?? 'No disponible' }}
                                 </td>
+                                <td class="text-center date-cell">
+                                    {{ $data['date'] }} {{-- se mostrará momentáneamente en crudo --}}
+                                </td>
+
                                 <td class="text-center">
                                     <a href="{{ route('entrance.assistance.show', $person['id']) }}"
                                         class="btn btn-primary btn-sm">
@@ -143,6 +157,108 @@
                 weekSelect.appendChild(option);
             }
         });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterDate = document.querySelector('input[name="filter_date"]');
+            const filterWeekBtn = document.getElementById('filter-week-btn');
+
+            function getStartAndEndOfWeek(dateStr) {
+                const date = new Date(dateStr);
+                const day = date.getDay();
+                const diffToMonday = (day === 0 ? -6 : 1) - day;
+
+                const start = new Date(date);
+                start.setDate(start.getDate() + diffToMonday);
+                const end = new Date(start);
+                end.setDate(start.getDate() + 6);
+
+                return [
+                    start.toISOString().split('T')[0],
+                    end.toISOString().split('T')[0]
+                ];
+            }
+
+            function enableWeekBtn() {
+                const selectedDate = filterDate.value;
+                if (selectedDate) {
+                    const [start, end] = getStartAndEndOfWeek(selectedDate);
+
+                    // Crear input hidden con el rango de semana
+                    let hiddenInput = document.querySelector('input[name="week_range"]');
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'week';
+                        document.querySelector('form').appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = `${start}|${end}`;
+
+                    filterWeekBtn.disabled = false;
+                    filterWeekBtn.style.opacity = 1;
+                } else {
+                    filterWeekBtn.disabled = true;
+                    filterWeekBtn.style.opacity = 0.5;
+                }
+            }
+
+            // Al cargar y al cambiar fecha
+            enableWeekBtn();
+            filterDate.addEventListener('change', enableWeekBtn);
+        });
+
+
+
+        // Habilitar/deshabilitar el select con el checkbox
+        toggleWeekFilter.addEventListener('change', function() {
+            weekSelect.disabled = !this.checked;
+
+            if (!this.checked) {
+                weekSelect.value = '';
+                weekSelect.form.submit(); // Enviar formulario para quitar filtro si se desactiva
+            }
+        });
+
+        // Al cargar: activar checkbox si ya hay filtro de semana
+        if (selectedWeek) {
+            toggleWeekFilter.checked = true;
+            weekSelect.disabled = false;
+        } else {
+            weekSelect.disabled = true;
+        }
+
+
+        // Si deseas que al activar el filtro por semana se desactive el campo de fecha
+        const filterDate = document.querySelector('input[name="filter_date"]');
+        if (toggleWeekFilter && filterDate) {
+            toggleWeekFilter.addEventListener('change', function() {
+                filterDate.disabled = this.checked;
+            });
+
+            // Estado inicial del input fecha
+            filterDate.disabled = toggleWeekFilter.checked;
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuración de Intl para español de Colombia
+            const formatter = new Intl.DateTimeFormat('es-CO', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            document.querySelectorAll('.date-cell').forEach(cell => {
+                const isoDate = cell.dataset.date; // "2025-04-23"
+                const date = new Date(isoDate);
+                // formatear: "miércoles, 23 de abril de 2025"
+                const formatted = formatter.format(date);
+                // opcional: quitar la coma para que quede igual que Carbon
+                cell.textContent = formatted.replace(',', '');
+            });
+        });
     </script>
+
 
 </x-layout>

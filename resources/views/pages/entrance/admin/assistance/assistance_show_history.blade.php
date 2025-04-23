@@ -1,14 +1,14 @@
 <x-layout>
-    {{-- Archivo CSS de la pagina --}}
+    {{-- Archivo CSS de la página --}}
     <x-slot:page_style>css/pages/assistance/assistance_show.css</x-slot:page_style>
-    {{-- Titulo de la pagina --}}
-    <x-slot:title>Detalle de Asistencia</x-slot:title>
+    {{-- Título de la página --}}
+    <x-slot:title>Historial de Asistencias</x-slot:title>
     {{-- Header - Navbar --}}
     <x-entrance_navbar></x-entrance_navbar>
 
     <div class="container mt-5">
         <h1 class="text-center mb-4">
-            Detalle de Asistencia de: <span class="text-primary">{{ $person->name }}</span>
+            Historial de Asistencias de: <span class="text-primary">{{ $person->name }}</span>
         </h1>
 
         <!-- Información del usuario -->
@@ -20,13 +20,10 @@
         </div>
 
         <!-- Historial de asistencias -->
-        <h2 class="mb-4">Historial de Asistencias del dia de hoy</h2>
-        <button>
-            <a href="{{ route('assistance_show_history', $person->id) }}">
-                Ver historial de todas las asistencias de <h2>{{ $person->name }}</h2>
-            </a>
-        </button>
-
+        <h2 class="mb-4">Todas las asistencias registradas</h2>
+        <a href="{{ route('entrance.assistance.show', $person['id']) }}" class="btn btn-primary mb-3">
+            Ver solo asistencias de hoy
+        </a>
 
         @if ($formattedEntrancesExits->count() > 0)
             <!-- Tabla estilizada -->
@@ -44,7 +41,6 @@
                             <tr class="text-center">
                                 <td>{{ $entry['date'] }}</td>
                                 <td>{{ $entry['time'] }}</td>
-                                <!-- Acción estilizada -->
                                 <td>
                                     @if ($entry['action'] === 'entrada')
                                         <span class="badge bg-success">Entrada</span>
@@ -61,8 +57,7 @@
             </div>
         @else
             <!-- Mensaje si no hay asistencias -->
-            <div class="alert alert-info text-center">No hay registros de asistencia para esta persona.</div>
+            <div class="alert alert-info text-center">Este usuario no tiene registros de asistencia.</div>
         @endif
     </div>
-
 </x-layout>

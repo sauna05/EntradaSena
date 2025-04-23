@@ -40,7 +40,11 @@ Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 's
 
 //Modulo Entrada - Asistencias
 Route::get('/entrance/assistance/index', [AssistanceController::class, 'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
+//Route::get('/entrance/assistance_show_history/{$id}', [AssistanceController::class, 'showPeoples_history'])->middleware('can:entrance.assistance.show_history')->name('assistance_show_history');
 
+Route::get('/entrance/assistance_show_history/{id}', [AssistanceController::class, 'showPeoples_history'])
+    ->middleware('can:entrance.assistance.show_history')
+    ->name('assistance_show_history');
 
 //Modulo Entrada - Aprendiz
 Route::get('entrance/apprentice/{id}', [ApprenticeController::class, 'show'])->name('apprentice.show');
@@ -67,6 +71,9 @@ Route::put('entrance/justify-absence/{id}', [AbsenceController::class, 'AbsenceU
 
 Route::get('entrance/admin/assistance', [AssistanceController::class, 'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
 Route::get('entrance/admin/assistance/{id}', [AssistanceController::class, 'showPeoples'])->middleware('can:entrance.assistance.show')->name('entrance.assistance.show');
+Route::get('/entrance/assistance/all', [AssistanceController::class, 'allAssistances'])
+    ->middleware('can:entrance.assistance.all')
+    ->name('entrance.assistance.all');
 
 // Ruta para cambiar la contraseña
 Route::get('/password', [UserController::class, 'showChangeForm'])->name('password.change');

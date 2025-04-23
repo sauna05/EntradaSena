@@ -7,6 +7,7 @@ use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PhpParser\Node\Expr\FuncCall;
 
 class AssistanceController extends Controller
 {
@@ -28,7 +29,7 @@ class AssistanceController extends Controller
         // Obtener todos los puestos
         $positions = Position::all();
 
-        // Construir consulta de personas con sus entradas y salidas filtradas
+        // Construir consulta base
         $personsQuery = Person::with(['position', 'entrances_exits' => function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek) {
             if ($weekRange && $startOfWeek && $endOfWeek) {
                 $query->whereBetween('date_time', [$startOfWeek . ' 00:00:00', $endOfWeek . ' 23:59:59']);
@@ -44,7 +45,7 @@ class AssistanceController extends Controller
             }
         });
 
-        // Filtro por búsqueda de nombre o documento
+        // Filtro por búsqueda
         if ($searchTerm) {
             $personsQuery->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
@@ -60,7 +61,6 @@ class AssistanceController extends Controller
         $persons = $personsQuery->get();
         $totalPersons = $persons->count();
 
-        // Si no hay personas con asistencias, mostrar mensaje
         if ($totalPersons === 0) {
             return view('pages.entrance.admin.assistance.assistance_index', [
                 'formattedPersons' => [],
@@ -70,14 +70,15 @@ class AssistanceController extends Controller
             ]);
         }
 
-        // Formatear datos para la vista
-        $formattedPersons = $persons->map(function ($person) {
-            // Agrupar entradas/salidas por fecha
-            $entrances_exits_by_date = $person->entrances_exits->groupBy(function ($item) {
+        // Formatear asistencias
+        $formattedPersons = [];
+
+        foreach ($persons as $person) {
+            $groupedByDate = $person->entrances_exits->groupBy(function ($item) {
                 return Carbon::parse($item->date_time)->format('Y-m-d');
             });
 
-            $dailyData = $entrances_exits_by_date->map(function ($entries, $date) {
+            foreach ($groupedByDate as $date => $entries) {
                 $firstEntry = $entries->first();
                 $lastEntry = $entries->count() > 1 ? $entries->last() : null;
 
@@ -88,39 +89,163 @@ class AssistanceController extends Controller
                     ? $entrada->diff($salida)->format('%H:%I:%S')
                     : null;
 
-                return [
-                    'date' => $date,
-                    'entrada' => $entrada ? $entrada->format('H:i:s') : 'Sin registro',
-                    'salida' => $salida ? $salida->format('H:i:s') : 'No ha escaneado salida',
-                    'tiempo_centro' => $tiempoCentro,
-                ];
-            })->values();
+                // Si es filtro por fecha única, solo agregamos una fila por persona
+                if (!$weekRange) {
+                    if (isset($formattedPersons[$person->id])) {
+                        continue;
+                    }
 
-            // Calcular tiempo total en segundos sumando todos los días
-            $totalSeconds = 0;
-            foreach ($dailyData as $day) {
-                if ($day['tiempo_centro']) {
-                    list($hours, $minutes, $seconds) = explode(':', $day['tiempo_centro']);
-                    $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds;
+                    $formattedPersons[$person->id] = [
+                        'id'              => $person->id,
+                        'name'            => $person->name,
+                        'document_number' => $person->document_number,
+                        'position'        => $person->position->name ?? 'Sin puesto',
+                        'daily_data'      => [[
+                            'date'          => Carbon::parse($date)
+                                ->locale('es')
+                                ->isoFormat('dddd D [de] MMMM [de] YYYY'),
+                            'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
+                            'salida'        => $salida ? $salida->format('H:i:s a') : 'No ha escaneado salida',
+                            'tiempo_centro' => $tiempoCentro,
+                        ]],
+                        'total_time'      => $tiempoCentro ?? '00:00:00',
+                    ];
+                } else {
+                    // Por semana: múltiples registros para cada día del usuario
+                    $totalSeconds = 0;
+                    if ($tiempoCentro) {
+                        list($h, $m, $s) = explode(':', $tiempoCentro);
+                        $totalSeconds = $h * 3600 + $m * 60 + $s;
+                    }
+
+                    $formattedPersons[$person->id] = [
+                        'id'              => $person->id,
+                        'name'            => $person->name,
+                        'document_number' => $person->document_number,
+                        'position'        => $person->position->name ?? 'Sin puesto',
+                        'daily_data'      => [[
+                            'date'          => Carbon::parse($date)
+                                ->locale('es')
+                                ->isoFormat('dddd D [de] MMMM [de] YYYY'),
+                            'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
+                            'salida'        => $salida ? $salida->format('H:i:s a') : 'No ha escaneado salida',
+                            'tiempo_centro' => $tiempoCentro,
+                        ]],
+                        'total_time'      => $tiempoCentro ?? '00:00:00',
+                    ];
                 }
             }
-            $totalTimeFormatted = gmdate('H:i:s', $totalSeconds);
+        }
 
-            return [
-                'id' => $person->id,
-                'name' => $person->name,
-                'document_number' => $person->document_number,
-                'position' => $person->position->name ?? 'Sin puesto',
-                'daily_data' => $dailyData,
-                'total_time' => $totalTimeFormatted,
-            ];
-        });
+        // Si es por día, convertir a array indexado
+        if (!$weekRange) {
+            $formattedPersons = array_values($formattedPersons);
+        }
 
-        return view('pages.entrance.admin.assistance.assistance_index', compact('formattedPersons', 'positions', 'totalPersons'));
+        return view('pages.entrance.admin.assistance.assistance_index', [
+            'formattedPersons' => $formattedPersons,
+            'positions' => $positions,
+            'totalPersons' => count($formattedPersons),
+        ]);
     }
+
+
+    public function allAssistances(Request $request)
+    {
+        $positionId = $request->input('position_id');
+        $positions  = Position::all();
+
+        $personsQuery = Person::with(['position', 'entrances_exits' => function ($q) {
+            $q->orderBy('date_time', 'asc');
+        }]);
+
+        if ($positionId) {
+            $personsQuery->where('id_position', $positionId);
+        }
+
+        $persons = $personsQuery->get();
+
+        $formatted = [];
+
+        foreach ($persons as $person) {
+            // Agrupo por fecha
+            $byDate = $person->entrances_exits
+                ->groupBy(fn($e) => Carbon::parse($e->date_time)->format('Y-m-d'));
+
+            foreach ($byDate as $date => $entries) {
+                $firstEntry = $entries->first();
+                $lastEntry  = $entries->last();
+
+                $entrada = $firstEntry ? Carbon::parse($firstEntry->date_time) : null;
+                $salida  = $lastEntry  ? Carbon::parse($lastEntry->date_time)  : null;
+
+                // Calcular tiempo para ese día
+                if ($entrada && $salida) {
+                    $diffInSeconds = $salida->timestamp - $entrada->timestamp;
+                    $h = intdiv($diffInSeconds, 3600);
+                    $m = intdiv($diffInSeconds % 3600, 60);
+                    $s = $diffInSeconds % 60;
+                    $tiempoCentro = sprintf('%02d:%02d:%02d', $h, $m, $s);
+                } else {
+                    $tiempoCentro = '00:00:00';
+                }
+
+                // Clave única persona+fecha
+                $key = $person->id . '_' . $date;
+
+                $formatted[$key] = [
+                    'id'              => $person->id,
+                    'name'            => $person->name,
+                    'document_number' => $person->document_number,
+                    'position'        => $person->position->name ?? 'Sin puesto',
+                    'daily_data'      => [[
+                        'date'          => Carbon::parse($date)
+                            ->locale('es')
+                            ->isoFormat('dddd D [de] MMMM [de] YYYY'),
+                        'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
+                        'salida'        => $salida  ? $salida->format('H:i:s a')  : 'No ha escaneado salida',
+                        'tiempo_centro' => $tiempoCentro,
+                    ]],
+                    // Aquí total_time es el mismo tiempo de ese día
+                    'total_time'      => $tiempoCentro,
+                ];
+            }
+        }
+
+        // Reindexar para la vista
+        $result = array_values($formatted);
+
+        return view('pages.entrance.admin.assistance.assistance_index', [
+            'formattedPersons'  => $result,
+            'positions'         => $positions,
+            'totalPersons'      => count($result),
+            'filterAllAssist'   => true,
+            'filteredPosition'  => $positionId,
+        ]);
+    }
+
+
 
     // Método para mostrar detalles de asistencias de una persona
     public function showPeoples($id)
+    {
+        $person = Person::with(['position', 'entrances_exits' => function ($query) {
+            $query->whereDate('date_time', Carbon::today())
+                ->orderBy('date_time', 'asc');
+        }])->findOrFail($id);
+
+        $formattedEntrancesExits = $person->entrances_exits->map(function ($entry) {
+            return [
+                'date' => Carbon::parse($entry->date_time)->format('Y-m-d'),
+                'time' => Carbon::parse($entry->date_time)->format('H:i:s'),
+                'action' => $entry->action,
+            ];
+        });
+
+        return view('pages.entrance.admin.assistance.assistance_show', compact('person', 'formattedEntrancesExits'));
+    }
+
+    public function showPeoples_history($id)
     {
         $person = Person::with(['position', 'entrances_exits' => function ($query) {
             $query->orderBy('date_time', 'asc');
@@ -134,6 +259,11 @@ class AssistanceController extends Controller
             ];
         });
 
-        return view('pages.entrance.admin.assistance.assistance_show', compact('person', 'formattedEntrancesExits'));
+        return view('pages.entrance.admin.assistance.assistance_show_history', compact('person', 'formattedEntrancesExits'));
     }
+
+
+    //agregar metodo para exportar filtro de asistencia en formato excel
+
+    public function exportExcel() {}
 }

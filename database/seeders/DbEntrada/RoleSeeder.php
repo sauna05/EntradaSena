@@ -2,13 +2,13 @@
 
 namespace Database\Seeders\DbEntrada;
 
-    use Illuminate\Database\Seeder;
-    use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 //Modelos de Spatie-Permissions
-    use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Role;
 
-    class RoleSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -27,13 +27,13 @@ use Spatie\Permission\Models\Permission;
         //     ['role' => 'Instructor De Planta', 'created_at' => now(), 'updated_at' => now()],
         //     ['role' => 'Administrativo', 'created_at' => now(), 'updated_at' => now()],
         // ]);
-        
 
-       $role1= Role::create(['name'=>'Administrador']);
 
-        $role2 =Role::create(['name'=>'Admin-Entrada']);
-        $role3= Role::create(['name' => 'Acceso-Entrada']);
-        
+        $role1 = Role::create(['name' => 'Administrador']);
+
+        $role2 = Role::create(['name' => 'Admin-Entrada']);
+        $role3 = Role::create(['name' => 'Acceso-Entrada']);
+
         $role4 = Role::create(['name' => 'Apoyo-Coordinacion-Juicios-Evaluativos']);
 
         $role4 = Role::create(['name' => 'Admin-Programacion']);
@@ -64,32 +64,21 @@ use Spatie\Permission\Models\Permission;
         //permisos para inasistencias
         Permission::create(['name' => 'entrance.absence.index'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.absence.show'])->syncRoles([$role1, $role2]);
-        
+
+
 
 
         //permisos para Asistencia
         Permission::create(['name' => 'entrance.assistance.index'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.assistance.show'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.assistance.show_history'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.assistance.all'])->syncRoles([$role1, $role2]);
 
         //Permisos del modulo de Programación
         Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role4]);
 
 
-        
-
         //Permisos del modulo de entrada de los aprendices
         Permission::create(['name' => 'apprentice.show'])->assignRole($role8);
-
-
-
-
-        
-
-        
-
-
-
-
-
     }
 }

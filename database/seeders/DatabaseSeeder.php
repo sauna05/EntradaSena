@@ -10,6 +10,7 @@ use Database\Seeders\DbProgramacion\PositionSeeder as Db_programacionPositionSee
 use Database\Seeders\DbProgramacion\TownSeeder;
 use Database\Seeders\DbEntrada\DayAvailable;
 use Database\Seeders\DbEntrada\PersonSeeder;
+use Database\Seeders\DbEntrada\PersonSeederExit;
 use Database\Seeders\DbEntrada\PositionSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
 use Database\Seeders\DbEntrada\UserSeeder;
@@ -31,34 +32,33 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-      //Seeders para la base de datos de la entrada
+        //Seeders para la base de datos de la entrada
         Config::set('database.default', 'db_entrada');
         DB::connection('db_entrada')->beginTransaction();
 
         $this->call([
-        PositionSeeder::class,
-        RoleSeeder::class,
-        PersonSeeder::class,
-        UserSeeder::class,
-        DayAvailable::class
-      ]);
-      DB::connection('db_entrada')->commit();
+            PositionSeeder::class,
+            RoleSeeder::class,
+            PersonSeeder::class,
+            UserSeeder::class,
+            DayAvailable::class,
+            PersonSeederExit::class
+        ]);
+        DB::connection('db_entrada')->commit();
 
-      //Seeders para la base de datos de programación
-      Config::set('database.default','db_programacion');
-      DB::connection('db_programacion')->beginTransaction();
+        //Seeders para la base de datos de programación
+        Config::set('database.default', 'db_programacion');
+        DB::connection('db_programacion')->beginTransaction();
 
-      $this->call([
-        Db_programacionPositionSeeder::class,
-        TownSeeder::class,
-        Db_programacionPersonSeeder::class,
-        LinkTypeSeeder::class,
-        SpecialitySeeder::class,
-        InstructorStatusSeeder::class,
-        ApprenticeStatusSeeder::class
-      ]);
-      DB::connection('db_programacion')->commit();
-
-
+        $this->call([
+            Db_programacionPositionSeeder::class,
+            TownSeeder::class,
+            Db_programacionPersonSeeder::class,
+            LinkTypeSeeder::class,
+            SpecialitySeeder::class,
+            InstructorStatusSeeder::class,
+            ApprenticeStatusSeeder::class
+        ]);
+        DB::connection('db_programacion')->commit();
     }
 }
