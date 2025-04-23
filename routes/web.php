@@ -78,6 +78,7 @@ Route::get('/entrance/assistance/all', [AssistanceController::class, 'allAssista
 // Ruta para cambiar la contraseña
 Route::get('/password', [UserController::class, 'showChangeForm'])->name('password.change');
 Route::post('/changePassword', [UserController::class, 'changePassword'])->name('password.update');
+//rutas para asistencias agregadas
 
 
 //Programación ------------------------------------------------------------------------
