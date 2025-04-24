@@ -19,7 +19,7 @@
             <p><strong>Cargo:</strong> {{ $person->position->name ?? 'Sin puesto asignado' }}</p>
         </div>
 
-        <!-- Historial de asistencias -->
+        <!-- Historial de asistencias  -->
         <h2 class="mb-4">Historial de Asistencias del dia de hoy</h2>
         <button>
             <a href="{{ route('assistance_show_history', $person->id) }}">
