@@ -81,5 +81,37 @@ class PersonSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        Person::create([
+            'id_position' => 3,
+            'document_number' => '1122399122',
+            'name' => 'Sofia daniela',
+            'start_date' => '2025-01-23',
+            'end_date' => '2025-12-22',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+
+        Person::create([
+            'id_position' => 3,
+            'document_number' => '1122399121',
+            'name' => 'oscar daniel',
+            'start_date' => '2025-01-23',
+            'end_date' => '2025-12-22',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+
+        Person::create([
+            'id_position' => 3,
+            'document_number' => '1122399213',
+            'name' => 'luis Rafael Lopez',
+            'start_date' => '2025-01-23',
+            'end_date' => '2025-12-22',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }

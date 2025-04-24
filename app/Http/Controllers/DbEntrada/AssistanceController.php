@@ -7,6 +7,7 @@ use App\Models\DbEntrada\Person;
 use App\Models\DbEntrada\Position;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+
 use PhpParser\Node\Expr\FuncCall;
 
 class AssistanceController extends Controller
@@ -18,6 +19,8 @@ class AssistanceController extends Controller
         $positionId = $request->input('position_id');
         $weekRange = $request->input('week');
         $filterDate = $request->input('filter_date', now()->toDateString());
+        $month = $request->input('month'); // Nuevo filtro por mes
+
 
         $startOfWeek = null;
         $endOfWeek = null;
@@ -29,16 +32,21 @@ class AssistanceController extends Controller
         // Obtener todos los puestos
         $positions = Position::all();
 
-        // Construir consulta base
-        $personsQuery = Person::with(['position', 'entrances_exits' => function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek) {
-            if ($weekRange && $startOfWeek && $endOfWeek) {
+        $personsQuery = Person::with(['position', 'entrances_exits' => function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek, $month) {
+            if ($month) {
+                $query->whereMonth('date_time', '=', Carbon::parse($month)->month)
+                    ->whereYear('date_time', '=', Carbon::parse($month)->year);
+            } elseif ($weekRange && $startOfWeek && $endOfWeek) {
                 $query->whereBetween('date_time', [$startOfWeek . ' 00:00:00', $endOfWeek . ' 23:59:59']);
             } else {
                 $query->whereDate('date_time', '=', $filterDate);
             }
             $query->orderBy('date_time', 'asc');
-        }])->whereHas('entrances_exits', function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek) {
-            if ($weekRange && $startOfWeek && $endOfWeek) {
+        }])->whereHas('entrances_exits', function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek, $month) {
+            if ($month) {
+                $query->whereMonth('date_time', '=', Carbon::parse($month)->month)
+                    ->whereYear('date_time', '=', Carbon::parse($month)->year);
+            } elseif ($weekRange && $startOfWeek && $endOfWeek) {
                 $query->whereBetween('date_time', [$startOfWeek . ' 00:00:00', $endOfWeek . ' 23:59:59']);
             } else {
                 $query->whereDate('date_time', '=', $filterDate);
@@ -72,6 +80,10 @@ class AssistanceController extends Controller
 
         // Formatear asistencias
         $formattedPersons = [];
+        // Aquí obtienes los datos formateados, como ya lo haces en tu código
+
+        // Almacenar los datos en la sesión
+        session(['formattedPersons' => $formattedPersons]);
 
         foreach ($persons as $person) {
             $groupedByDate = $person->entrances_exits->groupBy(function ($item) {
@@ -90,7 +102,7 @@ class AssistanceController extends Controller
                     : null;
 
                 // Si es filtro por fecha única, solo agregamos una fila por persona
-                if (!$weekRange) {
+                if (!$weekRange && !$month) {
                     if (isset($formattedPersons[$person->id])) {
                         continue;
                     }
@@ -100,10 +112,12 @@ class AssistanceController extends Controller
                         'name' => $person->name,
                         'document_number' => $person->document_number,
                         'position' => $person->position->name ?? 'Sin puesto',
-                        'daily_data' => [[
-                            'date' => $date,
-                            'entrada' => $entrada ? $entrada->format('H:i:s') : 'Sin registro',
-                            'salida' => $salida ? $salida->format('H:i:s') : 'No ha escaneado salida',
+                        'daily_data'      => [[
+                            'date'          => Carbon::parse($date)
+                                ->locale('es')
+                                ->isoFormat('dddd D [de] MMMM [de] YYYY'),
+                            'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
+                            'salida'        => $salida  ? $salida->format('H:i:s a')  : 'No ha escaneado salida',
                             'tiempo_centro' => $tiempoCentro,
                         ]],
                         'total_time' => $tiempoCentro ?? '00:00:00',
@@ -197,6 +211,7 @@ class AssistanceController extends Controller
                     'name'            => $person->name,
                     'document_number' => $person->document_number,
                     'position'        => $person->position->name ?? 'Sin puesto',
+                    'raw_date'        => $date, // Fecha sin formato para ordenar
                     'daily_data'      => [[
                         'date'          => Carbon::parse($date)
                             ->locale('es')
@@ -205,14 +220,19 @@ class AssistanceController extends Controller
                         'salida'        => $salida  ? $salida->format('H:i:s a')  : 'No ha escaneado salida',
                         'tiempo_centro' => $tiempoCentro,
                     ]],
-                    // Aquí total_time es el mismo tiempo de ese día
                     'total_time'      => $tiempoCentro,
                 ];
             }
         }
 
+        // Ordenar cronológicamente por fecha (de menor a mayor)
+        usort($formatted, fn($a, $b) => strtotime($a['raw_date']) <=> strtotime($b['raw_date']));
+
         // Reindexar para la vista
         $result = array_values($formatted);
+
+        // Almacenar los datos en la sesión
+        session(['formattedPersons' => $result]);
 
         return view('pages.entrance.admin.assistance.assistance_index', [
             'formattedPersons'  => $result,
@@ -222,7 +242,6 @@ class AssistanceController extends Controller
             'filteredPosition'  => $positionId,
         ]);
     }
-
 
 
     // Método para mostrar detalles de asistencias de una persona
@@ -264,5 +283,8 @@ class AssistanceController extends Controller
 
     //agregar metodo para exportar filtro de asistencia en formato excel
 
-    public function exportExcel() {}
+    public function exportExcel() {
+
+
+    }
 }

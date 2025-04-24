@@ -74,6 +74,9 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'entrance.assistance.show_history'])->syncRoles([$role1, $role2]);
         Permission::create(['name' => 'entrance.assistance.all'])->syncRoles([$role1, $role2]);
 
+        //agregar permiso para exportar en formato excel
+        Permission::create(['name' => 'entrance.assistance.export'])->syncRoles([$role1, $role2]);
+
         //Permisos del modulo de Programación
         Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role4]);
 

@@ -46,6 +46,10 @@ Route::get('/entrance/assistance_show_history/{id}', [AssistanceController::clas
     ->middleware('can:entrance.assistance.show_history')
     ->name('assistance_show_history');
 
+//ruta para exportacion en excel
+Route::get('/assistance/export', [AssistanceController::class, 'exportExcel'])->name('entrance.assistance.export');
+
+
 //Modulo Entrada - Aprendiz
 Route::get('entrance/apprentice/{id}', [ApprenticeController::class, 'show'])->name('apprentice.show');
 
