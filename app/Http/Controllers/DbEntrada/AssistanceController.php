@@ -96,19 +96,17 @@ class AssistanceController extends Controller
                     }
 
                     $formattedPersons[$person->id] = [
-                        'id'              => $person->id,
-                        'name'            => $person->name,
+                        'id' => $person->id,
+                        'name' => $person->name,
                         'document_number' => $person->document_number,
-                        'position'        => $person->position->name ?? 'Sin puesto',
-                        'daily_data'      => [[
-                            'date'          => Carbon::parse($date)
-                                ->locale('es')
-                                ->isoFormat('dddd D [de] MMMM [de] YYYY'),
-                            'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
-                            'salida'        => $salida ? $salida->format('H:i:s a') : 'No ha escaneado salida',
+                        'position' => $person->position->name ?? 'Sin puesto',
+                        'daily_data' => [[
+                            'date' => $date,
+                            'entrada' => $entrada ? $entrada->format('H:i:s') : 'Sin registro',
+                            'salida' => $salida ? $salida->format('H:i:s') : 'No ha escaneado salida',
                             'tiempo_centro' => $tiempoCentro,
                         ]],
-                        'total_time'      => $tiempoCentro ?? '00:00:00',
+                        'total_time' => $tiempoCentro ?? '00:00:00',
                     ];
                 } else {
                     // Por semana: múltiples registros para cada día del usuario
@@ -118,20 +116,20 @@ class AssistanceController extends Controller
                         $totalSeconds = $h * 3600 + $m * 60 + $s;
                     }
 
-                    $formattedPersons[$person->id] = [
-                        'id'              => $person->id,
-                        'name'            => $person->name,
+                    $formattedPersons[] = [
+                        'id' => $person->id,
+                        'name' => $person->name,
                         'document_number' => $person->document_number,
-                        'position'        => $person->position->name ?? 'Sin puesto',
+                        'position' => $person->position->name ?? 'Sin puesto',
                         'daily_data'      => [[
                             'date'          => Carbon::parse($date)
                                 ->locale('es')
                                 ->isoFormat('dddd D [de] MMMM [de] YYYY'),
                             'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
-                            'salida'        => $salida ? $salida->format('H:i:s a') : 'No ha escaneado salida',
+                            'salida'        => $salida  ? $salida->format('H:i:s a')  : 'No ha escaneado salida',
                             'tiempo_centro' => $tiempoCentro,
                         ]],
-                        'total_time'      => $tiempoCentro ?? '00:00:00',
+                        'total_time' => gmdate('H:i:s', $totalSeconds),
                     ];
                 }
             }
@@ -148,6 +146,7 @@ class AssistanceController extends Controller
             'totalPersons' => count($formattedPersons),
         ]);
     }
+
 
 
     public function allAssistances(Request $request)
