@@ -33,7 +33,7 @@
         <form method="GET" action="{{ route('entrance.assistance.index') }}" class="d-flex align-items-center">
             {{-- Select por puesto --}}
             <select name="position_id" class="form-select me-2" onchange="this.form.submit()">
-                <option value="">Todos los puestos</option>
+                <option value="">Todos los Cargos</option>
                 @foreach ($positions as $position)
                     <option value="{{ $position->id }}" {{ request('position_id') == $position->id ? 'selected' : '' }}>
                         {{ $position->name }}

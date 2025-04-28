@@ -112,6 +112,7 @@ class AssistanceController extends Controller
                         'name' => $person->name,
                         'document_number' => $person->document_number,
                         'position' => $person->position->name ?? 'Sin puesto',
+                        'raw_date'        => $date, // Fecha sin formato para ordenar
                         'daily_data'      => [[
                             'date'          => Carbon::parse($date)
                                 ->locale('es')
@@ -135,6 +136,7 @@ class AssistanceController extends Controller
                         'name' => $person->name,
                         'document_number' => $person->document_number,
                         'position' => $person->position->name ?? 'Sin puesto',
+                        'raw_date'        => $date, // Fecha sin formato para ordenar
                         'daily_data'      => [[
                             'date'          => Carbon::parse($date)
                                 ->locale('es')
@@ -148,6 +150,10 @@ class AssistanceController extends Controller
                 }
             }
         }
+
+        // Ordenar cronológicamente por fecha (de menor a mayor)
+        usort($formattedPersons, fn($a, $b) => strtotime($a['raw_date']) <=> strtotime($b['raw_date']));
+        
 
         // Si es por día, convertir a array indexado
         if (!$weekRange) {

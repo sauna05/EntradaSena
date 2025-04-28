@@ -22,18 +22,40 @@ use Illuminate\Support\Facades\Log;
 
 class EntranceAdminController extends Controller
 {
-
     public function peopleIndex(Request $request)
     {
         $search = $request->input('search');
+        $selectedPosition = $request->input('position'); // Obtener el cargo seleccionado
 
-        $person = Person::with('position')->where(function($query) use ($search){
-            $query->where('document_number','like',"%$search%")->orWhere('name','like',"%$search%");
+        // Obtener todos los cargos disponibles
+        $positions = Position::all();
+
+        // Construir la consulta de personas
+        $personQuery = Person::with('position');
+
+        // Filtrar por nombre, documento o cargo
+        if ($search) {
+            $personQuery->where(function ($query) use ($search) {
+                $query->where('document_number', 'like', "%$search%")
+                    ->orWhere('name', 'like', "%$search%");
+            });
         }
-        )->paginate(20)->appends(['search'=>$search]);
-            
-        return view('pages.entrance.admin.people.people_index',['person'=> $person]);
+
+        // Filtrar por cargo si se selecciona uno
+        if ($selectedPosition) {
+            $personQuery->where('id_position', $selectedPosition);
+        }
+
+        // Paginación con los resultados filtrados
+        $person = $personQuery->paginate(20)->appends(['search' => $search, 'position' => $selectedPosition]);
+
+        return view('pages.entrance.admin.people.people_index', [
+            'person' => $person,
+            'positions' => $positions,  // Pasar los cargos disponibles a la vista
+            'selectedPosition' => $selectedPosition  // Pasar el cargo seleccionado
+        ]);
     }
+
 
     public function peopleShow($id){
         

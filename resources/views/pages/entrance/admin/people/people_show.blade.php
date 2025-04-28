@@ -14,24 +14,38 @@
             
             <p>Nombre: {{$person->name}}</p>
             <p>Numero de documento: {{$person->document_number}}</p>
-            <p>Posicion: {{$person->position->name}}</p>
+            <p>Cargo: {{$person->position->name}}</p>
             <p>Fecha de inicio: {{$person->start_date->format('Y/m/d')}}</p>
             <p>Fecha de Finalizacion: {{$person->end_date->format('Y/m/d')}}</p>
         </div> 
 
-        <div class="data-person-days-available">
-            <h2>Días que puede ir la persona al centro</h2>
+    <div class="data-person-days-available">
+    <h2>Días que puede ir la persona al centro</h2>
 
-            @foreach ($person->days_available as $day)
-                <li>{{$day->name}}</li>
-            @endforeach
+    @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dayName)
+        <div>
+            <span>{{ $dayName }}</span>
+            @php
+                // Buscar si el día está disponible en los días de la persona
+                $isAvailable = $person->days_available->contains('name', $dayName);
+            @endphp
+
+            @if ($isAvailable)
+                <span style="color: green;">✓</span>  {{-- Chulito verde si está disponible --}}
+            @else
+                <span style="color: red;">✘</span>  {{-- X roja si no está disponible --}}
+            @endif
         </div>
+    @endforeach
+</div>
+
+
     </section>
    
     <section>
         <form action="{{route('entrance.people.edit',$person->id)}}" method="GET">
             @csrf
-            <button type="submit">Editar Datos</button>
+            <button type="submit">Actualizar Datos</button>
         </form>
         {{-- Formulario de borrar --}}  
     </section>
