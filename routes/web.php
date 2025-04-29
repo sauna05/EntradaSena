@@ -90,5 +90,5 @@ Route::post('/changePassword', [UserController::class, 'changePassword'])->name(
 //login
 Route::post('programming/login', [ProgrammingAuthController::class, 'login'])->name('programming-login');
 
-//Modulo Programación
+//Modulo Programación 
 Route::get('programming/admin', [ProgrammingAdminController::class, 'dashboard'])->middleware('can:programming.admin')->name('programming.admin');

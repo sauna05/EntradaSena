@@ -16,7 +16,7 @@ class PersonSeederExit extends Seeder
                 'days' => [1, 2, 3, 4, 5, 6, 7],
                 'asistencias' => [
                     ['date' => '2025-04-19', 'entrada' => '05:19:38', 'salida' => '07:19:38'],
-                    ['date' => '2025-04-20', 'entrada' => '06:30:00', 'salida' => '12:00:00'],
+                    ['date' => '2025-04-29', 'entrada' => '06:30:00', 'salida' => '12:00:00'],
                 ],
             ],
             [
@@ -24,7 +24,7 @@ class PersonSeederExit extends Seeder
                 'days' => [1, 2, 3, 4, 5, 6, 7],
                 'asistencias' => [
                     ['date' => '2025-04-23', 'entrada' => '08:00:00', 'salida' => '12:00:00'],
-                    ['date' => '2025-03-25', 'entrada' => '07:00:00', 'salida' => '11:30:00'],
+                    ['date' => '2025-03-29i', 'entrada' => '07:00:00', 'salida' => '11:30:00'],
                 ],
             ],
             [
@@ -32,7 +32,7 @@ class PersonSeederExit extends Seeder
                 'days' => [1, 2, 3, 4, 5, 6, 7],
                 'asistencias' => [
                     ['date' => '2025-04-23', 'entrada' => '09:00:00', 'salida' => '13:00:00'],
-                    ['date' => '2025-04-22', 'entrada' => '10:00:00', 'salida' => '14:00:00'],
+                    ['date' => '2025-04-29', 'entrada' => '10:00:00', 'salida' => '14:00:00'],
                 ],
             ],
             [
@@ -48,7 +48,7 @@ class PersonSeederExit extends Seeder
                 'days' => [1, 2, 3, 4, 5, 6, 7],
                 'asistencias' => [
                     ['date' => '2025-04-23', 'entrada' => '08:30:00', 'salida' => '13:00:00'],
-                    ['date' => '2025-04-20', 'entrada' => '07:15:00', 'salida' => '11:45:00'],
+                    ['date' => '2025-04-29', 'entrada' => '07:15:00', 'salida' => '11:45:00'],
                 ],
             ],
             [
@@ -56,7 +56,7 @@ class PersonSeederExit extends Seeder
                 'days' => [1, 2, 3, 4, 5, 6, 7],
                 'asistencias' => [
                     ['date' => '2025-04-23', 'entrada' => '05:50:00', 'salida' => '10:30:00'],
-                    ['date' => '2025-04-22', 'entrada' => '06:00:00', 'salida' => '10:00:00'],
+                    ['date' => '2025-04-29', 'entrada' => '06:00:00', 'salida' => '10:00:00'],
                 ],
             ],
 
