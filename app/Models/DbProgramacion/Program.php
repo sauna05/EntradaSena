@@ -19,6 +19,12 @@ class Program extends Model
         return $this->hasMany(Program_Level::class);
     }
 
+    public function Cohort(){
+        return $this->hasMany(Cohort::class);
+    }
+
+    
+
 
 
 }
