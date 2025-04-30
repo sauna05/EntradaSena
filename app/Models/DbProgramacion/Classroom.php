@@ -5,19 +5,22 @@ namespace App\Models\DbProgramacion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Town extends Model
+class Classroom extends Model
 {
+    //
     use HasFactory;
     protected $connection = 'db_programacion';
-    protected $table = 'towns';
+    protected $table = 'classrooms';
     protected $guarded = [];
 
-    public function people(){
-        return $this->hasMany(Person::class);
+    public function Block()
+    {
+        return $this->belongsTo(Block::class,'id_block');
     }
 
-    public function classroom()
-    {
-        return $this->hasMany(Classroom::class);
+    public function Towns(){
+        return $this->belongsTo(Town::class,'id_town');
     }
+
+
 }

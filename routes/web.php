@@ -9,6 +9,7 @@ use App\Http\Controllers\DbEntrada\EntranceExitController;
 use App\Http\Controllers\DbEntrada\UserController;
 use App\Http\Controllers\DbProgramacion\AdminController as ProgrammingAdminController;
 use App\Http\Controllers\DbProgramacion\AuthController as ProgrammingAuthController;
+use App\Http\Controllers\DbProgramacion\CohortController;
 use App\Models\DbEntrada\User;
 use Illuminate\Support\Facades\Route;
 //Pagina inicial
@@ -91,4 +92,13 @@ Route::post('/changePassword', [UserController::class, 'changePassword'])->name(
 Route::post('programming/login', [ProgrammingAuthController::class, 'login'])->name('programming-login');
 
 //Modulo Programación 
-Route::get('programming/admin', [ProgrammingAdminController::class, 'dashboard'])->middleware('can:programming.admin')->name('programming.admin');
+Route::get('programming/admin', [ProgrammingAdminController::class, 
+'dashboard'])->middleware('can:programming.admin')->name('programming.admin');
+
+Route::get('programming/admin/Cohort',[CohortController::class,'indexCohort'])->
+middleware('can:programmig.programming_cohort_index')->name('programing.cohort_index');
+
+//ruta de registro de fichas programmig.programming_cohort_Register
+
+Route::post('programming/admin',[CohortController::class,'registerCohort'])
+->middleware('can:programmig.programming_cohort_Register')->name('programming.Register');

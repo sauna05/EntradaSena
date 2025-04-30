@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Speciality;
 use App\Models\User;
+use Database\Seeders\DbProgramacion\AprenticesSeeder;
+use Database\Seeders\DbProgramacion\CohortTimeSeeder;
 use Database\Seeders\DbProgramacion\PersonSeeder as Db_programacionPersonSeeder;
 use Database\Seeders\DbProgramacion\PositionSeeder as Db_programacionPositionSeeder;
 use Database\Seeders\DbProgramacion\TownSeeder;
@@ -15,6 +17,8 @@ use Database\Seeders\DbEntrada\PositionSeeder;
 use Database\Seeders\DbEntrada\RoleSeeder;
 use Database\Seeders\DbEntrada\UserSeeder;
 use Database\Seeders\DbProgramacion\ApprenticeStatusSeeder;
+use Database\Seeders\DbProgramacion\BlokSeeder;
+use Database\Seeders\DbProgramacion\ClassRoomSeeder;
 use Database\Seeders\DbProgramacion\InstructorSeeder;
 use Database\Seeders\DbProgramacion\InstructorStatusSeeder;
 use Database\Seeders\DbProgramacion\LinkTypeSeeder;
@@ -55,13 +59,18 @@ class DatabaseSeeder extends Seeder
         $this->call([
             Db_programacionPositionSeeder::class,
             TownSeeder::class,
+            CohortTimeSeeder::class,
             Db_programacionPersonSeeder::class,
             LinkTypeSeeder::class,
             SpecialitySeeder::class,
             InstructorStatusSeeder::class,
             ApprenticeStatusSeeder::class,
             ProgramanLevelSeeder::class,
-            ProgramSeeder::class
+            ProgramSeeder::class,
+            InstructorSeeder::class,
+            AprenticesSeeder::class,
+            BlokSeeder::class,
+            ClassRoomSeeder::class
         ]);
         DB::connection('db_programacion')->commit();
     }

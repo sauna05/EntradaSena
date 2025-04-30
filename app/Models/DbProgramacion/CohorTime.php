@@ -5,19 +5,16 @@ namespace App\Models\DbProgramacion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Town extends Model
+class CohorTime extends Model
 {
+    //
     use HasFactory;
     protected $connection = 'db_programacion';
-    protected $table = 'towns';
+    protected $table = 'cohort_time';
     protected $guarded = [];
 
-    public function people(){
-        return $this->hasMany(Person::class);
-    }
-
-    public function classroom()
+    public function person()
     {
-        return $this->hasMany(Classroom::class);
+        return $this->hasMany(Person::class);
     }
 }

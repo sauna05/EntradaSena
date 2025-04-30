@@ -12,4 +12,6 @@ class AdminController extends Controller
         $programs=Program::all();
         return view('pages.programming.Admin.programming_dashboard',compact('programs'));
     }
+
+    
 }

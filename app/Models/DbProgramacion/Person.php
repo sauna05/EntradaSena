@@ -28,4 +28,8 @@ class Person extends Model
     {
         return $this->belongsTo(Town::class, 'id_town');
     }
+
+    public function CohorTime(){
+        return $this->belongsTo(CohorTime::class,'id_time');
+    }
 }

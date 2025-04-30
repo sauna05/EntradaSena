@@ -5,19 +5,18 @@ namespace App\Models\DbProgramacion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Town extends Model
+class Block extends Model
 {
+    //
     use HasFactory;
     protected $connection = 'db_programacion';
-    protected $table = 'towns';
+    protected $table = 'blocks';
     protected $guarded = [];
 
-    public function people(){
-        return $this->hasMany(Person::class);
-    }
 
-    public function classroom()
-    {
+    public function Classroom(){
         return $this->hasMany(Classroom::class);
     }
+    
+
 }
