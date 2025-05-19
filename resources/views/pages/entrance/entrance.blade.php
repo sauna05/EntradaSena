@@ -1,9 +1,11 @@
 <x-layout>
-    <x-slot:page_style>css\pages\entrance\entrance.css</x-slot-page_style>
-    <x-slot:title>CAA</x-slot-title>
+
+    <x-slot name="page_style">/css/pages/entrance/entrance.css</x-slot>
+    <x-slot name="title">CAA</x-slot>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <h1>SISTEMA DE ASISTENCIAS AL CENTRO DE FORMACIÓN</h1>
     <h2>Acción: <span class="action" id="action"></span></h2>
@@ -58,10 +60,10 @@
                             $('#document_number').val(''); // Limpiar el campo
                         }
                     },
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                        $('#action').text('Error al enviar los datos');
-                    }
+                    // error: function(xhr) {
+                    //     console.log(xhr.responseText);
+                    //     $('#action').text('Error al enviar los datos');
+                    // }
                 });
             }
 
@@ -73,14 +75,14 @@
                 }
             });
 
-            // Detectar el escaneo del código de barras en el campo de documento
-            $('#document_number').on('input', function() {
-                let documentNumber = $('#document_number').val();
-                if (documentNumber.length > 0) {
-                    // Si el campo tiene algún valor (como el escaneo de código de barras), enviar los datos
-                    sendDocumentNumber(documentNumber);
-                }
-            });
+            // // Detectar el escaneo del código de barras en el campo de documento
+            // $('#document_number').on('input', function() {
+            //     let documentNumber = $('#document_number').val();
+            //     if (documentNumber.length > 0) {
+            //         // Si el campo tiene algún valor (como el escaneo de código de barras), enviar los datos
+            //         sendDocumentNumber(documentNumber);
+            //     }
+            // });
         });
     </script>
 </x-layout>

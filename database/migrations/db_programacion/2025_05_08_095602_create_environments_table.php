@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_programacion')->create('instructors_status', function (Blueprint $table) {
+        Schema::create('environments', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-
             $table->timestamps();
         });
     }
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('instructor_status');
+        Schema::dropIfExists('environments');
     }
 };

@@ -15,12 +15,16 @@ class Classroom extends Model
 
     public function Block()
     {
-        return $this->belongsTo(Block::class,'id_block');
+        return $this->belongsTo(Block::class, 'id_block');
     }
 
-    public function Towns(){
-        return $this->belongsTo(Town::class,'id_town');
+    public function Towns()
+    {
+        return $this->belongsTo(Town::class, 'id_town');
     }
 
-
+    public function Cohort()
+    {
+        return $this->hasMany(Cohort::class);
+    }
 }

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_programacion')->create('cohort_time', function (Blueprint $table) {
+        Schema::create('competencies_cohorts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('id_competence')->constrained('competencies')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('id_cohort')->constrained('cohorts')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cohort_time');
+        Schema::dropIfExists('competencies_cohorts');
     }
 };

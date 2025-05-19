@@ -10,6 +10,7 @@ use App\Http\Controllers\DbEntrada\UserController;
 use App\Http\Controllers\DbProgramacion\AdminController as ProgrammingAdminController;
 use App\Http\Controllers\DbProgramacion\AuthController as ProgrammingAuthController;
 use App\Http\Controllers\DbProgramacion\CohortController;
+use App\Http\Controllers\DbProgramacion\ProgramanController;
 use App\Models\DbEntrada\User;
 use Illuminate\Support\Facades\Route;
 //Pagina inicial
@@ -91,14 +92,52 @@ Route::post('/changePassword', [UserController::class, 'changePassword'])->name(
 //login
 Route::post('programming/login', [ProgrammingAuthController::class, 'login'])->name('programming-login');
 
-//Modulo Programación 
-Route::get('programming/admin', [ProgrammingAdminController::class, 
-'dashboard'])->middleware('can:programming.admin')->name('programming.admin');
+//Modulo Programación
+Route::get('programming/admin', [
+    ProgrammingAdminController::class,
+    'dashboard'
+])->middleware('can:programming.admin')->name('programming.admin');
 
-Route::get('programming/admin/Cohort',[CohortController::class,'indexCohort'])->
-middleware('can:programmig.programming_cohort_index')->name('programing.cohort_index');
+Route::get('programming/admin/Cohort', [CohortController::class, 'indexCohort'])->middleware('can:programmig.programming_cohort_index')->name('programing.cohort_index');
 
 //ruta de registro de fichas programmig.programming_cohort_Register
 
-Route::post('programming/admin',[CohortController::class,'registerCohort'])
-->middleware('can:programmig.programming_cohort_Register')->name('programming.Register');
+Route::post('programming/admin', [CohortController::class, 'registerCohort'])
+    ->middleware('can:programmig.programming_cohort_Register')->name('programming.Register');
+
+//ruta para agregar programa
+Route::get('programming/admin/programan', [ProgramanController::class, 'indexPrograman'])
+    ->middleware('can:programing.programan_add')->name('programming.Programan_add');
+
+Route::post('programming/admin/programan', [ProgramanController::class, 'store_cohort'])
+    ->middleware('can:programing.programan_store_add')->name('programming.Programan_store');
+
+
+
+//ruta para listar aprendicez en programaciom
+Route::get('programming/admin/programan', [ProgramanController::class, 'asignarAprendiz_index'])
+    ->middleware('can:programing.add_apprentices_cohorts')->name('programing.add_apprentices_cohorts');
+
+
+Route::post('programming/admin/programan', [ProgramanController::class, 'asignarAprendiz_Add'])
+    ->middleware('can:programing.add_apprentices_store')->name('programing.add_apprentices_store');
+
+
+
+Route::get('programming/admin/apprentices', [ProgramanController::class, 'ListAprenticesxcohorts'])
+    ->middleware('can:programing.apprentices_list')->name('programing.list_apprentices');
+
+
+
+Route::get('programming/admin/apprentices_cohorts', [ProgramanController::class, 'ListAprenticesxcohorts'])
+    ->middleware('can:programing.apprentices_cohorts_list')->name('programing.list_apprentices_cohorts');
+
+
+
+Route::get('programming/admin/competenciesIndex', [ProgramanController::class, 'Listcompetencies'])
+    ->middleware('can:programing.competencies_index')->name('programing.competencies_index');
+
+
+
+Route::post('programming/admin/competenciesStore', [ProgramanController::class, 'competencies_Store'])
+    ->middleware('can:programing.competencies_store')->name('programing.competencies_store');

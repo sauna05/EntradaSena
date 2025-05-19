@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_programacion')->create('instructors_status', function (Blueprint $table) {
+        //migracion jormada
+        Schema::connection('db_programacion')->create('cohort_times', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
 
+            $table->string('name'); // Mañana, Tarde, Noche
+            // $table->time('start_time');
+            // $table->time('end_time');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('instructor_status');
+        Schema::dropIfExists('cohort_times');
     }
 };

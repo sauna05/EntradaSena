@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_programacion')->create('instructors_status', function (Blueprint $table) {
+        Schema::create('days', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-
+            $table->string('name');       // Ej: Monday, Tuesday, etc.
+            $table->tinyInteger('number'); // 1 = Monday, 7 = Sunday
+            $table->boolean('is_weekend')->default(false); // true si es sábado o domingo
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('instructor_status');
+        Schema::dropIfExists('days');
     }
 };

@@ -16,10 +16,12 @@ class Instructor extends Model
 
     public function person()
     {
-        return $this->hasMany(Person::class);
+        return $this->belongsTo(Person::class, 'id_person');
     }
 
-    public function Cohort(){
+
+    public function Cohort()
+    {
         return $this->hasMany(Cohort::class);
     }
 }

@@ -57,13 +57,41 @@ class RoleSeeder extends Seeder
         // Permiso para exportar en Excel
         Permission::create(['name' => 'entrance.assistance.export'])->syncRoles([$role1, $role2]);
 
-        // Permisos del módulo de Programación
+
+        //---------------------- Permisos del módulo de Programación -------------------------------
         Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role5]);
 
         //permiso del modulo de programacion de fichas
-        Permission::create(['name'=> 'programmig.programming_cohort_index'])->syncRoles([$role1,$role5]);
+        Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role1, $role5]);
         Permission::create(['name' => 'programmig.programming_cohort_Register'])->syncRoles([$role1, $role5]);
         // Permiso para entrada de los aprendices
         Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
+
+        //agregar permiso de agregar programa con roles de 2 usuarios
+        Permission::create(['name' => 'programing.programan_add'])->assignRole($role1, $role2);
+        //agregar permiso de agregar programa con roles de 2 usuarios
+        Permission::create(['name' => 'programing.programan_store_add'])->assignRole($role1, $role2);
+
+
+
+        Permission::create(['name' => 'programing.add_apprentices_cohorts'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.add_apprentices_store'])->assignRole($role1, $role2);
+        //permiso para ver aprendices en su ficha y programa correspondiente
+        Permission::create(['name' => 'programing.apprentices_list'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.apprentices_cohorts_list'])->assignRole($role1, $role2);
+
+
+        //permiso para gestionar competencias
+
+        Permission::create(['name' => 'programing.competencies_index'])->assignRole($role1, $role2);
+
+        Permission::create(['name' => 'programing.competencies_store'])->assignRole($role1, $role2);
+
+
+
+
+
+
+
     }
 }
