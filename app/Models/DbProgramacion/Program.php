@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Program extends Model
 {
     //
-    
+
     use HasFactory;
     protected $connection = 'db_programacion';
     protected $table = 'programs';
@@ -19,12 +19,20 @@ class Program extends Model
         return $this->hasMany(Program_Level::class);
     }
 
-    public function Cohort(){
+    public function Cohort()
+    {
         return $this->hasMany(Cohort::class);
     }
 
-    
+
+
+   public function competencies()
+    {
+        return $this->belongsToMany(Competencies::class, 'competencies_programs', 'id_program', 'id_competence')
+            ->using(CompetenciePrograman::class);
+    }
 
 
 
 }
+

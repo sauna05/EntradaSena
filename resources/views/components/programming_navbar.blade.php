@@ -68,8 +68,8 @@
             <a class="menu-toggle">Programas</a>
             <ul>
                 <li><a href="{{ route('programming.admin') }}">Gestion Programas</a></li>
+                 <li><a href="{{ route('programing.competencies_program_index') }}">Competencias Vinculadas</a></li>
 
-                <li><a href="#">Agregar competencias al programa</a></li>
             </ul>
         </li>
         <li>
@@ -85,6 +85,9 @@
             <a class="menu-toggle">Competencias</a>
             <ul>
                 <li><a href="{{ route('programing.competencies_index') }}">Gestion de Competencias</a></li>
+                <li><a href="{{ route('programing.competencies_index_program') }}">Vincular Competencias a Programas</a></li>
+                 <li><a href="#">Programar Competencia</a></li>
+
 
             </ul>
         </li>
@@ -100,8 +103,8 @@
             <a class="menu-toggle">Fichas</a>
             <ul>
                 <li><a href="{{ route('programing.cohort_index') }}">Gestion de fichas </a></li>
-
-                <li><a href="{{ route('programing.add_apprentices_cohorts') }}">Agregar Aprendices a la ficha</a></li>
+                <li><a href="{{ route('programing.add_apprentices_cohorts') }}">Agregar Aprendiz ficha</a></li>
+                  <li><a href="">Agregar desde Senasofia</a></li>
             </ul>
         </li>
     </ul>

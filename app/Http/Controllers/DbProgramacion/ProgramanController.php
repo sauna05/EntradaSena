@@ -67,6 +67,48 @@ class ProgramanController extends Controller
     /**
      * Display the specified resource.
      */
+   public function asignarCompetences_index()
+    {
+        $programas = dbProgramacionPrograman::all(); // Lista de programas
+
+        // Competencias no asignadas a ningún programa
+        $competencias = Competencies::whereDoesntHave('programs')->get();
+
+        return view('pages.programming.Admin.Competencies.competencies_add_programan', compact('programas', 'competencias'));
+    }
+
+
+    public function competenciesAdd_store(Request $request)
+    {
+        $request->validate([
+            'programa_id' => 'required|exists:db_programacion.programs,id',
+            'competencias' => 'required|array',
+            'competencias.*' => 'exists:db_programacion.competencies,id',
+        ]);
+
+        $programa = dbProgramacionPrograman::findOrFail($request->programa_id);
+
+        // Solo competencias que no estén ya asociadas
+        $competenciasValidas = Competencies::whereIn('id', $request->competencias)
+            ->whereDoesntHave('programs') // evita duplicados
+            ->pluck('id')
+            ->toArray();
+
+        if (count($competenciasValidas) === 0) {
+            return redirect()->back()->with('error', 'Las competencias seleccionadas ya están asignadas a un programa.');
+        }
+
+        // Asignar
+        $programa->competencies()->attach($competenciasValidas);
+
+        return redirect()->back()->with('success', 'Competencias asignadas correctamente al programa.');
+    }
+
+
+
+
+
+     //metodos que permite asignar aprenices a sus fichas correspondientes
     public function asignarAprendiz_index()
     {
         $cohorts = Cohort::all();
@@ -104,8 +146,25 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Aprendices asignados correctamente.');
     }
 
+
+    public function list_competencias_program()
+    {
+        $query = dbProgramacionPrograman::with('competencies')
+            ->whereHas('competencies'); // solo programas con competencias
+
+        if (request('programa_id')) {
+            $query->where('id', request('programa_id'));
+        }
+
+        $programas = $query->get();
+
+        return view('pages.programming.Admin.programan.competencies_program_index', compact('programas'));
+    }
+
+
+
     public function ListAprenticesxcohorts(Request $request)
-        {
+    {
             $comboFicha = $request->input('combo_ficha');
 
             // Obtenemos todos los aprendices con sus fichas y programas

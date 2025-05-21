@@ -19,12 +19,16 @@ use Database\Seeders\DbEntrada\UserSeeder;
 use Database\Seeders\DbProgramacion\ApprenticeStatusSeeder;
 use Database\Seeders\DbProgramacion\BlokSeeder;
 use Database\Seeders\DbProgramacion\ClassRoomSeeder;
+
 use Database\Seeders\DbProgramacion\InstructorSeeder;
 use Database\Seeders\DbProgramacion\InstructorStatusSeeder;
 use Database\Seeders\DbProgramacion\LinkTypeSeeder;
 use Database\Seeders\DbProgramacion\ProgramanLevelSeeder;
 use Database\Seeders\DbProgramacion\ProgramSeeder;
 use Database\Seeders\DbProgramacion\SpecialitySeeder;
+
+use Database\Seeders\DbProgramacion\CohortSeeder;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
@@ -70,7 +74,8 @@ class DatabaseSeeder extends Seeder
             InstructorSeeder::class,
             AprenticesSeeder::class,
             BlokSeeder::class,
-            ClassRoomSeeder::class
+            ClassRoomSeeder::class,
+            // CohortSeeder::class,
         ]);
         DB::connection('db_programacion')->commit();
     }

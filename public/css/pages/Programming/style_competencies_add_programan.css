@@ -1,0 +1,106 @@
+/* Contenedor principal */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+}
+
+/* Título principal */
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #2f2f2f;
+}
+
+/* Etiquetas */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Select (ficha) */
+select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 25px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #999;
+    background-color: #fff;
+}
+
+/* Tabla de aprendices */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+thead tr {
+    background-color: #e5e5e5;
+}
+
+thead th {
+    padding: 14px 12px;
+    text-align: left;
+    color: #333;
+    font-weight: 700;
+    border-bottom: 1px solid #ccc;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease;
+}
+
+tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+tbody td {
+    padding: 12px;
+    color: #444;
+}
+
+/* Checkbox centrado */
+td input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+/* Botón de enviar */
+.form-buttons {
+    margin-top: 30px;
+    text-align: right;
+}
+
+button.btn {
+    background-color: #444;
+    color: white;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.btn:hover {
+    background-color: #2f2f2f;
+}

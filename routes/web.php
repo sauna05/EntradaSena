@@ -141,3 +141,19 @@ Route::get('programming/admin/competenciesIndex', [ProgramanController::class, '
 
 Route::post('programming/admin/competenciesStore', [ProgramanController::class, 'competencies_Store'])
     ->middleware('can:programing.competencies_store')->name('programing.competencies_store');
+
+//ruta para asignar competencias a un programa
+
+Route::get('programming/admin/competenciesIndex_programmig', [ProgramanController::class, 'asignarCompetences_index'])
+    ->middleware('can:programing.competencies_programming_index')->name('programing.competencies_index_program');
+
+
+
+Route::post('programming/admin/competenciesStore_porgramming', [ProgramanController::class, 'competenciesAdd_store'])
+    ->middleware('can:programing.competencies_programming_store')->name('programing.competencies_store_program');
+
+
+Route::get('programming/admin/competencies_programan_index', [ProgramanController::class, 'list_competencias_program'])
+    ->middleware('can:programing.competencies_programan_index')->name('programing.competencies_program_index');
+
+

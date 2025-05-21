@@ -1,5 +1,5 @@
 <x-layout>
-    <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
+    <x-slot:page_style>css/pages/Programming/style_dasboard.css</x-slot:page_style>
     <x-slot:title>Asignar Aprendices</x-slot:title>
     <x-programming_navbar></x-programming_navbar>
 
