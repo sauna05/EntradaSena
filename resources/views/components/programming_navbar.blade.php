@@ -75,7 +75,7 @@
         <li>
             <a class="menu-toggle">Programación</a>
             <ul>
-                <li><a href="#">Gestion de Programacion</a></li>
+                <li><a href="#">Programar Intructor</a></li>
                 <li><a href="#">Agregar Programación</a></li>
 
                 <li><a href="#">Ver Calendario</a></li>
@@ -94,7 +94,7 @@
         <li>
             <a class="menu-toggle">Aprendiz</a>
             <ul>
-                <li><a href="{{ route('programing.list_apprentices') }}">Gestion de Aprendiz</a></li>
+                <li><a href="{{ route('programing.list_apprentices')}}">Gestion de Aprendiz</a></li>
 
                 <li><a href="#">Asignar Ficha</a></li>
             </ul>
