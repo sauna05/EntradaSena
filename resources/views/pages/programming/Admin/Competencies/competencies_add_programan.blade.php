@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:page_style>css/pages/Programming/style_competencies_add_programan.css</x-slot:page_style>
     <x-slot:title>Asignar Competencias</x-slot:title>
-    <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_coampetencies_add_programan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_competencies_add_programan.css') }}">
 
     <div class="container">
         <h2>Asignar Competencias a Programas</h2>
@@ -12,11 +12,20 @@
             <label for="programa">Selecciona un programa:</label>
             <select id="programa" name="programa_id" required>
                 <option value="">-- Selecciona un programa --</option>
-                @foreach($programas as $programa)
-                    <option value="{{ $programa->id }}">
-                        {{ $programa->name }}
-                    </option>
-                @endforeach
+
+                @forelse ( $programas  as  $programa)
+                <option value="{{ $programa->id }}">
+                    {{ $programa->name }}
+                </option>
+                @empty
+                <tr>
+                    <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
+                        No hay competencias para vincular.
+                    </td>
+                </tr>
+                    
+                @endforelse
+
             </select>
 
             <table>

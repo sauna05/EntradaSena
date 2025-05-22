@@ -153,3 +153,10 @@ Route::post('programming/admin/competenciesStore_porgramming', [ProgramanControl
 
 Route::get('programming/admin/competencies_programan_index', [ProgramanController::class, 'list_competencias_program'])
     ->middleware('can:programing.competencies_programan_index')->name('programing.competencies_program_index');
+
+
+
+
+
+Route::get('programming/admin/instructor_programan_index', [ProgramanController::class, 'instructores_index'])
+    ->middleware('can:programing.instructor_programan_index')->name('programing.instructor_programan_index');

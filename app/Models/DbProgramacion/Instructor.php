@@ -19,6 +19,11 @@ class Instructor extends Model
         return $this->belongsTo(Person::class, 'id_person');
     }
 
+    public function speciality()
+    {
+        return $this->belongsTo(Speciality::class, 'id_speciality');
+    }
+
 
     public function Cohort()
     {

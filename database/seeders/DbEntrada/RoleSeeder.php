@@ -99,9 +99,9 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'programing.competencies_programan_index'])->assignRole($role10, $role2);
 
 
+        //permiso para lagestion instrcutor en el apartado de programacion instrcutor
 
-
-
+        Permission::create(['name' => 'programing.instructor_programan_index'])->assignRole($role10, $role2);
 
 
 

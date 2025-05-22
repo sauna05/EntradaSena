@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DbProgramacion\Apprentice;
 use App\Models\DbProgramacion\Cohort;
 use App\Models\DbProgramacion\Competencies;
+use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Program as dbProgramacionPrograman;
 use App\Models\DbProgramacion\Program_Level;
 use Illuminate\Http\Request;
@@ -240,6 +241,17 @@ class ProgramanController extends Controller
             return redirect()->back()->with('success', 'Competencia registrada correctamente.');
         }
 
+        public function ambientes_index(){
 
+            return view('pages.programming.Admin.Ambientes.ambientes_index');
+        }
 
+    //metodo de controlador para listar  los instructores que estan registrados
+
+    public function instructores_index()
+    {
+        $instructores = Instructor::with(['person', 'speciality'])->get();
+
+        return view('pages.programming.Admin.programming_instructor.programming_instructor_index', compact('instructores'));
+    }
 }

@@ -264,8 +264,8 @@
                 <li>
                     <a class="menu-toggle">Programación</a>
                     <ul>
-                        <li><a href="#">Programar Instructor</a></li>
-                        <li><a href="#">Agregar Programación</a></li>
+                        <li><a href="#">Programaciones</a></li>
+                        <li><a href="{{route('programing.instructor_programan_index')}}">Gestion de Instructores</a></li>
                         <li><a href="#">Ver Calendario</a></li>
                     </ul>
                 </li>
@@ -289,6 +289,15 @@
                     <ul>
                         <li><a href="{{ route('programing.cohort_index') }}">Gestión de Fichas</a></li>
                         <li><a href="{{ route('programing.add_apprentices_cohorts') }}">Agregar Aprendiz a Ficha</a></li>
+                        <li><a href="#">Agregar desde Senasofia</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a class="menu-toggle">Ambientes</a>
+                    <ul>
+                        <li><a href="">Gestion de Ambientes</a></li>
+                      
                         <li><a href="#">Agregar desde Senasofia</a></li>
                     </ul>
                 </li>
