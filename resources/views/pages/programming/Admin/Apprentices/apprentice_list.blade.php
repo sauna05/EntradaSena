@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Listado de Aprendices por Ficha</x-slot:title>
-    <x-programming_navbar></x-programming_navbar>
+    
 
     <style>
         .container {

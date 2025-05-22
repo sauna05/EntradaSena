@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Archivo CSS de la página --}}
     <x-slot:page_style>css/pages/assistance/assistance_show.css</x-slot:page_style>
     {{-- Título de la página --}}
@@ -60,4 +60,4 @@
             <div class="alert alert-info text-center">Este usuario no tiene registros de asistencia.</div>
         @endif
     </div>
-</x-layout>
+</x-layout_asistencia>

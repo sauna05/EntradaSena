@@ -1,10 +1,10 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Archivo CSS de la pagina --}}
     <x-slot:page_style>css/pages/entrance/admin/people_index.css</x:slot-page_style>
     {{-- Titulo de la pagina --}}
     <x-slot:title>CAA</x:slot-title>
     {{-- Header - Navbar --}}
-    <x-entrance_navbar></x-entrance_navbar>
+
 
     <h1>PERSONAS EN EL CENTRO DE FORMACIÓN</h1>
 
@@ -28,7 +28,7 @@
                     <option value="">Filtrar por Cargo</option>
                     @foreach ($positions as $position)
 
-                        <option value="{{ $position->id }}" 
+                        <option value="{{ $position->id }}"
                             @if ($position->id == request('position')) selected @endif>
                             {{ $position->name }}
                         </option>
@@ -75,11 +75,11 @@
                         </tr>
                     @endforeach
                 </tbody>
-            </table>    
+            </table>
         @endif
     </section>
 
     <div>
         {{ $person->links() }}
     </div>
-</x-layout>
+</x-layout_asistencia>

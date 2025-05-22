@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:page_style>css/pages/Programming/style_competencies_add_programan.css</x-slot:page_style>
     <x-slot:title>Asignar Competencias</x-slot:title>
-    <x-programming_navbar></x-programming_navbar>
+    <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_coampetencies_add_programan.css') }}">
 
     <div class="container">
         <h2>Asignar Competencias a Programas</h2>

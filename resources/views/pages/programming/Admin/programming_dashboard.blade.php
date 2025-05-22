@@ -1,7 +1,8 @@
 <x-layout>
     <x-slot:page_style>css/pages/Programming/style_programans.css</x-slot:page_style>
     <x-slot:title>CAA</x-slot:title>
-    <x-programming_navbar></x-programming_navbar>
+    <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_programans.css') }}">
+
 
     <h3>Lista de Programas</h3>
 

@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Listado de Competencias</x-slot:title>
-    <x-programming_navbar></x-programming_navbar>
+
 
     <style>
         .container {
@@ -258,7 +258,7 @@
 
 </x-layout>
 
-
+{{--
 
 <!DOCTYPE html>
 <html lang="es">
@@ -481,4 +481,4 @@
 </section>
 
 </body>
-</html>
+</html> --}}

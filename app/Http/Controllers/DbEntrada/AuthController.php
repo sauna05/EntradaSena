@@ -24,28 +24,24 @@ class AuthController extends Controller
             $request->session()->regenerate();
             Auth::shouldUse('web');
 
-            if($user->hasRole('Administrador')){
-
-                return redirect()->route('entrance.people.index');
-
-            }else if($user->hasRole('Acceso-Entrada')){
+            if($user->hasRole('Acceso-Entrada')){
 
                 return redirect()->route('entrance.create');
-                
+
             }else if($user->hasRole('Aprendiz')){
-                
+
                 return redirect()->route('apprentice.show', ['id' => $user->id]);
-           
-            }           
+
+            }
 
         }else{
             return redirect()->route('login')->withErrors([
                 'entrance.user_name' => 'Las credenciales proporcionadas son incorrectas.'
             ])->withInput();
-            
-           
+
+
         }
-    
+
 }
 
     public function logout(Request $request){
@@ -56,5 +52,5 @@ class AuthController extends Controller
 
         return redirect()->route('login');
     }
-  
+
 }

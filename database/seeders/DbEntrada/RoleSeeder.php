@@ -17,8 +17,10 @@ class RoleSeeder extends Seeder
         app(Role::class)->setConnection('db_entrada');
         app(Permission::class)->setConnection('db_entrada');
 
-        // Crear roles
-        $role1 = Role::create(['name' => 'Administrador']);
+        // Crear roles de gestion de asistencia y programacion
+        $role1 = Role::create(['name' => 'Administrador_asistencia']);
+        $role10 = Role::create(['name' => 'Administrador_programacion']);
+
         $role2 = Role::create(['name' => 'Admin-Entrada']);
         $role3 = Role::create(['name' => 'Acceso-Entrada']);
         $role4 = Role::create(['name' => 'Apoyo-Coordinacion-Juicios-Evaluativos']);
@@ -27,7 +29,7 @@ class RoleSeeder extends Seeder
         $role7 = Role::create(['name' => 'Seguimiento-Programacion']);
         $role8 = Role::create(['name' => 'Inspector-Programacion']);
         $role9 = Role::create(['name' => 'Aprendiz']);
-        $role10 = Role::create(['name' => 'Instructor']);
+        // $role10 = Role::create(['name' => 'Instructor']);
 
         // Permisos del módulo de la entrada
         Permission::create(['name' => 'entrance.create'])->syncRoles([$role3]);
@@ -59,42 +61,42 @@ class RoleSeeder extends Seeder
 
 
         //---------------------- Permisos del módulo de Programación -------------------------------
-        Permission::create(['name' => 'programming.admin'])->syncRoles([$role1, $role5]);
+        Permission::create(['name' => 'programming.admin'])->syncRoles([$role10, $role5]);
 
         //permiso del modulo de programacion de fichas
-        Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role1, $role5]);
-        Permission::create(['name' => 'programmig.programming_cohort_Register'])->syncRoles([$role1, $role5]);
+        Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role10, $role5]);
+        Permission::create(['name' => 'programmig.programming_cohort_Register'])->syncRoles([$role10, $role5]);
         // Permiso para entrada de los aprendices
         Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
 
         //agregar permiso de agregar programa con roles de 2 usuarios
-        Permission::create(['name' => 'programing.programan_add'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.programan_add'])->assignRole($role10, $role2);
         //agregar permiso de agregar programa con roles de 2 usuarios
-        Permission::create(['name' => 'programing.programan_store_add'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.programan_store_add'])->assignRole($role10, $role2);
 
 
 
-        Permission::create(['name' => 'programing.add_apprentices_cohorts'])->assignRole($role1, $role2);
-        Permission::create(['name' => 'programing.add_apprentices_store'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.add_apprentices_cohorts'])->assignRole($role10, $role2);
+        Permission::create(['name' => 'programing.add_apprentices_store'])->assignRole($role10, $role2);
         //permiso para ver aprendices en su ficha y programa correspondiente
-        Permission::create(['name' => 'programing.apprentices_list'])->assignRole($role1, $role2);
-        Permission::create(['name' => 'programing.apprentices_cohorts_list'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.apprentices_list'])->assignRole($role10, $role2);
+        Permission::create(['name' => 'programing.apprentices_cohorts_list'])->assignRole($role10, $role2);
 
 
         //permiso para gestionar competencias
 
-        Permission::create(['name' => 'programing.competencies_index'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.competencies_index'])->assignRole($role10, $role2);
 
-        Permission::create(['name' => 'programing.competencies_store'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.competencies_store'])->assignRole($role10, $role2);
 
         //permisos para agregar competencias a un programa
 
-         Permission::create(['name' => 'programing.competencies_programming_index'])->assignRole($role1, $role2);
+         Permission::create(['name' => 'programing.competencies_programming_index'])->assignRole($role10, $role2);
 
-        Permission::create(['name' => 'programing.competencies_programming_store'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.competencies_programming_store'])->assignRole($role10, $role2);
 
         //permiso para ver las competencias con sus respectivos programas
-        Permission::create(['name' => 'programing.competencies_programan_index'])->assignRole($role1, $role2);
+        Permission::create(['name' => 'programing.competencies_programan_index'])->assignRole($role10, $role2);
 
 
 

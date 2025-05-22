@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Crear Programa</x-slot:title>
-    <x-programming_navbar></x-programming_navbar>
+  
 
     <h2>Registrar Nuevo Programa</h2>
 

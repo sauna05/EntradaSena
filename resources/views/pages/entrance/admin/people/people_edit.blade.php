@@ -1,12 +1,11 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Archivo CSS de la página --}}
     <x-slot:page_style>css/pages/entrance/admin/people_show.css</x:slot-page_style>
 
     {{-- Título de la página --}}
     <x-slot:title>Edit</x:slot-title>
 
-    {{-- Header - Navbar --}}
-    <x-entrance_navbar></x-entrance_navbar>
+
 
     <h1>{{$person->name}}</h1>
 
@@ -29,7 +28,7 @@
                         </option>
                     @endforeach
                 </select>
-            </div>  
+            </div>
 
             {{-- Campo para el número de documento --}}
             <div>
@@ -42,7 +41,7 @@
                 <label for="name">Nombre Completo</label>
                 <input type="text" name="name" id="name" value="{{ $person->name }}">
             </div>
-            
+
             {{-- Campo para la fecha de inicio --}}
             <div>
                 <label for="start_date">Fecha de Inicio</label>
@@ -54,7 +53,7 @@
                 <label for="end_date">Fecha de Finalización</label>  {{-- Corregido aquí --}}
                 <input type="date" name="end_date" id="end_date" value="{{ $person->end_date->format('Y-m-d') }}">
             </div>
-            
+
             {{-- Botón para guardar cambios --}}
             <x-button type="submit">Guardar Cambios</x-button>
         </section>
@@ -66,7 +65,7 @@
             @foreach($days_available as $day)
                 <div>
                     <label for="{{ $day->id }}">{{ $day->name }}</label>
-                    <input type="checkbox" name="days[]" value="{{ $day->id }}" 
+                    <input type="checkbox" name="days[]" value="{{ $day->id }}"
                         {{ $person->days_available->contains('id', $day->id) ? 'checked' : '' }} id="{{ $day->id }}">
                 </div>
             @endforeach
@@ -87,4 +86,4 @@
         }
     </script>
 
-</x-layout>
+</x-layout_asistencia>

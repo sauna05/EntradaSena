@@ -63,6 +63,15 @@
             display: flex;
         }
 
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--verde-sidebar-bg);
+            border-right: 2px solid var(--gris-borde);
+            min-height: calc(100vh - 120px); /* Ajustado por header + footer */
+            padding: 15px;
+            box-shadow: var(--sombra);
+        }
 
         .sidebar-menu {
             list-style: none;
@@ -121,6 +130,17 @@
             border-radius: 4px;
         }
 
+        .sidebar-menu li ul li a {
+            display: block;
+            text-decoration: none;
+            color: var(--gris-texto);
+            padding: 7px 10px;
+            font-size: 15px;
+            border-radius: 4px;
+            margin: 2px 0;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, padding-left 0.2s;
+        }
 
         .sidebar-menu li ul li a:hover {
             background-color: #e0f8ee;
@@ -228,101 +248,70 @@
         @endauth
     </header>
 
+    <!-- Layout -->
+    <div class="main-layout">
 
+        <!-- Sidebar -->
+        <nav class="sidebar" aria-label="Menú lateral">
+            <ul class="sidebar-menu">
+                <li>
+                    <a class="menu-toggle">Gestion de Personas</a>
+                    <ul>
+                         <li ><a href="{{route('entrance.people.index')}}">Personas</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="menu-toggle">Gestion de asistencia</a>
+                    <ul>
+                       <li ><a  href="{{route('entrance.assistance.index')}}">Asistencias</a></li>
 
-     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    </ul>
+                </li>
+                <li>
+                    <a class="menu-toggle">Gestion de Inasistencia</a>
+                    <ul>
+                       <li ><a class="btn-navbar" href="{{route('entrance.absence.index')}}">Inasistencias</a></li>
+                        <li><a href="#">Programar Competencia</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </nav>
 
+        <!-- Contenido principal -->
+        <main class="content">
+            {{ $slot }}
+        </main>
 
-
-    <h1>SISTEMA DE ASISTENCIAS AL CENTRO DE FORMACIÓN</h1>
-    <h2>Acción: <span class="action" id="action"></span></h2>
-    <h1><span id="full_hour"></span></h1>
-
-    <div>
-        <label for="document_number">Número de Documento</label>
-        <input type="text" id="document_number" autofocus>
-        <button id="send">Ingresar</button>
     </div>
-
-    <h2>Nombre: <span id="name"></span></h2>
-    <h2>Cargo: <span id="position"></span></h2>
-    <div id="error_message" style="color: red; display: none;"></div>
-
-    <script>
-        // Actualiza la hora en tiempo real
-        function updateHour() {
-            let now = new Date();
-            let hour = now.getHours().toString().padStart(2, '0');
-            let minutes = now.getMinutes().toString().padStart(2, '0');
-            let seconds = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('full_hour').textContent = `${hour}:${minutes}:${seconds}`;
-        }
-
-        setInterval(updateHour, 1000);
-        updateHour();
-
-        $(document).ready(function() {
-            // Función para enviar los datos
-            function sendDocumentNumber(documentNumber) {
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-                $.ajax({
-                    url: "{{ route('entrance.store') }}",
-                    type: 'POST',
-                    data: {
-                        document_number: documentNumber,
-                        _token: csrfToken
-                    },
-                    success: function(response) {
-                        if (response.error) {
-                            // Mostrar mensaje de error si no está registrado
-                            $('#error_message').text(response.error).show();
-                            $('#document_number').val(''); // Limpiar el campo después de enviar
-                        } else {
-                            // Mostrar información cuando los datos son correctos
-                            $('#action').text(`${response.action}`);
-                            $('#position').text(`${response.position}`);
-                            $('#name').text(`${response.name}`);
-                            $('#error_message').hide(); // Ocultar cualquier mensaje de error previo
-                            $('#document_number').val(''); // Limpiar el campo
-                        }
-                    },
-                    // error: function(xhr) {
-                    //     console.log(xhr.responseText);
-                    //     $('#action').text('Error al enviar los datos');
-                    // }
-                });
-            }
-
-            // Evento al hacer clic en el botón de ingresar
-            $('#send').click(function() {
-                let documentNumber = $('#document_number').val();
-                if (documentNumber) {
-                    sendDocumentNumber(documentNumber);
-                }
-            });
-
-            // // Detectar el escaneo del código de barras en el campo de documento
-            // $('#document_number').on('input', function() {
-            //     let documentNumber = $('#document_number').val();
-            //     if (documentNumber.length > 0) {
-            //         // Si el campo tiene algún valor (como el escaneo de código de barras), enviar los datos
-            //         sendDocumentNumber(documentNumber);
-            //     }
-            // });
-        });
-    </script>
-
-
-
-
 
     <!-- Footer -->
     <footer class="footer">
         <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-footer" />
         <p>&copy; {{ date('Y') }} Centro Agroempresarial y Acuícola. Todos los derechos reservados.</p>
     </footer>
+
+    <!-- JS: Menú toggle -->
+    <script>
+        document.querySelectorAll('.menu-toggle').forEach(menu => {
+            menu.addEventListener('click', function () {
+                const submenu = this.nextElementSibling;
+
+                // Cierra otros submenús y desactiva otras flechas
+                document.querySelectorAll('.sidebar-menu ul').forEach(ul => {
+                    if (ul !== submenu) {
+                        ul.classList.remove('show');
+                        if (ul.previousElementSibling) {
+                            ul.previousElementSibling.classList.remove('active');
+                        }
+                    }
+                });
+
+                submenu.classList.toggle('show');
+                this.classList.toggle('active');
+            });
+        });
+    </script>
 
 </body>
 </html>

@@ -1,11 +1,11 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Archivo CSS de la pagina --}}
     <x-slot:page_style>css/pages/assistance/assistance_show.css</x-slot:page_style>
     {{-- Titulo de la pagina --}}
     <x-slot:title>Detalles de Inasistencia</x-slot:title>
 
     <div class="container mt-5">
-        <h1>Formulario de inasistencia</h1> 
+        <h1>Formulario de inasistencia</h1>
 
         <div>
             <p>Hola <strong>{{$absence->person->name}}</strong></p>
@@ -19,7 +19,7 @@
             Espero tu respuesta y ojalá que todo se resuelva de manera positiva.</p>
 
             <p>Saludos cordiales, Coordinación Academica.</p>
-            
+
         </div>
     </div>
 
@@ -34,10 +34,10 @@
                 <input type="file" name="excuse_image" id="excuse_image">
             </div>
             <input type="submit" value="Enviar">
-            
+
         </form>
     </section>
 
-</x-layout>
+</x-layout_asistencia>
 
 

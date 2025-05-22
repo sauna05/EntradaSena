@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Librería para leer excel desde la web --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -6,13 +6,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- Estilo de la página --}}
-    <x-slot:page_style>css/pages/entrance/admin/people_create.css</x-slot-page_style>
+   <link rel="stylesheet" href="{{ asset('css/pages/entrance/admin/people_create.css') }}">
 
         {{-- Título de la página --}}
         <x-slot:title>CAA</x-slot:title>
 
-        {{-- Navbar --}}
-        <x-entrance_navbar></x-entrance_navbar>
+
 
         <h1>Formulario de Registro Personas</h1>
 
@@ -241,4 +240,4 @@
                 return date.toISOString().split("T")[0];
             }
         </script>
-</x-layout>
+</x-layout_asistencia>

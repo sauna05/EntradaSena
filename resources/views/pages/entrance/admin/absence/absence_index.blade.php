@@ -1,10 +1,9 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Archivo CSS de la pagina --}}
     <x-slot:page_style>css/pages/entrance/admin/people_index.css</x:slot-page_style>
     {{-- Titulo de la pagina --}}
     <x-slot:title>CAA</x:slot-title>
     {{-- Header - Navbar --}}
-    <x-entrance_navbar></x-entrance_navbar>
 
     <h1>Inasistencias</h1>
 
@@ -45,7 +44,7 @@
 
 
             {{-- Tabla con las inasistencias --}}
-            
+
              <div class="">
                 <table class="table table-bordered table-striped table-hover shadow-sm">
                     <thead class="thead-dark text-center">
@@ -68,7 +67,7 @@
                                 <td>{{ $absence->last_assistance}}</td>
                                 <td>{{ $absence->state}}</td>
                                 <td>{{ ($absence->readed) == 1 ? "Si" : "No"}}</td>
-                                  
+
                                 <td class="text-center">
                                     <a href="{{ route('entrance.absence.show', $absence->id) }}" class="btn btn-primary btn-sm">
                                         Ver más
@@ -84,14 +83,14 @@
                 </table>
             </div>
     </div>
-   
-    
+
+
 
 
 </section>
 
 
 
-   
-  
-</x-layout> 
+
+
+</x-layout_asistencia>

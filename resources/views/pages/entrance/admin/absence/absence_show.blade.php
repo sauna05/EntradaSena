@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- Archivo CSS de la pagina --}}
     <x-slot:page_style>css/pages/assistance/assistance_show.css</x-slot:page_style>
     {{-- Titulo de la pagina --}}
@@ -46,6 +46,6 @@
 
     </div>
 
-</x-layout>
+</x-layout_asistencia>
 
 

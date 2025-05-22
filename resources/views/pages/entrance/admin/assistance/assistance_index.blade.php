@@ -1,10 +1,11 @@
-<x-layout>
+<x-layout_asistencia>
     {{-- CSS --}}
-    <x-slot:page_style>css/pages/assistance/assistance_index.css</x-slot:page_style>
+    <x-slot:page_style></x-slot:page_style>
     {{-- Título --}}
     <x-slot:title>CAA</x-slot:title>
+    <link rel="stylesheet" href="{{ asset('css/pages/assistance/assistance_index.css') }}">
     {{-- Navbar --}}
-    <x-entrance_navbar></x-entrance_navbar>
+
    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 
@@ -261,4 +262,4 @@
 
 </script>
 
-</x-layout>
+</x-layout_asistencia>

@@ -1,8 +1,7 @@
 <x-layout>
-   <x-slot:page_style>css/pages/Programming/style_cohort.css</x-slot:page_style>
-    <x-slot:title>Crear Programa</x-slot:title>
-    <x-programming_navbar></x-programming_navbar>
-
+   <x-slot:page_style></x-slot:page_style>
+    <x-slot:title>Crear Ficha</x-slot:title>
+    <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_cohort.css') }}">
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -66,7 +65,6 @@
             </div>
         @endif
 
-        <!-- Botón para mostrar el modal -->
         <button class="btn" onclick="document.getElementById('modal').style.display='block'">
             Registrar ficha
         </button>
@@ -127,8 +125,9 @@
 
                     <div class="form-buttons">
                         <button type="submit" class="btn" style="background-color: green">Guardar</button>
-                        <button type="button" class="btn" style="background-color: gray"
-                            onclick="document.getElementById('modal').style.display='none'">Cancelar</button>
+                        <button type="button" class="btn cancel" onclick="document.getElementById('modal').style.display='none'">
+                        Cancelar</button>
+
                     </div>
                 </form>
             </div>

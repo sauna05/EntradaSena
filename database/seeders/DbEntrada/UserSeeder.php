@@ -28,7 +28,14 @@ class UserSeeder extends Seeder
             'id_person' => 1,
             'user_name' => 'MarlonSaenz',
             'password' => bcrypt("123123")
-        ])->assignRole('Administrador');
+        ])->assignRole('Administrador_asistencia');
+
+
+        User::create([
+            'id_person' => 1,
+            'user_name' => 'loperena',
+            'password' => bcrypt("123123")
+        ])->assignRole('Administrador_programacion');
 
         User::create([
             'id_person' => 1,

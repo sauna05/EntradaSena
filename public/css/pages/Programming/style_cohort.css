@@ -1,6 +1,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -10,6 +12,7 @@ body {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
 }
 
 h2,
@@ -19,18 +22,20 @@ h3 {
 }
 
 .btn {
-    background-color: #28a745;
+    background-color: #007bff;
     color: white;
+    width: max-content;
     border: none;
     padding: 10px 20px;
     font-size: 15px;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s ease;
+    display: inline-block;
 }
 
 .btn:hover {
-    background-color: #218838;
+    background-color: #0056b3;
 }
 
 .modal {
@@ -50,13 +55,13 @@ h3 {
     margin: 5% auto;
     padding: 30px;
     border-radius: 12px;
-    width: 40%;
+    width: 90%;
     max-width: 600px;
-    min-width: 320px;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
 .close {
@@ -90,6 +95,7 @@ form select {
     font-size: 14px;
     background-color: #f9f9f9;
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 form input:focus,
@@ -103,6 +109,11 @@ form select:focus {
     justify-content: flex-end;
     gap: 12px;
     margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.form-buttons .btn {
+    min-width: 100px;
 }
 
 table {
