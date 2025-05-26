@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('days_programing', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('programming_id')->constrained('programming')->onDelete('cascade');
+            $table->foreignId('day_id')->constrained('days')->onDelete('cascade');
         });
     }
 

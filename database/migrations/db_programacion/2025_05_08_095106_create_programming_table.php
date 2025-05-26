@@ -14,24 +14,23 @@ return new class extends Migration
         Schema::create('programming', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('id_program')->constrained('programs')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('id_instructor')->constrained('instructors')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('id_competencie')->constrained('competencies')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('id_cohort')->constrained('cohorts')->onDelete('cascade');
+            $table->foreignId('id_instructor')->constrained('instructors')->onDelete('cascade');
+            $table->foreignId('id_competencie')->constrained('competencies')->onDelete('cascade');
+            $table->foreignId('id_classroom')->constrained('classrooms')->onDelete('cascade'); // <- Nueva relación
 
             $table->integer('hours_duration');
             $table->integer('scheduled_hours');
 
-            $table->boolean('iniciada'); // true o false si está iniciada
-
+            $table->boolean('iniciada');
             $table->date('start_date');
             $table->date('end_date');
 
             $table->time('start_time');
             $table->time('end_time');
 
-            $table->string('programmed_by'); // sin espacios
-
-            $table->boolean('evaluated')->default(false); // por defecto: no evaluada
+            $table->string('programmed_by');
+            $table->boolean('evaluated')->default(false);
 
             $table->timestamps();
         });

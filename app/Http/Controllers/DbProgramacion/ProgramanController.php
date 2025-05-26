@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DbProgramacion;
 
 use App\Http\Controllers\Controller;
 use App\Models\DbProgramacion\Apprentice;
+use App\Models\DbProgramacion\Classroom;
 use App\Models\DbProgramacion\Cohort;
 use App\Models\DbProgramacion\Competencies;
 use App\Models\DbProgramacion\Instructor;
@@ -78,6 +79,21 @@ class ProgramanController extends Controller
         return view('pages.programming.Admin.Competencies.competencies_add_programan', compact('programas', 'competencias'));
     }
 
+    //metodo para la vista de agregar competencia al perfil de instructor
+    public function asignarCompetences_index_instructor()
+    {
+        $instructors = Instructor::with('person')->get(); // Lista de programas
+
+        // Competencias no asignadas a ningún programa
+        $competencias = Competencies::whereDoesntHave('instructors')->get();
+
+        return view('pages.programming.Admin.programming_instructor.programming_add_competences_profiles', compact('instructors', 'competencias'));
+    }
+
+
+
+
+
 
     public function competenciesAdd_store(Request $request)
     {
@@ -106,10 +122,37 @@ class ProgramanController extends Controller
     }
 
 
+    //asignar competencias a los perfiles de instructor registrar
+    public function competenciesAdd_store_profile_instructor(Request $request)
+    {
+        $request->validate([
+            'instructor_id' => 'required|exists:db_programacion.instructors,id',
+            'competencias' => 'required|array',
+            'competencias.*' => 'exists:db_programacion.competencies,id',
+        ]);
+
+        $instructor = Instructor::findOrFail($request->instructor_id);
+
+        // Filtrar competencias no asignadas previamente a este instructor
+        $competenciasNuevas = array_filter($request->competencias, function ($competenciaId) use ($instructor) {
+            return !$instructor->competencies->contains($competenciaId);
+        });
+
+        if (empty($competenciasNuevas)) {
+            return redirect()->back()->with('error', 'Las competencias seleccionadas ya están asignadas al instructor.');
+        }
+
+        $instructor->competencies()->attach($competenciasNuevas);
+
+        return redirect()->back()->with('success', 'Competencias asignadas correctamente al perfil del instructor.');
+    }
 
 
 
-     //metodos que permite asignar aprenices a sus fichas correspondientes
+
+
+
+    //metodos que permite asignar aprenices a sus fichas correspondientes
     public function asignarAprendiz_index()
     {
         $cohorts = Cohort::all();
@@ -251,7 +294,29 @@ class ProgramanController extends Controller
     public function instructores_index()
     {
         $instructores = Instructor::with(['person', 'speciality'])->get();
+        
 
         return view('pages.programming.Admin.programming_instructor.programming_instructor_index', compact('instructores'));
+    }
+
+
+    public function registerProgramming_index()
+    {
+        return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
+            'instructors' => Instructor::with(['person', 'competencies'])->get(), // cargar también competencias
+            'cohorts' => Cohort::all(),// alias de Program
+            'ambientes'=>Classroom::all()
+        ]);
+    }
+
+
+
+
+
+    //metodo para listar programaciones con sus estados 
+    public function  programming_index(){
+
+        return view('pages.programming.Admin.programming_instructor.programming_programming_index');
+        
     }
 }

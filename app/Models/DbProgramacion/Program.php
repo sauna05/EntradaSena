@@ -32,6 +32,8 @@ class Program extends Model
             ->using(CompetenciePrograman::class);
     }
 
+    
+
 
 
 }

@@ -47,28 +47,34 @@
                     <th>Email</th>
                     <th>Especialidad</th>
                     <th>Horas A Ejecutar</th>
-                    <th>Meses de Contracto</th>
-                    <th>Horas por dia</th>
+                    <th>Meses de Contrato</th>
+                    <th>Horas por día</th>
                     <th>Zona</th>
-                    {{--ALERTA LA TABLA PROGRAMACION TIENE HORA DURACION LO CUAL NO VA YA QUE LA DURACION LA TIENE LA COMPETENCIA ASIGNADA --}}
+                    <th>Perfil</th> {{-- Nueva columna --}}
                 </tr>
-
             </thead>
             <tbody>
                 @foreach($instructores as $index => $instructor)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{$instructor->person->document_number}}</td>
+                        <td>{{ $instructor->person->document_number }}</td>
                         <td>{{ $instructor->person->name ?? 'Sin nombre' }}</td>
                         <td>{{ $instructor->person->email ?? 'Sin email' }}</td>
-                        <td>{{ $instructor->speciality->name}}</td>
-                        <td>{{ $instructor->assigned_hours}} hr</td>
-                        <td>{{ $instructor->months_contract ?? 'Meses'}} </td>
-                        <td>{{ $instructor->hours_day}} hr </td>
+                        <td>{{ $instructor->speciality->name }}</td>
+                        <td>{{ $instructor->assigned_hours }} hr</td>
+                        <td>{{ $instructor->months_contract ?? 'Meses' }}</td>
+                        <td>{{ $instructor->hours_day }} hr</td>
                         <td>{{ $instructor->zona ?? 'Sin zona' }}</td>
+                        <td>
+                            <a href="" 
+                               style="padding: 6px 12px; background-color: #2980b9; color: white; text-decoration: none; border-radius: 4px;">
+                                Ver Perfil
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
+            
         </table>
     </div>
 </x-layout>

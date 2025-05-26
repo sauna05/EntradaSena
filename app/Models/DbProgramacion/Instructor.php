@@ -29,4 +29,12 @@ class Instructor extends Model
     {
         return $this->hasMany(Cohort::class);
     }
+
+
+
+    public function competencies()
+    {
+        return $this->belongsToMany(Competencies::class, 'instructor_competencie', 'instructor_id', 'competence_id')
+            ->using(CompetencieInstructor::class);
+    }
 }

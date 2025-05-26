@@ -264,8 +264,8 @@
                 <li>
                     <a class="menu-toggle">Programación</a>
                     <ul>
-                        <li><a href="#">Programaciones</a></li>
-                        <li><a href="{{route('programing.instructor_programan_index')}}">Gestion de Instructores</a></li>
+                        <li><a href="{{route('programming.programming_index_states')}}">Programaciones</a></li>
+                        <li><a href="{{route('programming.register_programming_instructor_index')}}">Registrar Programacion</a></li>
                         <li><a href="#">Ver Calendario</a></li>
                     </ul>
                 </li>
@@ -273,8 +273,17 @@
                     <a class="menu-toggle">Competencias</a>
                     <ul>
                         <li><a href="{{ route('programing.competencies_index') }}">Gestión de Competencias</a></li>
-                        <li><a href="{{ route('programing.competencies_index_program') }}">Vincular a Programas</a></li>
+                        <li><a href="{{ route('programing.competencies_index_program') }}">Vincular a Programas y a Fichas</a></li>
                         <li><a href="#">Programar Competencia</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="menu-toggle">Instructores</a>
+                    <ul>
+                        <li><a href="{{route('programing.instructor_programan_index')}}">Gestion de Instructores</a></li>
+                        <li><a href="{{route('programming.programming_instructors_profiles')}}">Agregar Competencias A Perfil </a></li>
+                       
+                       
                     </ul>
                 </li>
                 <li>

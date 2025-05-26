@@ -102,8 +102,22 @@ class RoleSeeder extends Seeder
         //permiso para lagestion instrcutor en el apartado de programacion instrcutor
 
         Permission::create(['name' => 'programing.instructor_programan_index'])->assignRole($role10, $role2);
+        
+        //permiso para permitir ver la vista de programacion de instrcutor
+        Permission::create(['name' => 'programing.register_programming_instructor_index'])->assignRole($role10, $role2);
 
+        //permiso para registrar programacion de instructor
+        Permission::create(['name' => 'programing.register_programming_instructor_store'])->assignRole($role10, $role2);
 
+        //permiso para el listado de programaciones y sus estados
+
+        Permission::create(['name' => 'programing.programming_index_states'])->assignRole($role10, $role2);
+
+        //permiso para la vista de asignar competencia al perfil de instructores
+        Permission::create(['name' => 'programing.instructors_competences_profile'])->assignRole($role10, $role2);
+
+        //permiso para el registro de competencia en los perfiles de instructores
+        Permission::create(['name' => 'programing.instructors_competencies_profile_store'])->assignRole($role10, $role2);
 
     }
 }

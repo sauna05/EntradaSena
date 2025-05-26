@@ -22,6 +22,9 @@ class Competencies extends Model
             ->using(CompetenciePrograman::class);
     }
 
-
-
+    public function instructors()
+    {
+        return $this->belongsToMany(Instructor::class, 'instructor_competencie', 'competence_id', 'instructor_id')
+        ->using(CompetencieInstructor::class);
+    }
 }

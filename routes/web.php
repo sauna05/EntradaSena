@@ -160,3 +160,26 @@ Route::get('programming/admin/competencies_programan_index', [ProgramanControlle
 
 Route::get('programming/admin/instructor_programan_index', [ProgramanController::class, 'instructores_index'])
     ->middleware('can:programing.instructor_programan_index')->name('programing.instructor_programan_index');
+
+
+//ruta para la vista programacion de instructor
+
+Route::get('programming/admin/instructor_programming_index', [ProgramanController::class, 'registerProgramming_index'])
+    ->middleware('can:programing.register_programming_instructor_index')->name('programming.register_programming_instructor_index');
+
+
+//ruta para listar las programaciones con sus estados
+
+Route::get('programming/admin/programmig_programming_index', [ProgramanController::class, 'programming_index'])
+    ->middleware('can:programing.programming_index_states')->name('programming.programming_index_states');
+
+
+
+
+Route::get('programming/admin/programmig_instructors_profile', [ProgramanController::class, 'asignarCompetences_index_instructor'])
+    ->middleware('can:programing.instructors_competences_profile')->name('programming.programming_instructors_profiles');
+
+
+Route::post('programming/admin/programmig_instructors_profile_store', [ProgramanController::class, 'competenciesAdd_store_profile_instructor'])
+    ->middleware('can:programing.instructors_competencies_profile_store')->name('programming.instructors_competencies_profile_store');
+
