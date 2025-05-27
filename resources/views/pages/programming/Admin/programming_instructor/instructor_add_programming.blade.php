@@ -65,16 +65,27 @@
     .two-cols > div {
       flex: 1;
     }
+    .alert-success{
+      width: 500px;
+      background-color: green;
+      color: white;
+    }
+    .alert-danger{
+      width: 500px;
+      background-color: red;
+      color: white;
+    }
+
   </style>
 
     @if (session('success'))
-        <div class="alert alert-success">
+        <div class="alert-success">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session('error'))
-        <div class="alert alert-danger">
+        <div class="alert-danger">
             {{ session('error') }}
         </div>
     @endif
@@ -97,6 +108,7 @@
 
       <label for="ficha">Ficha:</label>
       <select id="ficha" name="ficha_id">
+        <option value="">Selecione la ficha</option>
         @foreach ($cohorts as $ficha)
           <option value="{{ $ficha->id }}">{{ $ficha->number_cohort }}</option>
         @endforeach
@@ -109,6 +121,7 @@
 
       <label for="ambiente">Ambiente:</label>
       <select id="ambiente" name="ambiente_id">
+        <option value="">Selecione Ambiente</option>
         @foreach ($ambientes as $ambiente)
           <option value="{{ $ambiente->id }}">{{ $ambiente->name }}</option>
         @endforeach

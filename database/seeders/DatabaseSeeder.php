@@ -29,6 +29,7 @@ use Database\Seeders\DbProgramacion\ProgramSeeder;
 use Database\Seeders\DbProgramacion\SpecialitySeeder;
 
 use Database\Seeders\DbProgramacion\CohortSeeder;
+use Database\Seeders\DbProgramacion\CompetenceSeeder;
 use Database\Seeders\DbProgramacion\Dayseeder as DbProgramacionDayseeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -78,6 +79,7 @@ class DatabaseSeeder extends Seeder
             ClassRoomSeeder::class,
             CohortSeeder::class,
             DbProgramacionDayseeder::class,
+            CompetenceSeeder::class,
         ]);
         DB::connection('db_programacion')->commit();
     }

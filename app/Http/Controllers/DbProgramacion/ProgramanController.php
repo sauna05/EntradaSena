@@ -319,11 +319,24 @@ class ProgramanController extends Controller
 
 
 
-    //metodo para listar programaciones con sus estados
-    public function  programming_index(){
+    public function programming_index()
+    {
+        try {
+            $programaciones = Programming::with([
+                'instructor.person',  // Relación belongsTo
+                'cohort.program',     // Asumiendo que Cohort tiene relación con Program
+                'competencie',        // O mejor renombrar a 'competence'
+                'classroom',
+                'days'                // Añadir si necesitas los días
+            ])->get();
 
-        return view('pages.programming.Admin.programming_instructor.programming_programming_index');
-
+            return view(
+                'pages.programming.Admin.programming_instructor.programming_programming_index',
+                compact('programaciones')
+            );
+        } catch (Exception $ex) {
+            return redirect()->back()->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
+        }
     }
 
 

@@ -39,6 +39,6 @@ class Programming extends Model
     // Relación muchos a muchos con Day (días de la semana)
     public function days()
     {
-        return $this->belongsToMany(Day::class, 'programming_day', 'programming_id', 'day_id');
+        return $this->belongsToMany(Day::class, 'days_programing', 'programming_id', 'day_id');
     }
 }

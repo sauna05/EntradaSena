@@ -1,15 +1,3 @@
-.search-container{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.search-form{
-    margin: 1vh 2vw;
-}
-.btn-search-container{
-    margin: 1vh 2vw;
-}
-.icon {
-    width: 2vw;
+.container-body{
+    background-color: rgb(201, 21, 21);
 }
