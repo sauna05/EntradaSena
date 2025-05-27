@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('days', function (Blueprint $table) {
             $table->id();
             $table->string('name');       // Ej: Monday, Tuesday, etc.
-            $table->tinyInteger('number'); // 1 = Monday, 7 = Sunday
-            $table->boolean('is_weekend')->default(false); // true si es sábado o domingo
+            // $table->tinyInteger('number'); // 1 = Monday, 7 = Sunday
+            // $table->boolean('is_weekend')->default(false); // true si es sábado o domingo
             $table->timestamps();
         });
     }

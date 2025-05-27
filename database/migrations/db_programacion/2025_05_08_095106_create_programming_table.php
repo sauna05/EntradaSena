@@ -29,7 +29,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
 
-            $table->string('programmed_by');
+            // $table->string('programmed_by');
             $table->boolean('evaluated')->default(false);
 
             $table->timestamps();

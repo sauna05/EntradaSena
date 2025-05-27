@@ -174,6 +174,13 @@ Route::get('programming/admin/programmig_programming_index', [ProgramanControlle
     ->middleware('can:programing.programming_index_states')->name('programming.programming_index_states');
 
 
+    //ruta para registrar programacion
+
+
+    Route::post('programming/admin/programmig_programming_store', [ProgramanController::class, 'register_programmig'])
+    ->middleware('can:programing.register_programming_instructor_store')->name('programming.register_programming_instructor_store');
+
+
 
 
 Route::get('programming/admin/programmig_instructors_profile', [ProgramanController::class, 'asignarCompetences_index_instructor'])

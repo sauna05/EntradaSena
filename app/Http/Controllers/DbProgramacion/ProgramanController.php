@@ -7,9 +7,12 @@ use App\Models\DbProgramacion\Apprentice;
 use App\Models\DbProgramacion\Classroom;
 use App\Models\DbProgramacion\Cohort;
 use App\Models\DbProgramacion\Competencies;
+use App\Models\DbProgramacion\Day;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Program as dbProgramacionPrograman;
 use App\Models\DbProgramacion\Program_Level;
+use App\Models\DbProgramacion\Programming;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProgramanController extends Controller
@@ -294,18 +297,18 @@ class ProgramanController extends Controller
     public function instructores_index()
     {
         $instructores = Instructor::with(['person', 'speciality'])->get();
-        
+
 
         return view('pages.programming.Admin.programming_instructor.programming_instructor_index', compact('instructores'));
     }
 
-
-    public function registerProgramming_index()
+   public function registerProgramming_index()
     {
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
-            'instructors' => Instructor::with(['person', 'competencies'])->get(), // cargar también competencias
-            'cohorts' => Cohort::all(),// alias de Program
-            'ambientes'=>Classroom::all()
+            'instructors' => Instructor::with(['person', 'competencies'])->get(),
+            'cohorts' => Cohort::all(),
+            'ambientes' => Classroom::all(),
+            'competencias' => Competencies::all(), // Pasa todas las competencias
         ]);
     }
 
@@ -313,10 +316,64 @@ class ProgramanController extends Controller
 
 
 
-    //metodo para listar programaciones con sus estados 
+
+
+
+    //metodo para listar programaciones con sus estados
     public function  programming_index(){
 
         return view('pages.programming.Admin.programming_instructor.programming_programming_index');
-        
+
+    }
+
+
+    //metodo para registrar programacion
+
+  public function register_programmig(Request $request)
+    {
+        try {
+            // Validación de datos
+            $validated = $request->validate([
+                'instructor_id' => 'required|exists:db_programacion.instructors,id',
+                'ficha_id' => 'required|exists:db_programacion.cohorts,id',
+                'competencia_id' => 'required|exists:db_programacion.competencies,id',
+                'ambiente_id' => 'required|exists:db_programacion.classrooms,id',
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+                'hora_inicio' => 'required',
+                'hora_fin' => 'required',
+                'horas_dia' => 'required|integer|min:1|max:8',
+                'total_horas' => 'required|integer|min:1',
+                'dias' => 'required|array',
+                'dias.*' => 'string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+            ]);
+
+            // Crear la programación
+            $programming = Programming::create([
+                'id_cohort' => $validated['ficha_id'],
+                'id_instructor' => $validated['instructor_id'],
+                'id_competencie' => $validated['competencia_id'],
+                'id_classroom' => $validated['ambiente_id'],
+                'hours_duration' => $validated['total_horas'],
+                'scheduled_hours' => $validated['horas_dia'] * count($validated['dias']),
+                'iniciada' => false,
+                'start_date' => $validated['fecha_inicio'],
+                'end_date' => $validated['fecha_fin'],
+                'start_time' => $validated['hora_inicio'],
+                'end_time' => $validated['hora_fin'],
+            ]);
+
+            // Obtener IDs de los días seleccionados
+            $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
+
+            // Asociar los días a la programación (se guardan en la tabla pivote)
+            $programming->days()->sync($diasSeleccionados);
+
+            return redirect()->back()->with('success', 'Programación registrada correctamente');
+
+        } catch (Exception $e) {
+            // Captura cualquier error y muestra un mensaje
+            return redirect()->back()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
+        }
     }
 }

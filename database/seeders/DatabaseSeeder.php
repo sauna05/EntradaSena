@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Speciality;
 use App\Models\User;
+use Database\Seeders\db_programacion\Dayseeder;
 use Database\Seeders\DbProgramacion\AprenticesSeeder;
 use Database\Seeders\DbProgramacion\CohortTimeSeeder;
 use Database\Seeders\DbProgramacion\PersonSeeder as Db_programacionPersonSeeder;
@@ -28,7 +29,7 @@ use Database\Seeders\DbProgramacion\ProgramSeeder;
 use Database\Seeders\DbProgramacion\SpecialitySeeder;
 
 use Database\Seeders\DbProgramacion\CohortSeeder;
-
+use Database\Seeders\DbProgramacion\Dayseeder as DbProgramacionDayseeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
@@ -76,6 +77,7 @@ class DatabaseSeeder extends Seeder
             BlokSeeder::class,
             ClassRoomSeeder::class,
             CohortSeeder::class,
+            DbProgramacionDayseeder::class,
         ]);
         DB::connection('db_programacion')->commit();
     }
