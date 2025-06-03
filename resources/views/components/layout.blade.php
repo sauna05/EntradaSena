@@ -307,7 +307,7 @@
                 <li>
                     <a class="menu-toggle">Ambientes</a>
                     <ul>
-                        <li><a href="">Gestion de Ambientes</a></li>
+                        <li><a href="{{route('ambientes_index')}}">Gestion de Ambientes</a></li>
                       
                         <li><a href="#">Agregar desde Senasofia</a></li>
                     </ul>

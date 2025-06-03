@@ -119,5 +119,16 @@ class RoleSeeder extends Seeder
         //permiso para el registro de competencia en los perfiles de instructores
         Permission::create(['name' => 'programing.instructors_competencies_profile_store'])->assignRole($role10, $role2);
 
+        //permisos de la gestion de ambientes 
+        //permiso para la visualizacion de ambientes
+        Permission::create(['name' => 'programing.classrooms_programming_classrooms_index'])->assignRole($role10, $role2);
+
+        //permiso para el agregado de ambientes
+
+        Permission::create(['name' => 'programing.classrooms_programming_classrooms_store'])->assignRole($role10, $role2);
+
+        
+
+
     }
 }

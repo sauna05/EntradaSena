@@ -27,4 +27,9 @@ class Classroom extends Model
     {
         return $this->hasMany(Cohort::class);
     }
+
+    public function programming()
+    {
+        return $this->hasMany(Programming::class, 'id_classroom');
+    }
 }

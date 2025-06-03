@@ -130,21 +130,20 @@
                               {{ $programacion->end_time}}
                           </td>
                           <td>
-                              @php
-                                  // Usar el campo 'iniciada' si no tienes 'status'
-                                  $status = $programacion->iniciada ? 'active' : 'pending';
-                                  $statusClass = match($status) {
-                                      'active' => 'status-active',
-                                      'pending' => 'status-pending',
-                                      'cancelled' => 'status-cancelled',
-                                      'completed' => 'status-completed',
-                                      default => 'status-pending'
-                                  };
-                              @endphp
-                              <span class="status {{ $statusClass }}">
-                                  {{ ucfirst($status) }}
-                              </span>
-                          </td>
+                            @php
+                            $estados = [
+                                'en_ejecucion' => ['color' => 'status-pending', 'text' => 'En ejecución'],
+                                'finalizada_evaluada' => ['color' => 'status-active', 'text' => 'Finalizada y evaluada'],
+                                'finalizada_no_evaluada' => ['color' => 'status-cancelled', 'text' => 'Finalizada sin evaluar'],
+                            ];
+                            $estado = $estados[$programacion->estado] ?? ['color' => 'status-completed', 'text' => 'Desconocido'];
+                        @endphp
+                        <span class="status {{ $estado['color'] }}">
+                            {{ $estado['text'] }}
+                        </span>
+                        
+                        </td>
+                        
                       </tr>
                   @empty
                       <tr>

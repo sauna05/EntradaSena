@@ -190,3 +190,6 @@ Route::get('programming/admin/programmig_instructors_profile', [ProgramanControl
 Route::post('programming/admin/programmig_instructors_profile_store', [ProgramanController::class, 'competenciesAdd_store_profile_instructor'])
     ->middleware('can:programing.instructors_competencies_profile_store')->name('programming.instructors_competencies_profile_store');
 
+
+Route::get('programming/admin/Ambientes_classrom_index', [ProgramanController::class, 'index_classroom'])
+    ->middleware('can:programing.classrooms_programming_classrooms_index')->name('ambientes_index');

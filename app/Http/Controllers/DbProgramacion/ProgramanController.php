@@ -12,6 +12,7 @@ use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Program as dbProgramacionPrograman;
 use App\Models\DbProgramacion\Program_Level;
 use App\Models\DbProgramacion\Programming;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -287,10 +288,7 @@ class ProgramanController extends Controller
             return redirect()->back()->with('success', 'Competencia registrada correctamente.');
         }
 
-        public function ambientes_index(){
-
-            return view('pages.programming.Admin.Ambientes.ambientes_index');
-        }
+       
 
     //metodo de controlador para listar  los instructores que estan registrados
 
@@ -318,34 +316,43 @@ class ProgramanController extends Controller
 
 
 
-
     public function programming_index()
     {
         try {
             $programaciones = Programming::with([
-                'instructor.person',  // Relación belongsTo
-                'cohort.program',     // Asumiendo que Cohort tiene relación con Program
-                'competencie',        // O mejor renombrar a 'competence'
+                'instructor.person',
+                'cohort.program',
+                'competencie',
                 'classroom',
-                'days'                // Añadir si necesitas los días
+                'days'
             ])->get();
 
-            return view(
-                'pages.programming.Admin.programming_instructor.programming_programming_index',
-                compact('programaciones')
-            );
+            $now = Carbon::now();
+
+            foreach ($programaciones as $prog) {
+                if ($now->gt(Carbon::parse($prog->end_date))) {
+                    // Finalizada
+                    $prog->estado = $prog->evaluated ? 'finalizada_evaluada' : 'finalizada_no_evaluada';
+                } else {
+                    // Siempre que esté activa (por defecto al crearla)
+                    $prog->estado = 'en_ejecucion';
+                }
+            }
+
+            return view('pages.programming.Admin.programming_instructor.programming_programming_index', compact('programaciones'));
         } catch (Exception $ex) {
             return redirect()->back()->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
         }
     }
 
 
+
     //metodo para registrar programacion
 
-  public function register_programmig(Request $request)
+    public function register_programmig(Request $request)
     {
         try {
-            // Validación de datos
+            // Validación de los datos recibidos
             $validated = $request->validate([
                 'instructor_id' => 'required|exists:db_programacion.instructors,id',
                 'ficha_id' => 'required|exists:db_programacion.cohorts,id',
@@ -361,7 +368,42 @@ class ProgramanController extends Controller
                 'dias.*' => 'string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
             ]);
 
-            // Crear la programación
+            // Convertir horas a objetos Carbon
+            $horaInicioNueva = Carbon::parse($validated['hora_inicio']);
+            $horaFinNueva = Carbon::parse($validated['hora_fin']);
+
+            // Buscar programaciones que usen el mismo ambiente y se crucen en fechas
+            $programacionesExistentes = Programming::where('id_classroom', $validated['ambiente_id'])
+                ->where(function ($query) use ($validated) {
+                    $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhereBetween('end_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhere(function ($query) use ($validated) {
+                            $query->where('start_date', '<=', $validated['fecha_inicio'])
+                                ->where('end_date', '>=', $validated['fecha_fin']);
+                        });
+                })
+                ->with('days') // para consultar los días asociados
+                ->get();
+
+            // Validar choques de horario en los días seleccionados
+            foreach ($programacionesExistentes as $programacion) {
+                $diasProgramados = $programacion->days->pluck('name')->toArray();
+                $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
+
+                if (!empty($diasCoinciden)) {
+                    $horaInicioExistente = Carbon::parse($programacion->start_time);
+                    $horaFinExistente = Carbon::parse($programacion->end_time);
+
+                    // Verificar si hay solapamiento en horario
+                    $haySolapamiento = $horaInicioNueva < $horaFinExistente && $horaFinNueva > $horaInicioExistente;
+
+                    if ($haySolapamiento) {
+                        return redirect()->back()->with('error', 'El ambiente ya está ocupado en alguno de los días seleccionados durante ese horario.');
+                    }
+                }
+            }
+
+            // Crear la programación si no hay conflictos
             $programming = Programming::create([
                 'id_cohort' => $validated['ficha_id'],
                 'id_instructor' => $validated['instructor_id'],
@@ -376,17 +418,90 @@ class ProgramanController extends Controller
                 'end_time' => $validated['hora_fin'],
             ]);
 
-            // Obtener IDs de los días seleccionados
+            // Asociar los días seleccionados con la programación
             $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
-
-            // Asociar los días a la programación (se guardan en la tabla pivote)
             $programming->days()->sync($diasSeleccionados);
 
             return redirect()->back()->with('success', 'Programación registrada correctamente');
-
         } catch (Exception $e) {
-            // Captura cualquier error y muestra un mensaje
             return redirect()->back()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
         }
+    }
+    //metodo que retorna la vista de ambientes de que horario estan disponibles cuales estan disponibles o no
+
+
+    public function index_classroom()
+    {
+        $ambientes = Classroom::with('programming')->get();
+
+        $jornadaInicio = '08:00:00';
+        $jornadaFin = '18:00:00';
+
+        $ambientes->each(function ($ambiente) use ($jornadaInicio, $jornadaFin) {
+            // ✅ Filtrar solo programaciones que aún están activas (no han terminado)
+            $programaciones = $ambiente->programming->filter(function ($p) {
+                return Carbon::parse($p->end_date)->gte(Carbon::today());
+            });
+
+            if ($programaciones->isEmpty()) {
+                $ambiente->rango_fechas = null;
+                $ambiente->horas_programadas = [];
+                $ambiente->horas_disponibles = [[
+                    'start' => $jornadaInicio,
+                    'end' => $jornadaFin
+                ]];
+                return;
+            }
+
+            $fechaInicioRango = Carbon::parse($programaciones->min('start_date'));
+            $fechaFinRango = Carbon::parse($programaciones->max('end_date'));
+
+            $ambiente->rango_fechas = [
+                'inicio' => $fechaInicioRango->toDateString(),
+                'fin' => $fechaFinRango->toDateString(),
+            ];
+
+            $bloques = [];
+
+            foreach ($programaciones as $programacion) {
+                $fechaInicio = Carbon::parse($programacion->start_date);
+                $fechaFin = Carbon::parse($programacion->end_date);
+
+                while ($fechaInicio->lte($fechaFin)) {
+                    $bloques[] = [
+                        'start' => $programacion->start_time,
+                        'end' => $programacion->end_time,
+                    ];
+                    $fechaInicio->addDay();
+                }
+            }
+
+            $horasProgramadas = collect($bloques)->unique()->sortBy('start')->values();
+
+            $horasDisponibles = [];
+            $horaActual = $jornadaInicio;
+
+            foreach ($horasProgramadas as $bloque) {
+                if ($horaActual < $bloque['start']) {
+                    $horasDisponibles[] = [
+                        'start' => $horaActual,
+                        'end' => $bloque['start'],
+                    ];
+                }
+                $horaActual = max($horaActual, $bloque['end']);
+            }
+
+            if ($horaActual < $jornadaFin) {
+                $horasDisponibles[] = [
+                    'start' => $horaActual,
+                    'end' => $jornadaFin,
+                ];
+            }
+
+            $ambiente->horas_programadas = $horasProgramadas;
+            $ambiente->horas_disponibles = $horasDisponibles;
+        });
+
+        return view('pages.programming.Admin.Ambientes.ambientes_index', compact('ambientes'));
     }
 }
