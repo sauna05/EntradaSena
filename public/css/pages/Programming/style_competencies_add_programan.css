@@ -1,5 +1,5 @@
 .container {
-            max-width: 900px;
+            max-width: 900%;
             margin: 40px auto;
             padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,8 +34,8 @@
         }
 
         table {
-            width: 100%;
-            margin-top: 20px;
+            width: 90%;
+            margin-top: 10px;
             border-collapse: collapse;
             font-size: 15px;
             color: #444;

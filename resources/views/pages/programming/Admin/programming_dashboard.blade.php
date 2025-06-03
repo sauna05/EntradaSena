@@ -7,14 +7,14 @@
     <h3>Lista de Programas</h3>
 
     <!-- Botón para abrir modal -->
-    <a href="#" onclick="openModal()" class="submit-btn">Agregar Programa</a>
+    <a  href="#" onclick="openModal()" class="submit-btn">➕ Agregar Programa</a>
 
     <!-- Tabla de programas -->
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Programa</th>
                 <th>Código del Programa</th>
+                <th>Programa</th>
                 <th>Versión</th>
                 <th>Nivel</th>
             </tr>
@@ -22,8 +22,8 @@
         <tbody>
             @foreach($programs as $program)
                 <tr>
-                    <td>{{ $program->name }}</td>
                     <td>{{ $program->program_code }}</td>
+                    <td>{{ $program->name }}</td>
                     <td>{{ $program->program_version }}</td>
                     <td>{{ $program->id_level == 1 ? 'Técnico' : 'Tecnólogo' }}</td>
                 </tr>

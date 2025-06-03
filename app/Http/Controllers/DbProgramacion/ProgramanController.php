@@ -368,12 +368,13 @@ class ProgramanController extends Controller
                 'dias.*' => 'string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
             ]);
 
-            // Convertir horas a objetos Carbon
             $horaInicioNueva = Carbon::parse($validated['hora_inicio']);
             $horaFinNueva = Carbon::parse($validated['hora_fin']);
 
-            // Buscar programaciones que usen el mismo ambiente y se crucen en fechas
-            $programacionesExistentes = Programming::where('id_classroom', $validated['ambiente_id'])
+            /** ------------------------------
+             * VALIDACIÓN DE AMBIENTE OCUPADO
+             * ------------------------------ */
+            $programacionesAmbiente = Programming::where('id_classroom', $validated['ambiente_id'])
                 ->where(function ($query) use ($validated) {
                     $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
                         ->orWhereBetween('end_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
@@ -382,11 +383,10 @@ class ProgramanController extends Controller
                                 ->where('end_date', '>=', $validated['fecha_fin']);
                         });
                 })
-                ->with('days') // para consultar los días asociados
+                ->with('days')
                 ->get();
 
-            // Validar choques de horario en los días seleccionados
-            foreach ($programacionesExistentes as $programacion) {
+            foreach ($programacionesAmbiente as $programacion) {
                 $diasProgramados = $programacion->days->pluck('name')->toArray();
                 $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
 
@@ -394,11 +394,37 @@ class ProgramanController extends Controller
                     $horaInicioExistente = Carbon::parse($programacion->start_time);
                     $horaFinExistente = Carbon::parse($programacion->end_time);
 
-                    // Verificar si hay solapamiento en horario
-                    $haySolapamiento = $horaInicioNueva < $horaFinExistente && $horaFinNueva > $horaInicioExistente;
-
-                    if ($haySolapamiento) {
+                    if ($horaInicioNueva < $horaFinExistente && $horaFinNueva > $horaInicioExistente) {
                         return redirect()->back()->with('error', 'El ambiente ya está ocupado en alguno de los días seleccionados durante ese horario.');
+                    }
+                }
+            }
+
+            /** --------------------------------------------
+             * VALIDACIÓN DE INSTRUCTOR CON DOBLE ASIGNACIÓN
+             * -------------------------------------------- */
+            $programacionesInstructor = Programming::where('id_instructor', $validated['instructor_id'])
+                ->where(function ($query) use ($validated) {
+                    $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhereBetween('end_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhere(function ($query) use ($validated) {
+                            $query->where('start_date', '<=', $validated['fecha_inicio'])
+                                ->where('end_date', '>=', $validated['fecha_fin']);
+                        });
+                })
+                ->with('days')
+                ->get();
+
+            foreach ($programacionesInstructor as $programacion) {
+                $diasProgramados = $programacion->days->pluck('name')->toArray();
+                $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
+
+                if (!empty($diasCoinciden)) {
+                    $horaInicioExistente = Carbon::parse($programacion->start_time);
+                    $horaFinExistente = Carbon::parse($programacion->end_time);
+
+                    if ($horaInicioNueva < $horaFinExistente && $horaFinNueva > $horaInicioExistente) {
+                        return redirect()->back()->with('error', 'El instructor ya tiene una programación en alguno de los días seleccionados durante ese horario.');
                     }
                 }
             }
@@ -418,7 +444,7 @@ class ProgramanController extends Controller
                 'end_time' => $validated['hora_fin'],
             ]);
 
-            // Asociar los días seleccionados con la programación
+            // Asociar los días seleccionados
             $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
             $programming->days()->sync($diasSeleccionados);
 
@@ -427,7 +453,6 @@ class ProgramanController extends Controller
             return redirect()->back()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
         }
     }
-    //metodo que retorna la vista de ambientes de que horario estan disponibles cuales estan disponibles o no
 
 
     public function index_classroom()

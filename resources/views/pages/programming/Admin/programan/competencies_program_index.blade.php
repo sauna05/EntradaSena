@@ -5,9 +5,12 @@
 
     <style>
         .container {
-            padding: 40px;
+          padding: 40px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
+            border-radius: 6px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            border: 1px solid #f3f0f0;
+            background-color: white;
         }
 
         h2.title {

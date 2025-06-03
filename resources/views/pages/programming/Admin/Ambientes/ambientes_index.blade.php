@@ -3,12 +3,14 @@
     <x-slot:title>Listado de Competencias</x-slot:title>
 
     <style>
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+       .container {
+        max-width: 950px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
 
         h1 {
             color: #2c3e50;

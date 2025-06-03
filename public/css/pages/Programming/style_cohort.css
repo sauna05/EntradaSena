@@ -6,13 +6,12 @@ body {
 }
 
 .container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 30px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    box-sizing: border-box;
+    padding: 40px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-radius: 6px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f3f0f0;
+        background-color: white;
 }
 
 h2,
