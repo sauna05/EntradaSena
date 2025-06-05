@@ -198,7 +198,8 @@
       </div>
       <div>
         <label for="total_horas">Total de Horas de la Competencia:</label>
-        <input type="number" id="total_horas" name="total_horas" value="{{ old('total_horas',40) }}" required />
+        <input type="number" id="total_horas" name="total_horas" value="{{ old('total_horas') }}" required readonly />
+
       </div>
     </div>
 
@@ -214,13 +215,43 @@
       })
   );
 
-  // Lista de todas las competencias (id y nombre)
-  const todasLasCompetencias = @json($competencias->map(function($comp) {
-      return ['id' => $comp->id, 'name' => $comp->name];
-  }));
+ 
+
+
 
   const selectInstructor = document.getElementById('instructor');
   const selectCompetencia = document.getElementById('competencia');
+  const totalHorasInput = document.getElementById('total_horas');
+
+   const todasLasCompetencias = @json($competencias->map(function($comp) {
+    return ['id' => $comp->id, 'name' => $comp->name, 'hours' => $comp->duration_hours ?? $comp->hours ?? 40];
+}));
+
+  
+
+  selectCompetencia.addEventListener('change', function() {
+      const competenciaId = parseInt(this.value);
+
+      if (!competenciaId) {
+          totalHorasInput.value = '';
+          return;
+      }
+
+      const competencia = todasLasCompetencias.find(c => c.id === competenciaId);
+
+      if (competencia) {
+          totalHorasInput.value = competencia.hours;
+      } else {
+          totalHorasInput.value = '';
+      }
+  });
+
+  if (selectInstructor.value) {
+      selectInstructor.dispatchEvent(new Event('change'));
+  }
+  if (selectCompetencia.value) {
+      selectCompetencia.dispatchEvent(new Event('change'));
+  }
 
   selectInstructor.addEventListener('change', function() {
       const instructorId = this.value;
@@ -322,6 +353,8 @@
           fechaFin.value = '';
       }
   });
+
+  
 
   // Validar días seleccionados
   const form = document.getElementById('programmingForm');
