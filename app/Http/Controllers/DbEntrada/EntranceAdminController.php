@@ -81,122 +81,136 @@ class EntranceAdminController extends Controller
          'instructor_status' => $instructor_status
         ]);
     }
-
-    public function peopleStore(Request $request){
-        //Datos de la persona
+        public function peopleStore(Request $request)
+        {
+            // Validación personalizada
             $request->validate([
-           'id_position' => 'required',
-           'id_town' => 'required', 
-           'document_number' => 'required',
-            'name' => 'required',
-            'phone_number' => 'required',
-            'start_date' => 'required|date',
-           'end_date' => 'required|date|after_or_equal:start_date',
-            
-        ]);
+                'id_position' => 'required',
+                'id_town' => 'required',
+                'document_number' => 'required',
+                'name' => 'required',
+                'phone_number' => 'required',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'email' => 'required|email',
+                'address' => 'required',
+            ], [
+                'id_position.required' => 'El campo cargo es obligatorio.',
+                'id_town.required' => 'El campo municipio es obligatorio.',
+                'document_number.required' => 'El campo número de documento es obligatorio.',
+                'name.required' => 'El campo nombre es obligatorio.',
+                'phone_number.required' => 'El campo número de teléfono es obligatorio.',
+                'start_date.required' => 'La fecha de inicio es obligatoria.',
+                'start_date.date' => 'La fecha de inicio debe ser una fecha válida.',
+                'end_date.required' => 'La fecha de finalización es obligatoria.',
+                'end_date.date' => 'La fecha de finalización debe ser una fecha válida.',
+                'end_date.after_or_equal' => 'La fecha de finalización debe ser igual o posterior a la fecha de inicio.',
+                'email.required' => 'El correo electrónico es obligatorio.',
+                'email.email' => 'Debe ingresar un correo electrónico válido.',
+                'address.required' => 'La dirección es obligatoria.',
+            ]);
 
-        //Buscar el Id del cargo (de la vista se saca el nombre para prevenir errores a futuro)
-        $position = Position::where('name', $request->id_position)->first();
-        
-        //Si ya la persona se registró, cancelar
-        if(Person::where('document_number',$request->document_number)->exists()){
-            return redirect()->route('entrance.people.index')->with('message', 'Ya existe una persona en el centro con este numero de documento');
-        }
-        //El registro db_entrada (No importa el rol)
-        $person = Person::create([
-            'id_position' => $position->id,
-            'name' => $request->name,
-            'document_number' => $request->document_number,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date
-        ]);
-        
-        //Se vinculan los días de la semana que puede venir (por defecto lunes a viernes)
-        $person->days_available()->sync($request->days);
+            // Buscar cargo
+            $position = Position::where('name', $request->id_position)->first();
 
+            // Validación de persona ya registrada
+            if (Person::where('document_number', $request->document_number)->exists()) {
+                return redirect()->route('entrance.people.index')->with('message', 'Ya existe una persona en el centro con este número de documento');
+            }
 
-        switch($request->id_position){
-            case "Aprendiz":
-                
-                if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
-                    return redirect()->route('entrance.people.index')->with('message', 'El aprendiz ya está registrado en la programación.');
-                }
+            // Crear persona
+            $person = Person::create([
+                'id_position' => $position->id,
+                'name' => $request->name,
+                'document_number' => $request->document_number,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
 
-                //Registrar el aprendiz en db_programacion
-                $personProg = DbProgramacionPerson::create([
-                    'document_number'=> $request->document_number,
-                    'name'=> $request->name,
-                    'id_position' => $position->id,
-                    'id_town' => $request->id_town,
-                    'email' => $request->email ,
-                    'address' => $request->address ,
-                    'phone_number' => $request->phone_number 
-                ]);
-                
-                $apprenticeStatus = ApprenticeStatus::where('name','En Formación')->first();
+            // Días disponibles
+            $person->days_available()->sync($request->days);
 
-                //Se registra en la tabla aprendiz de db_programacion
-                Apprentice::create([
-                    'id_person' => $personProg->id,
-                    'id_status' => $apprenticeStatus->id,
-                ]);
-                break;
+            switch ($request->id_position) {
+                case "Aprendiz":
+                    if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
+                        return redirect()->route('entrance.people.index')->with('message', 'El aprendiz ya está registrado en la programación.');
+                    }
 
-            case "Instructor":
-                
-                if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
-                    return redirect()->route('entrance.people.index')->with('message', 'El instructor ya está registrado en la programación.');
-                }   
-                $instructorData = $request->validate([
-                    'id_link_type' => 'required',
-                    'id_speciality' => 'required',
-                    'id_instructor_status' => 'required',
-                    'assigned_hours' => 'required',
-                    'months_contract' => 'required',
-                    'hours_day' => 'required'
-                ]);
+                    $personProg = DbProgramacionPerson::create([
+                        'document_number' => $request->document_number,
+                        'name' => $request->name,
+                        'id_position' => $position->id,
+                        'id_town' => $request->id_town,
+                        'email' => $request->email,
+                        'address' => $request->address,
+                        'phone_number' => $request->phone_number
+                    ]);
 
-                //Se registra al instructor en db_programacion en la tabla People
-                $personProg = DbProgramacionPerson::create([
-                    'id_position' => $position->id,
-                    'document_number' => $request->document_number,
-                    'name' => $request->name,
-                    'id_town' => $request->id_town,
-                    'email' => $request->email,
-                    'address' => $request->address,
-                    'phone_number' => $request->phone_number
-                ]);
-                //Se registra al instructor en db_progrmacion en la tabla Instructors
-                Instructor::create([
-                    'id_person' => $personProg->id,
-                    'id_status' => $instructorData['id_instructor_status'],
-                    'id_link_type' => $instructorData['id_link_type'],
-                    'id_speciality' => $instructorData['id_speciality'],
-                    'assigned_hours' => $instructorData['assigned_hours'],
-                    'months_contract'  => $instructorData['months_contract'],
-                    'hours_day' => $instructorData['hours_day'],
-                ]);
-                break;
+                    $apprenticeStatus = ApprenticeStatus::where('name', 'En Formación')->first();
 
+                    Apprentice::create([
+                        'id_person' => $personProg->id,
+                        'id_status' => $apprenticeStatus->id,
+                    ]);
+                    break;
 
-            default:
-                return back()->with('error', 'Cargo no válido');
-        }
-        //Creacion del usuario 
-                $user = User::create([
+                case "Instructor":
+                    if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
+                        return redirect()->route('entrance.people.index')->with('message', 'El instructor ya está registrado en la programación.');
+                    }
+
+                    $instructorData = $request->validate([
+                        'id_link_type' => 'required',
+                        'id_speciality' => 'required',
+                        'id_instructor_status' => 'required',
+                        'assigned_hours' => 'required',
+                        'months_contract' => 'required',
+                        'hours_day' => 'required'
+                    ], [
+                        'id_link_type.required' => 'El tipo de vinculación es obligatorio.',
+                        'id_speciality.required' => 'La especialidad es obligatoria.',
+                        'id_instructor_status.required' => 'El estado del instructor es obligatorio.',
+                        'assigned_hours.required' => 'Las horas asignadas son obligatorias.',
+                        'months_contract.required' => 'Los meses de contrato son obligatorios.',
+                        'hours_day.required' => 'Las horas por día son obligatorias.',
+                    ]);
+
+                    $personProg = DbProgramacionPerson::create([
+                        'id_position' => $position->id,
+                        'document_number' => $request->document_number,
+                        'name' => $request->name,
+                        'id_town' => $request->id_town,
+                        'email' => $request->email,
+                        'address' => $request->address,
+                        'phone_number' => $request->phone_number
+                    ]);
+
+                    Instructor::create([
+                        'id_person' => $personProg->id,
+                        'id_status' => $instructorData['id_instructor_status'],
+                        'id_link_type' => $instructorData['id_link_type'],
+                        'id_speciality' => $instructorData['id_speciality'],
+                        'assigned_hours' => $instructorData['assigned_hours'],
+                        'months_contract'  => $instructorData['months_contract'],
+                        'hours_day' => $instructorData['hours_day'],
+                    ]);
+                    break;
+
+                default:
+                    return back()->with('error', 'Cargo no válido');
+            }
+
+            // Crear usuario
+            $user = User::create([
                 'id_person' => $person->id,
                 'user_name' => $person->document_number,
                 'password' => bcrypt($person->document_number)
             ]);
-                $user->assignRole($request->id_position);
-        
+            $user->assignRole($request->id_position);
 
-        //As    ignar los días que vendrá la persona
+            return redirect()->route('entrance.people.index')->with('message', 'Persona Registrada Correctamente');
+        }
 
-
-        return redirect()->route('entrance.people.index')->with('message','Persona Registrada Correctamente');
-        
-    }
 
     public function peopleEdit($id){
         $person = Person::findOrFail($id);

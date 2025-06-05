@@ -304,7 +304,7 @@ class ProgramanController extends Controller
     {
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
             'instructors' => Instructor::with(['person', 'competencies'])->get(),
-            'cohorts' => Cohort::all(),
+            'cohorts' => Cohort::with('program')->get(),
             'ambientes' => Classroom::all(),
             'competencias' => Competencies::all(), // Pasa todas las competencias
         ]);

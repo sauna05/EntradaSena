@@ -169,12 +169,24 @@
         <h1>PERSONAS EN EL CENTRO DE FORMACIÓN</h1>
 
         @if (session('message'))
-            <div class="session-message">
+            <div id="session-message" class="session-message">
                 <i class="fas fa-check-circle"></i>
                 {{ session('message') }}
             </div>
+    
+            <script>
+                // Espera 4 segundos (4000 milisegundos) y luego oculta el mensaje
+                setTimeout(function () {
+                    const message = document.getElementById('session-message');
+                    if (message) {
+                        message.style.transition = "opacity 0.5s ease-out";
+                        message.style.opacity = 0;
+                        // Opcional: eliminar del DOM después de la animación
+                        setTimeout(() => message.remove(), 500);
+                    }
+                }, 4000);
+            </script>
         @endif
-
         <section class="search-container">
             {{-- Formulario de búsqueda --}}
             <form method="GET" action="{{ route('entrance.people.index') }}" class="search-form">
@@ -199,13 +211,13 @@
                 </div>
             </form>
 
-            <div class="btn-search-container">
+            {{-- <div class="btn-search-container">
                 <a href="{{ route('entrance.people.create') }}">
                     <x-button>
                         <i class="fas fa-user-plus"></i> Registrar Persona
                     </x-button>
                 </a>
-            </div>
+            </div> --}}
         </section>
 
         {{-- Tabla de personas --}}

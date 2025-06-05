@@ -139,7 +139,7 @@
     <select id="ficha" name="ficha_id" required>
       <option value="">Selecione la ficha</option>
       @foreach ($cohorts as $ficha)
-        <option value="{{ $ficha->id }}" {{ old('ficha_id') == $ficha->id ? 'selected' : '' }}>{{ $ficha->number_cohort }}</option>
+        <option value="{{ $ficha->id }}" {{ old('ficha_id') == $ficha->id ? 'selected' : '' }}>{{ $ficha->number_cohort }} - {{$ficha->program->name}}</option>
       @endforeach
     </select>
 
@@ -198,7 +198,7 @@
       </div>
       <div>
         <label for="total_horas">Total de Horas de la Competencia:</label>
-        <input type="number" id="total_horas" name="total_horas" value="{{ old('total_horas', 40) }}" required />
+        <input type="number" id="total_horas" name="total_horas" value="{{ old('total_horas',40) }}" required />
       </div>
     </div>
 

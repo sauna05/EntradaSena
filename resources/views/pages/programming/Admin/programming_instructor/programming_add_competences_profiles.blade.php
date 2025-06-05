@@ -9,12 +9,12 @@
         <form action="{{route('programming.instructors_competencies_profile_store')}}" method="POST" id="asignarForm">
             @csrf
 
-            <label for="isntructor">Selecciona un instructor:</label>
+            <label for="isntructor">Selecciona un instructor Segun su especialidad:</label>
             <select id="programa" name="instructor_id" required>
-                <option value="">-- Selecciona un instructor --</option>
+                <option value=""> Selecciona un instructor </option>
                 @forelse ($instructors as $perfil)
                     <option value="{{ $perfil->id }}">
-                        {{ $perfil->person->name }} - {{ $perfil->person->document_number }}
+                        {{ $perfil->person->document_number }} - {{ $perfil->person->name }} - {{$perfil->speciality->name}}
                     </option>
                 @empty
                     <option disabled>No hay instructores disponibles</option>

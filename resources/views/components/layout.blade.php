@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ $title ?? 'Sistema SENA' }}</title>
     <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         :root {
             --verde-sena: #39A900;
@@ -257,61 +258,72 @@
         <nav class="sidebar" aria-label="Menú lateral">
             <ul class="sidebar-menu">
                 <li>
-                    <a class="menu-toggle">Programas</a>
-                    <ul>
-                        <li><a href="{{ route('programming.admin') }}">Gestión Programas</a></li>
-                        <li><a href="{{ route('programing.competencies_program_index') }}">Competencias Vinculadas</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="menu-toggle">Programación</a>
-                    <ul>
-                        <li><a href="{{route('programming.programming_index_states')}}">Programaciones</a></li>
-                        <li><a href="{{route('programming.register_programming_instructor_index')}}">Registrar Programacion</a></li>
-                        <li><a href="#">Ver Calendario</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="menu-toggle">Competencias</a>
-                    <ul>
-                        <li><a href="{{ route('programing.competencies_index') }}">Gestión de Competencias</a></li>
-                        <li><a href="{{ route('programing.competencies_index_program') }}">Vincular a Programas y a Fichas</a></li>
-                        <li><a href="#">Programar Competencia</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="menu-toggle">Instructores</a>
-                    <ul>
-                        <li><a href="{{route('programing.instructor_programan_index')}}">Gestion de Instructores</a></li>
-                        <li><a href="{{route('programming.programming_instructors_profiles')}}">Agregar Competencias A Perfil </a></li>
-                       
-                       
-                    </ul>
-                </li>
-                <li>
-                    <a class="menu-toggle">Aprendiz</a>
-                    <ul>
-                        <li><a href="{{ route('programing.list_apprentices') }}">Gestión de Aprendiz</a></li>
-                        <li><a href="#">Asignar Ficha</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="menu-toggle">Fichas</a>
-                    <ul>
-                        <li><a href="{{ route('programing.cohort_index') }}">Gestión de Fichas</a></li>
-                        <li><a href="{{ route('programing.add_apprentices_cohorts') }}">Agregar Aprendiz a Ficha</a></li>
-                        <li><a href="#">Agregar desde Senasofia</a></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a class="menu-toggle">Ambientes</a>
-                    <ul>
-                        <li><a href="{{route('ambientes_index')}}">Gestion de Ambientes</a></li>
-                      
-                        <li><a href="#">Agregar desde Senasofia</a></li>
-                    </ul>
-                </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-graduation-cap"></i> Programas
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('programming.admin') }}"><i class="fa-solid fa-clipboard-list"></i> Gestión Programas</a></li>
+                            <li><a href="{{ route('programing.competencies_program_index') }}"><i class="fa-solid fa-link"></i> Competencias Vinculadas</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-calendar-alt"></i> Programación
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('programming.programming_index_states') }}"><i class="fa-solid fa-table-list"></i> Programaciones</a></li>
+                            <li><a href="{{ route('programming.register_programming_instructor_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programación</a></li>
+                            <li><a href="#"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-cubes"></i> Competencias
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('programing.competencies_index') }}"><i class="fa-solid fa-list-check"></i> Gestión de Competencias</a></li>
+                            <li><a href="{{ route('programing.competencies_index_program') }}"><i class="fa-solid fa-share-nodes"></i> Vincular a Programas y Fichas</a></li>
+                            <li><a href="#"><i class="fa-solid fa-clock"></i> Programar Competencia</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-chalkboard-user"></i> Instructores
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('programing.instructor_programan_index') }}"><i class="fa-solid fa-users-gear"></i> Gestión de Instructores</a></li>
+                            <li><a href="{{ route('programming.programming_instructors_profiles') }}"><i class="fa-solid fa-user-plus"></i> Agregar Competencias A Perfil</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-user-graduate"></i> Aprendiz
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('programing.list_apprentices') }}"><i class="fa-solid fa-address-card"></i> Gestión de Aprendiz</a></li>
+                            <li><a href="#"><i class="fa-solid fa-id-card-clip"></i> Asignar Ficha</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-folder-open"></i> Fichas
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('programing.cohort_index') }}"><i class="fa-solid fa-file-lines"></i> Gestión de Fichas</a></li>
+                            <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Agregar Aprendiz a Ficha</a></li>
+                            <li><a href="#"><i class="fa-solid fa-cloud-arrow-down"></i> Agregar desde Senasofia</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-toggle">
+                            <i class="fa-solid fa-building-user"></i> Ambientes
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('ambientes_index') }}"><i class="fa-solid fa-warehouse"></i> Gestión de Ambientes</a></li>
+                            <li><a href="#"><i class="fa-solid fa-cloud-download-alt"></i> Agregar desde Senasofia</a></li>
+                        </ul>
+                    </li>
             </ul>
         </nav>
 

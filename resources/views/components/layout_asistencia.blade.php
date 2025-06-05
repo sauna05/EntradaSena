@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ $title ?? 'Sistema SENA' }}</title>
     <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
     <style>
         :root {
             --verde-sena: #39A900;
@@ -255,23 +257,32 @@
         <nav class="sidebar" aria-label="Menú lateral">
             <ul class="sidebar-menu">
                 <li>
-                    <a class="menu-toggle">Gestion de Personas</a>
+                    <a class="menu-toggle">
+                        <i class="fas fa-users" style="margin-right: 10px;"></i>
+                        <span>Gestión de Personas</span>
+                    </a>
                     <ul>
-                         <li ><a href="{{route('entrance.people.index')}}">Personas</a></li>
+                        <li><a href="{{route('entrance.people.index')}}"><i class="fas fa-id-card"></i> Personas</a></li>
+                        <li><a href="{{ route('entrance.people.create') }}"><i class="fas fa-user-plus"></i> Gestión de Registros</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a class="menu-toggle">Gestion de asistencia</a>
+                    <a class="menu-toggle">
+                        <i class="fas fa-calendar-check" style="margin-right: 10px;"></i>
+                        <span>Gestión de Asistencia</span>
+                    </a>
                     <ul>
-                       <li ><a  href="{{route('entrance.assistance.index')}}">Asistencias</a></li>
-
+                        <li><a href="{{route('entrance.assistance.index')}}"><i class="fas fa-check-circle"></i> Asistencias</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a class="menu-toggle">Gestion de Inasistencia</a>
+                    <a class="menu-toggle">
+                        <i class="fas fa-user-times" style="margin-right: 10px;"></i>
+                        <span>Gestión de Inasistencia</span>
+                    </a>
                     <ul>
-                       <li ><a class="btn-navbar" href="{{route('entrance.absence.index')}}">Inasistencias</a></li>
-                        <li><a href="#">Programar Competencia</a></li>
+                        <li><a href="{{route('entrance.absence.index')}}"><i class="fas fa-user-slash"></i> Inasistencias</a></li>
+                        <li><a href="#"><i class="fas fa-calendar-plus"></i> Programar Competencia</a></li>
                     </ul>
                 </li>
                 
