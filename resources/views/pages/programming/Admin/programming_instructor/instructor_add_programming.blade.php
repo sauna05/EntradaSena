@@ -152,7 +152,7 @@
     <select id="ambiente" name="ambiente_id" required>
       <option value="">Selecione Ambiente</option>
       @foreach ($ambientes as $ambiente)
-        <option value="{{ $ambiente->id }}" {{ old('ambiente_id') == $ambiente->id ? 'selected' : '' }}>{{ $ambiente->name }}</option>
+        <option value="{{ $ambiente->id }}" {{ old('ambiente_id') == $ambiente->id ? 'selected' : '' }}>{{ $ambiente->name }} - {{$ambiente->towns->name}}</option>
       @endforeach
     </select>
 
@@ -214,11 +214,11 @@
           return [$instructor->id => $instructor->competencies->pluck('id')->toArray()];
       })
   );
+  //Alex@32*05
+  //Alex@32*05
 
- 
 
-
-
+//Aplicar El DOM (document objet model)
   const selectInstructor = document.getElementById('instructor');
   const selectCompetencia = document.getElementById('competencia');
   const totalHorasInput = document.getElementById('total_horas');
