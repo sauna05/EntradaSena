@@ -214,8 +214,16 @@
           return [$instructor->id => $instructor->competencies->pluck('id')->toArray()];
       })
   );
-  //Alex@32*05
-  //Alex@32*05
+  // C:\Users\Aprendiz\AppData\Local\Programs\Python\Python311\Scripts\
+  //requerimientos
+  /*
+  boton para que descarge los jucios evaluativos y demas
+  otro para descargar
+  
+  
+  */
+  //Alex@32*05 
+  //Alex@32*05 
 
 
 //Aplicar El DOM (document objet model)
