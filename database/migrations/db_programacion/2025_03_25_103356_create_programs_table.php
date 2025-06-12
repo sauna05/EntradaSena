@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('program_code');
             $table->string('program_version');
             $table->string('name');
+            $table->foreignId('instructor_id')->constrained('instructors')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

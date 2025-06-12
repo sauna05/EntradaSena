@@ -47,6 +47,7 @@ class ProgramanController extends Controller
             'program_code' => 'required|string|max:255',
             'program_version' => 'required|string|max:255',
             'name' => 'required|string|max:255',
+            'instructor_id'=> 'required|exists:db_programacion.instructors,id',
         ]);
 
         // Opción 1: guardar usando create (requiere definir fillable en el modelo)

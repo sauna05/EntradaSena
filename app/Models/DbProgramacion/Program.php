@@ -32,7 +32,10 @@ class Program extends Model
             ->using(CompetenciePrograman::class);
     }
 
-    
+    public function instructor()
+    {
+        return $this->belongsTo(Instructor::class);
+    }
 
 
 

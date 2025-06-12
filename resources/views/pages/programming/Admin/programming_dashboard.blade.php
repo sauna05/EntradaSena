@@ -83,6 +83,16 @@
                     </select>
                 </div>
 
+                 <div class="form-group">
+                    <label for="instructor_id">Instructor Responsable del Programa</label>
+
+                    <select name="instructor_id" id="instructor_id" required>
+                        <option value="" disabled selected>Seleccione instructor</option>
+                        @foreach ($instructors as $instru)
+                            <option value="{{ $instru->id }}">{{ $instru->person->name }}</option>
+                        @endforeach
+                    </select>
+                </div> 
                 <div class="form-group">
                     <button type="submit" class="submit-btn">Registrar Programa</button>
                 </div>

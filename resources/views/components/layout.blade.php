@@ -302,7 +302,7 @@
                         </a>
                         <ul>
                             <li><a href="{{ route('programing.list_apprentices') }}"><i class="fa-solid fa-address-card"></i> Gestión de Aprendiz</a></li>
-                            <li><a href="#"><i class="fa-solid fa-id-card-clip"></i> Asignar Ficha</a></li>
+                            <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Agregar Aprendiz a Ficha</a></li>
                         </ul>
                     </li>
                     <li>

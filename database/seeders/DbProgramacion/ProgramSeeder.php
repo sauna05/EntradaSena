@@ -18,141 +18,85 @@ class ProgramSeeder extends Seeder
             "id_level" => 2,
             "program_code" => "T0001",
             "program_version" => "1",
-            "name" => "Análisis y Desarrollo de Software"
+            "name" => "Análisis y Desarrollo de Software",
+            "instructor_id"=>1
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0002",
             "program_version" => "1",
-            "name" => "Gestión de Redes"
+            "name" => "Gestión de Redes",
+            "instructor_id"=>1
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0003",
             "program_version" => "2",
-            "name" => "Sistemas de Información"
+            "name" => "Sistemas de Información",
+            "instructor_id" => 1
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0004",
             "program_version" => "1",
-            "name" => "Desarrollo de Aplicaciones Móviles"
+            "name" => "Desarrollo de Aplicaciones Móviles",
+            "instructor_id" => 2
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0005",
             "program_version" => "3",
-            "name" => "Ciberseguridad"
+            "name" => "Ciberseguridad",
+            "instructor_id" => 1
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0006",
             "program_version" => "1",
-            "name" => "Big Data y Análisis de Datos"
+            "name" => "Big Data y Análisis de Datos",
+            "instructor_id" => 3
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0007",
             "program_version" => "2",
-            "name" => "Inteligencia Artificial"
+            "name" => "Inteligencia Artificial",
+            "instructor_id" => 2
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0008",
             "program_version" => "1",
-            "name" => "Desarrollo Web"
+            "name" => "Desarrollo Web",
+            "instructor_id" => 1
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0009",
             "program_version" => "2",
-            "name" => "Automatización de Procesos"
+            "name" => "Automatización de Procesos",
+            "instructor_id" => 2
         ]);
 
         Program::create([
             "id_level" => 2,
             "program_code" => "T0010",
             "program_version" => "1",
-            "name" => "Diseño de Videojuegos"
+            "name" => "Diseño de Videojuegos",
+            "instructor_id" => 3
         ]);
 
-        // Programas de nivel 1 (Técnico)
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0011",
-            "program_version" => "1",
-            "name" => "Gestión Empresarial"
-        ]);
+    
+       
 
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0012",
-            "program_version" => "2",
-            "name" => "Técnico en Contabilidad"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0013",
-            "program_version" => "3",
-            "name" => "Secretariado Administrativo"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0014",
-            "program_version" => "1",
-            "name" => "Técnico en Cocina"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0015",
-            "program_version" => "2",
-            "name" => "Técnico en Diseño Gráfico"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0016",
-            "program_version" => "3",
-            "name" => "Técnico en Carpintería"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0017",
-            "program_version" => "1",
-            "name" => "Técnico en Refrigeración"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0018",
-            "program_version" => "2",
-            "name" => "Técnico en Mantenimiento de Equipos"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0019",
-            "program_version" => "1",
-            "name" => "Técnico en Gestión de Calidad"
-        ]);
-
-        Program::create([
-            "id_level" => 1,
-            "program_code" => "P0020",
-            "program_version" => "2",
-            "name" => "Técnico en Electricidad"
-        ]);
+       
     }
 }

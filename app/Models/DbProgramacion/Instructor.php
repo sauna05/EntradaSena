@@ -37,4 +37,11 @@ class Instructor extends Model
         return $this->belongsToMany(Competencies::class, 'instructor_competencie', 'instructor_id', 'competence_id')
             ->using(CompetencieInstructor::class);
     }
+
+    //
+
+    public function programs()
+    {
+        return $this->hasMany(Program::class);
+    }
 }
