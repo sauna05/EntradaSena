@@ -28,6 +28,7 @@ return new class extends Migration
 
             $table->time('start_time');
             $table->time('end_time');
+            $table->enum('statu_programming', ['sin_registrar', 'ok'])->default('sin_registrar');
 
             // $table->string('programmed_by');
             $table->boolean('evaluated')->default(false);

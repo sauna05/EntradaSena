@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_competencies_add_programan.css') }}">
 
     <div class="container">
-        <h2>Asignar Competencias a Programas</h2>
+        <h2>Vincular Competencias a Programas</h2>
 
         <form action="{{ route('programing.competencies_store_program') }}" method="POST" id="asignarForm">
             @csrf

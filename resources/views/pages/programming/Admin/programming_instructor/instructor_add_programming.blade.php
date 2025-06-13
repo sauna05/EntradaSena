@@ -6,6 +6,19 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Programación de Instructores</title>
+{{-- <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const flashes = document.querySelectorAll('.flash-message');
+      flashes.forEach(flash => {
+          setTimeout(() => {
+              flash.style.transition = 'opacity 0.5s ease';
+              flash.style.opacity = '0';
+              setTimeout(() => flash.remove(), 500); // Lo quita del DOM tras la animación
+          }, 4000); // 4 segundos
+      });
+  });
+</script> --}}
+
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -169,9 +182,10 @@
 
     <label>Horario:</label>
     <div class="time-container">
-      <input type="time" id="hora_inicio" name="hora_inicio" value="{{ old('hora_inicio') }}" required min="08:00" />
+      <input type="time" id="hora_inicio" name="hora_inicio" value="{{ old('hora_inicio') }}" required min="08:00" step="1800" />
       <span>a</span>
-      <input type="time" id="hora_fin" name="hora_fin" value="{{ old('hora_fin') }}" required min="08:00" />
+      <input type="time" id="hora_fin" name="hora_fin" value="{{ old('hora_fin') }}" required min="08:00" step="1800" />
+      
     </div>
     <div id="horasCalculadas" class="error-message"></div>
 
@@ -214,19 +228,7 @@
           return [$instructor->id => $instructor->competencies->pluck('id')->toArray()];
       })
   );
-  // C:\Users\Aprendiz\AppData\Local\Programs\Python\Python311\Scripts\
-  //requerimientos
-  /*
-  boton para que descarge los jucios evaluativos y demas
-  otro para descargar
-  
-  
-  */
-  //Alex@32*05 
-  //Alex@32*05 
 
-
-//Aplicar El DOM (document objet model)
   const selectInstructor = document.getElementById('instructor');
   const selectCompetencia = document.getElementById('competencia');
   const totalHorasInput = document.getElementById('total_horas');
@@ -362,7 +364,6 @@
       }
   });
 
-  
 
   // Validar días seleccionados
   const form = document.getElementById('programmingForm');
@@ -379,6 +380,21 @@
       }
   });
 
+document.getElementById('hora_inicio').addEventListener('change', validarHora);
+document.getElementById('hora_fin').addEventListener('change', validarHora);
+
+function validarHora(e) {
+    const valor = e.target.value;
+    if (valor) {
+        const [hora, minuto] = valor.split(':').map(Number);
+        if (minuto !== 0 && minuto !== 30) {
+            alert('Solo se permiten horas en punto o media hora (:00 o :30)');
+            e.target.value = '';
+        }
+    }
+}
+</script>
+
   
 
 
@@ -386,3 +402,4 @@
 </body>
 </html>
 </x-layout>
+

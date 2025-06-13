@@ -112,8 +112,13 @@ class RoleSeeder extends Seeder
         //permiso para registrar programacion de instructor
         Permission::create(['name' => 'programing.register_programming_instructor_store'])->assignRole($role10, $role2);
 
-        //permiso para el listado de programaciones y sus estados
+        //permiso para actualizar programacion a ok despues que se registre en sofia plus
+        // 1 prmero permiso para la vista de actualizar programacion
+        Permission::create(['name' => 'programing.programming_update_index'])->assignRole($role10, $role2);
+        //2 permiso para actulizar la programacion a estado ok 
+        Permission::create(['name' => 'programing.programming_update'])->assignRole($role10, $role2);
 
+        //permiso para el listado de programaciones y sus estados
         Permission::create(['name' => 'programing.programming_index_states'])->assignRole($role10, $role2);
 
         //permiso para la vista de asignar competencia al perfil de instructores

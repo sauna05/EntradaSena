@@ -90,7 +90,7 @@
 
 
   <div class="container">
-      <h1 class="h1">Listado de Programaciones</h1>
+      <h1 class="h1">Competencias Programadas</h1>
       
       @if(session('error'))
           <div class="alert alert-danger">

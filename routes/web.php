@@ -98,7 +98,7 @@ Route::get('programming/admin/Cohort', [CohortController::class, 'indexCohort'])
 
 //ruta de registro de fichas programmig.programming_cohort_Register
 //ruta para registrar fichas
-Route::post('programming/admin', [CohortController::class, 'registerCohort'])
+Route::post('programming/admin/cohort', [CohortController::class, 'registerCohort'])
     ->middleware('can:programmig.programming_cohort_Register')->name('programming.Register');
 
 //ruta para agregar programa
@@ -169,18 +169,27 @@ Route::get('programming/admin/instructor_programan_index', [ProgramanController:
 Route::get('programming/admin/instructor_programming_index', [ProgramanController::class, 'registerProgramming_index'])
     ->middleware('can:programing.register_programming_instructor_index')->name('programming.register_programming_instructor_index');
 
-
+//RUTAS DE PROGRAMACIONES Y DEMAS
 //ruta para listar las programaciones con sus estados
 
 Route::get('programming/admin/programmig_programming_index', [ProgramanController::class, 'programming_index'])
     ->middleware('can:programing.programming_index_states')->name('programming.programming_index_states');
 
-
     //ruta para registrar programacion
 
-
-    Route::post('programming/admin/programmig_programming_store', [ProgramanController::class, 'register_programmig'])
+Route::post('programming/admin/programmig_programming_store', [ProgramanController::class, 'register_programmig'])
     ->middleware('can:programing.register_programming_instructor_store')->name('programming.register_programming_instructor_store');
+
+
+
+//ruta para retornar la vista de programaciones y sus estado ok o sin registrar
+Route::get('programming/admin/programmig_update_index', [ProgramanController::class, 'programming_update_index'])
+    ->middleware('can:programing.programming_update_index')->name('programming.programming_update_index');
+
+//ruta para registrar programacion
+Route::put('programming/admin/programmig_update/{id}', [ProgramanController::class, 'updateStatus'])
+    ->middleware('can:programing.programming_update')
+    ->name('programing.programming_update');
 
 
 

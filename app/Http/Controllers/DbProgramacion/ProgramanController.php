@@ -344,6 +344,37 @@ class ProgramanController extends Controller
         }
     }
 
+    //metodo para la vista de retornar la vista de programaciones con su estado deregistro
+
+    public function programming_update_index()
+    {
+        try {
+            $programaciones = Programming::with([
+                'instructor.person',
+                'cohort.program',
+                'competencie',
+                'classroom',
+                'days'
+            ])->get();
+
+            return view('pages.programming.Admin.programming_instructor.programming_update', compact('programaciones'));
+        } catch (Exception $ex) {
+            return redirect()->back()->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
+        }
+    }
+
+    //metodo para acutalizar programacion de estado sin registrar a ok
+
+    public function updateStatus($id)
+    {
+        $prog = Programming::findOrFail($id);
+        $prog->statu_programming = 'ok';
+        $prog->save();
+
+        return redirect()->back()->with('success', '¡Programación marcada como registrada!');
+    }
+
+
 
 
     //metodo para registrar programacion

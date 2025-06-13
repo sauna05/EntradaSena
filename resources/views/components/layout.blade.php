@@ -169,6 +169,39 @@
             flex-direction: column;
             align-items: center;
         }
+        .usuario-info,
+        .notificaciones,
+        .programaciones-info {
+            display: inline-flex;
+            align-items: center;
+            font-size: 18px;
+            color: var(--verde-header-hover);
+            margin-right: 20px;
+            position: relative;
+        }
+
+        .usuario-info i,
+        .notificaciones i,
+        .programaciones-info i {
+            font-size: 24px;
+            margin-right: 6px;
+            color: var(--verde-header);
+        }
+
+        .notificaciones .contador,
+        .programaciones-info .contador {
+            position: absolute;
+            top: -6px;
+            right: -10px;
+            background: red;
+            color: white;
+            font-size: 11px;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-weight: bold;
+        }
+
+
 
         .logo-footer {
             height: 60px; /* Logo más grande */
@@ -243,6 +276,27 @@
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
+
+            <!-- Apartado de usuario -->
+        <div class="usuario-info">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>{{ Auth::user()->user_name ?? 'Invitado' }}</span>
+        </div>
+
+        <!-- Notificaciones -->
+        <div class="notificaciones">
+            <i class="fa-solid fa-bell"></i>
+            <span class="contador">3</span> <!-- Cambia por un valor dinámico si quieres -->
+        </div>
+
+        <!-- Programaciones sin registrar -->
+        <div class="programaciones-info">
+            {{-- <span>Sin registrar</span> --}}
+            <i class="fa-solid fa-calendar-xmark"></i>
+            <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
+        </div>
+
+
         @auth
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf
@@ -273,7 +327,8 @@
                         </a>
                         <ul>
                             <li><a href="{{ route('programming.programming_index_states') }}"><i class="fa-solid fa-table-list"></i> Programaciones</a></li>
-                            <li><a href="{{ route('programming.register_programming_instructor_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programación</a></li>
+                            <li><a href="{{ route('programming.register_programming_instructor_index') }}"><i class="fa-solid fa-user-clock"></i> Programar instructor</a></li>
+                            <li><a href="{{ route('programming.programming_update_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programacion</a></li>
                             <li><a href="#"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
                         </ul>
                     </li>
@@ -302,7 +357,7 @@
                         </a>
                         <ul>
                             <li><a href="{{ route('programing.list_apprentices') }}"><i class="fa-solid fa-address-card"></i> Gestión de Aprendiz</a></li>
-                            <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Agregar Aprendiz a Ficha</a></li>
+                            <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Vincular Aprendiz a Ficha</a></li>
                         </ul>
                     </li>
                     <li>

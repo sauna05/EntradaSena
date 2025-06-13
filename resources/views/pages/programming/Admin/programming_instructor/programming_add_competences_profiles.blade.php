@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ asset('css/pages/Programming/style_competencies_add_programan.css') }}">
 
     <div class="container">
-        <h2>Asignar Competencias al perfil del Instructor</h2>
+        <h2>Vincular Competencias al perfil del Instructor</h2>
 
         <form action="{{route('programming.instructors_competencies_profile_store')}}" method="POST" id="asignarForm">
             @csrf
