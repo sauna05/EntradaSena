@@ -1,7 +1,7 @@
-<x-layout>
+{{-- <x-layout>
     <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Crear Programa</x-slot:title>
-  
+
 
     <h2>Registrar Nuevo Programa</h2>
 
@@ -115,4 +115,4 @@
             color: #721c24;
         }
     </style>
-</x-layout>
+</x-layout> --}}

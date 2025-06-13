@@ -17,6 +17,7 @@
                 <th>Programa</th>
                 <th>Versión</th>
                 <th>Nivel</th>
+                <th>Instructor A cargo</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,7 @@
                     <td>{{ $program->name }}</td>
                     <td>{{ $program->program_version }}</td>
                     <td>{{ $program->id_level == 1 ? 'Técnico' : 'Tecnólogo' }}</td>
+                    <td>{{ $program->instructor->person->name }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -56,7 +58,7 @@
             <button class="close-btn" onclick="closeModal()" aria-label="Cerrar modal">&times;</button>
             <h2>Registrar Nuevo Programa</h2>
 
-            <form method="POST" action="{{ route('programming.admin') }}" class="program-form">
+            <form method="POST" action="{{ route('programing.programan_store_add') }}" class="program-form">
                 @csrf
                 <div class="form-group">
                     <label for="name">Nombre del Programa</label>
@@ -83,7 +85,7 @@
                     </select>
                 </div>
 
-                 <div class="form-group">
+                   <div class="form-group">
                     <label for="instructor_id">Instructor Responsable del Programa</label>
 
                     <select name="instructor_id" id="instructor_id" required>
@@ -92,7 +94,7 @@
                             <option value="{{ $instru->id }}">{{ $instru->person->name }}</option>
                         @endforeach
                     </select>
-                </div> 
+                </div>
                 <div class="form-group">
                     <button type="submit" class="submit-btn">Registrar Programa</button>
                 </div>

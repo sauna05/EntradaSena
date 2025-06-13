@@ -93,22 +93,24 @@ Route::post('/changePassword', [UserController::class, 'changePassword'])->name(
 Route::post('programming/login', [ProgrammingAuthController::class, 'login'])->name('programming-login');
 
 //Modulo Programación
-Route::get('programming/admin', [ProgrammingAuthController::class, 'dashboard'])->middleware('can:programming.admin')
-    ->name('programming.admin');
 
 Route::get('programming/admin/Cohort', [CohortController::class, 'indexCohort'])->middleware('can:programmig.programming_cohort_index')->name('programing.cohort_index');
 
 //ruta de registro de fichas programmig.programming_cohort_Register
-
+//ruta para registrar fichas
 Route::post('programming/admin', [CohortController::class, 'registerCohort'])
     ->middleware('can:programmig.programming_cohort_Register')->name('programming.Register');
 
 //ruta para agregar programa
-Route::get('programming/admin/programan', [ProgramanController::class, 'indexPrograman'])
-    ->middleware('can:programing.programan_add')->name('programming.Programan_add');
+// Route::get('programming/admin/programan', [ProgramanController::class, 'indexPrograman'])
+//     ->middleware('can:programing.programan_add')->name('programming.Programan_add');
 
-Route::post('programming/admin/programan', [ProgramanController::class, 'store_cohort'])
-    ->middleware('can:programing.programan_store_add')->name('programming.Programan_store');
+
+Route::get('programming/admin', [ProgrammingAuthController::class, 'dashboard'])->middleware('can:programming.admin')
+    ->name('programming.admin');
+
+Route::post('programming/admin', [ProgramanController::class, 'register_programan'])
+    ->middleware('can:programing.programan_store_add')->name('programing.programan_store_add');
 
 
 

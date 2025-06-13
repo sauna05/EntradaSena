@@ -21,12 +21,7 @@ class ProgramanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function indexPrograman()
-    {
-        //
-        $programan_level = Program_Level::all();
-        return view('pages.programming.Admin.programan.programan_Add', compact('programan_level'));
-    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -39,7 +34,7 @@ class ProgramanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store_cohort(Request $request)
+    public function register_programan(Request $request)
     {
         // Validación de datos
         $request->validate([
@@ -47,7 +42,7 @@ class ProgramanController extends Controller
             'program_code' => 'required|string|max:255',
             'program_version' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'instructor_id'=> 'required|exists:db_programacion.instructors,id',
+            'instructor_id' => 'required|exists:db_programacion.instructors,id',
         ]);
 
         // Opción 1: guardar usando create (requiere definir fillable en el modelo)
@@ -56,6 +51,7 @@ class ProgramanController extends Controller
             'program_code' => $request->program_code,
             'program_version' => $request->program_version,
             'name' => $request->name,
+            'instructor_id'=>$request->instructor_id,
         ]);
 
         // Opción 2 (comentada): guardar usando new y save()
@@ -74,7 +70,7 @@ class ProgramanController extends Controller
     /**
      * Display the specified resource.
      */
-   public function asignarCompetences_index()
+    public function asignarCompetences_index()
     {
         $programas = dbProgramacionPrograman::all(); // Lista de programas
 
@@ -214,82 +210,82 @@ class ProgramanController extends Controller
 
     public function ListAprenticesxcohorts(Request $request)
     {
-            $comboFicha = $request->input('combo_ficha');
+        $comboFicha = $request->input('combo_ficha');
 
-            // Obtenemos todos los aprendices con sus fichas y programas
-            $aprendices = Apprentice::with(['person', 'cohorts.program'])
-                ->whereHas('cohorts') // Solo los que tienen fichas asignadas
-                ->get();
+        // Obtenemos todos los aprendices con sus fichas y programas
+        $aprendices = Apprentice::with(['person', 'cohorts.program'])
+            ->whereHas('cohorts') // Solo los que tienen fichas asignadas
+            ->get();
 
-            $resultado = [];
+        $resultado = [];
 
-            foreach ($aprendices as $apprentice) {
-                foreach ($apprentice->cohorts as $cohort) {
-                    if ($comboFicha && $cohort->id != $comboFicha) {
-                        continue; // Si hay filtro y no coincide, lo ignoramos
-                    }
-
-                    $resultado[] = [
-                        'person_id'       => $apprentice->person->id,
-                        'name'            => $apprentice->person->name,
-                        'document_number' => $apprentice->person->document_number,
-                        'email'           => $apprentice->person->email,
-                        'apprentice_id'   => $apprentice->id,
-                        'cohort_id'       => $cohort->id,
-                        'start_date_school_stage' => $cohort->start_date_school_stage,
-                        'end_date_school_stage'   => $cohort->end_date_school_stage,
-                        'start_date_practical_stage' => $cohort->start_date_practical_stage,
-                        'end_date_practical_stage'   => $cohort->end_date_practical_stage,
-                        'cohort_name'     => $cohort->number_cohort,
-                        'nombre_programa' => $cohort->program->name ?? 'Sin programa',
-                    ];
+        foreach ($aprendices as $apprentice) {
+            foreach ($apprentice->cohorts as $cohort) {
+                if ($comboFicha && $cohort->id != $comboFicha) {
+                    continue; // Si hay filtro y no coincide, lo ignoramos
                 }
+
+                $resultado[] = [
+                    'person_id'       => $apprentice->person->id,
+                    'name'            => $apprentice->person->name,
+                    'document_number' => $apprentice->person->document_number,
+                    'email'           => $apprentice->person->email,
+                    'apprentice_id'   => $apprentice->id,
+                    'cohort_id'       => $cohort->id,
+                    'start_date_school_stage' => $cohort->start_date_school_stage,
+                    'end_date_school_stage'   => $cohort->end_date_school_stage,
+                    'start_date_practical_stage' => $cohort->start_date_practical_stage,
+                    'end_date_practical_stage'   => $cohort->end_date_practical_stage,
+                    'cohort_name'     => $cohort->number_cohort,
+                    'nombre_programa' => $cohort->program->name ?? 'Sin programa',
+                ];
             }
-
-            // Obtener listado de fichas + programa para el filtro
-            $fichas = Cohort::with('program')
-                ->select('id', 'number_cohort', 'id_program')
-                ->get()
-                ->map(function ($cohort) {
-                    return [
-                        'id' => $cohort->id,
-                        'ficha' => $cohort->number_cohort,
-                        'programa' => $cohort->program->name ?? 'Sin programa',
-                    ];
-                });
-
-            return view('pages.programming.Admin.Apprentices.apprentice_list', [
-                'apprentices' => $resultado,
-                'fichas' => $fichas
-            ]);
         }
 
+        // Obtener listado de fichas + programa para el filtro
+        $fichas = Cohort::with('program')
+            ->select('id', 'number_cohort', 'id_program')
+            ->get()
+            ->map(function ($cohort) {
+                return [
+                    'id' => $cohort->id,
+                    'ficha' => $cohort->number_cohort,
+                    'programa' => $cohort->program->name ?? 'Sin programa',
+                ];
+            });
 
-        //metodo para gestion de competencias
+        return view('pages.programming.Admin.Apprentices.apprentice_list', [
+            'apprentices' => $resultado,
+            'fichas' => $fichas
+        ]);
+    }
 
-        public function Listcompetencies()
-        {
-            $competencies = Competencies::all();
-            return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies'));
-        }
 
-        // Guardar nueva competencia
-        public function competencies_store(Request $request)
-        {
-            // Validar datos
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'duration_hours' => 'required|integer|min:1',
-            ]);
+    //metodo para gestion de competencias
 
-            // Crear y guardar nueva competencia
-            Competencies::create($validated);
+    public function Listcompetencies()
+    {
+        $competencies = Competencies::all();
+        return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies'));
+    }
 
-            // Redirigir con mensaje de éxito
-            return redirect()->back()->with('success', 'Competencia registrada correctamente.');
-        }
+    // Guardar nueva competencia
+    public function competencies_store(Request $request)
+    {
+        // Validar datos
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'duration_hours' => 'required|integer|min:1',
+        ]);
 
-       
+        // Crear y guardar nueva competencia
+        Competencies::create($validated);
+
+        // Redirigir con mensaje de éxito
+        return redirect()->back()->with('success', 'Competencia registrada correctamente.');
+    }
+
+
 
     //metodo de controlador para listar  los instructores que estan registrados
 
@@ -301,7 +297,7 @@ class ProgramanController extends Controller
         return view('pages.programming.Admin.programming_instructor.programming_instructor_index', compact('instructores'));
     }
 
-   public function registerProgramming_index()
+    public function registerProgramming_index()
     {
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
             'instructors' => Instructor::with(['person', 'competencies'])->get(),
@@ -311,7 +307,7 @@ class ProgramanController extends Controller
         ]);
     }
 
-    
+
 
 
 

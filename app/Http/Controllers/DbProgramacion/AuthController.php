@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DbProgramacion;
 
 use App\Http\Controllers\Controller;
+use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Program;
 use App\Models\DbProgramacion\Program_Level;
 use Illuminate\Http\Request;
@@ -51,11 +52,13 @@ class AuthController extends Controller
         }
 
 
+        //metodo de inicio de la pantalla de programacion
         public function dashboard()
         {
-            $programs = Program::all();
+            $programs = Program::with(['instructor.person'])->get();
             $programan_level = Program_Level::all();
-            return view('pages.programming.Admin.programming_dashboard', compact('programs', 'programan_level'));
+            $instructors=Instructor::with('person')->get();
+           return view('pages.programming.Admin.programming_dashboard',compact('programs', 'instructors', 'programan_level'));
         }
 
 

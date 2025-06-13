@@ -61,7 +61,12 @@ class RoleSeeder extends Seeder
 
 
         //---------------------- Permisos del módulo de Programación -------------------------------
+
+        //esto es para la vista de programas
         Permission::create(['name' => 'programming.admin'])->syncRoles([$role10, $role5]);
+
+         //agregar permiso de agregar programa con roles de 2 usuarios
+        Permission::create(['name' => 'programing.programan_store_add'])->assignRole($role10, $role2);
 
         //permiso del modulo de programacion de fichas
         Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role10, $role5]);
@@ -69,10 +74,8 @@ class RoleSeeder extends Seeder
         // Permiso para entrada de los aprendices
         Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
 
-        //agregar permiso de agregar programa con roles de 2 usuarios
-        Permission::create(['name' => 'programing.programan_add'])->assignRole($role10, $role2);
-        //agregar permiso de agregar programa con roles de 2 usuarios
-        Permission::create(['name' => 'programing.programan_store_add'])->assignRole($role10, $role2);
+
+
 
 
 
@@ -102,7 +105,7 @@ class RoleSeeder extends Seeder
         //permiso para lagestion instrcutor en el apartado de programacion instrcutor
 
         Permission::create(['name' => 'programing.instructor_programan_index'])->assignRole($role10, $role2);
-        
+
         //permiso para permitir ver la vista de programacion de instrcutor
         Permission::create(['name' => 'programing.register_programming_instructor_index'])->assignRole($role10, $role2);
 
@@ -119,7 +122,7 @@ class RoleSeeder extends Seeder
         //permiso para el registro de competencia en los perfiles de instructores
         Permission::create(['name' => 'programing.instructors_competencies_profile_store'])->assignRole($role10, $role2);
 
-        //permisos de la gestion de ambientes 
+        //permisos de la gestion de ambientes
         //permiso para la visualizacion de ambientes
         Permission::create(['name' => 'programing.classrooms_programming_classrooms_index'])->assignRole($role10, $role2);
 
@@ -127,7 +130,7 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'programing.classrooms_programming_classrooms_store'])->assignRole($role10, $role2);
 
-        
+
 
 
     }
