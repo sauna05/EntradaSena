@@ -26,6 +26,7 @@ class Cohort extends Model
         'end_date_school_stage',
         'start_date_practical_stage',
         'end_date_practical_stage',
+        'enrolled_quantity',
     ];
 
     public function program()

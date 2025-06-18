@@ -10,6 +10,7 @@ class CohortSeeder extends Seeder
 {
     public function run(): void
     {
+        $cantidad_matriculados_por_defecto = 23;
         // Creamos 10 fichas (cohortes)
         for ($i = 0; $i < 10; $i++) {
             $startSchool = Carbon::create(2025, rand(1, 6), rand(1, 28));
@@ -17,6 +18,7 @@ class CohortSeeder extends Seeder
 
             $startPractice = (clone $endSchool)->addDays(1);
             $endPractice = (clone $startPractice)->addMonths(6);
+            
 
             Cohort::create([
                 'number_cohort' => 206 . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
@@ -32,6 +34,7 @@ class CohortSeeder extends Seeder
 
                 'start_date_practical_stage' => $startPractice,
                 'end_date_practical_stage' => $endPractice,
+                'enrolled_quantity'=> $cantidad_matriculados_por_defecto,
             ]);
         }
     }

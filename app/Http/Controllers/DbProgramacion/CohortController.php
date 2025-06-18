@@ -71,6 +71,7 @@ class CohortController extends Controller
                 'end_date_school_stage' => $request->end_date_school_stage,
                 'start_date_practical_stage' => $request->start_date_practical_stage,
                 'end_date_practical_stage' => $request->end_date_practical_stage,
+                'enrolled_quantity'=>$request->enrolled_quantity,
             ]);
 
 

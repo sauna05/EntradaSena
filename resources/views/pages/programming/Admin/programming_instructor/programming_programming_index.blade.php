@@ -1,157 +1,338 @@
 <x-layout>
-  <x-slot:title>Listado de programaciones</x-slot:title>
+    <x-slot:title>Listado de programaciones</x-slot:title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+        }
   
-  <style>
-      body {
-          font-family: 'Segoe UI', sans-serif;
-          background-color: #f4f4f4;
-          
-      }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+  
+        .h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+  
+        .table-responsive {
+            overflow-x: auto;
+        }
+  
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+  
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+  
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+        }
+  
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+  
+        /* Estilos para los estados */
+        .status-badge {
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 5px 10px;
+            display: inline-block;
+            font-size: 0.8rem;
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        /* Pendiente */
+        .status-pendiente {
+            background-color: #d0e3ff;
+            color: #0047ab;
+        }
+        
+        /* En ejecución */
+        .status-en_ejecucion {
+            background-color: #fff3bf;
+            color: #8a6d3b;
+        }
+        
+        /* Finalizada evaluada */
+        .status-finalizada_evaluada {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Finalizada no evaluada */
+        .status-finalizada_no_evaluada {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Estado desconocido */
+        .status-desconocido {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+  
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        /* Estilos para los iconos */
+        .status-icon {
+            margin-right: 5px;
+        }
 
-      .container {
-          width: 100%;
-          margin: 0 auto;
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      }
+        /* Estilos para los filtros */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
 
-      .h1 {
-          text-align: center;
-          margin-bottom: 30px;
-          color: #333;
-      }
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
 
-      .table-responsive {
-          overflow-x: auto;
-      }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
 
-      table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 20px;
-      }
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-      th, td {
-          padding: 12px 15px;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-      }
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
 
-      th {
-          background-color: #f8f9fa;
-          color: #495057;
-          font-weight: 600;
-      }
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
 
-      tr:hover {
-          background-color: #f8f9fa;
-      }
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #6c757d;
+            display: none;
+        }
+    </style>
+  
+    <div class="container">
+        <h1 class="h1">Competencias Programadas</h1>
+        
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
 
-      .status {
-          font-weight: bold;
-          border-radius: 20px;
-          padding: 5px 10px;
-          display: inline-block;
-          font-size: 0.8rem;
-          text-align: center;
-          min-width: 100px;
-      }
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="program-filter">Filtrar por programa:</label>
+                <select id="program-filter">
+                    <option value="">Todos los programas</option>
+                    @foreach($programaciones->pluck('cohort.program.name')->unique()->filter() as $programName)
+                        <option value="{{ $programName }}">{{ $programName }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-      .status-active {
-          background-color: #d4edda;
-          color: #155724;
-      }
+            <div class="filter-group">
+                <label for="status-filter">Filtrar por estado:</label>
+                <select id="status-filter">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en_ejecucion">En ejecución</option>
+                    <option value="finalizada_evaluada">Finalizada (Evaluada)</option>
+                    <option value="finalizada_no_evaluada">Finalizada (Pendiente evaluación)</option>
+                </select>
+            </div>
 
-      .status-pending {
-          background-color: #fff3cd;
-          color: #856404;
-      }
+            <button class="reset-btn" id="reset-filters">Restablecer filtros</button>
+        </div>
 
-      .status-cancelled {
-          background-color: #f8d7da;
-          color: #721c24;
-      }
-
-      .status-completed {
-          background-color: #cce5ff;
-          color: #004085;
-      }
-      
-      .alert-danger {
-          background-color: #f8d7da;
-          color: #721c24;
-          padding: 10px;
-          border-radius: 4px;
-          margin-bottom: 20px;
-      }
-  </style>
-
-
-  <div class="container">
-      <h1 class="h1">Competencias Programadas</h1>
-      
-      @if(session('error'))
-          <div class="alert alert-danger">
-              {{ session('error') }}
-          </div>
-      @endif
-
-      <div class="table-responsive">
-          <table>
-              <thead>
-                  <tr>
-                      <th>#</th>
-                      <th>Instructor</th>
-                      <th>Programa</th>
-                      <th>Ficha</th>
-                      <th>Competencia</th>
-                      <th>Ambiente</th>
-                      <th>Fecha Inicio</th>
-                      <th>Fecha Fin</th>
-                      <th>Horario</th>
-                      <th>Estado</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  @forelse ($programaciones as $programacion)
-                      <tr>
-                          <td>{{ $programacion->id }}</td>
-                          <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
-                          <td>{{ $programacion->cohort->program->name ?? 'N/A' }}</td>
-                          <td>{{ $programacion->cohort->number_cohort ?? 'N/A' }}</td>
-                          <td>{{ $programacion->competencie->name ?? 'N/A' }}</td>
-                          <td>{{ $programacion->classroom->name ?? 'N/A' }}</td>
-                          <td>{{ $programacion->start_date}}</td>
-                          <td>{{ $programacion->end_date}}</td>
-                          <td>
-                              {{ $programacion->start_time }} - 
-                              {{ $programacion->end_time}}
+        <div class="no-results" id="no-results">
+            No se encontraron programaciones con los filtros aplicados.
+        </div>
+  
+        <div class="table-responsive">
+            <table id="programming-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Instructor</th>
+                        <th>Programa</th>
+                        <th>Ficha</th>
+                        <th>Competencia</th>
+                        <th>Ambiente</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Horario</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($programaciones as $programacion)
+                        <tr data-program="{{ $programacion->cohort->program->name ?? '' }}" 
+                            data-status="{{ $programacion->status }}">
+                            <td>{{ $programacion->id }}</td>
+                            <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
+                            <td>{{ $programacion->cohort->program->name ?? 'N/A' }}</td>
+                            <td>{{ $programacion->cohort->number_cohort ?? 'N/A' }}</td>
+                            <td>{{ $programacion->competencie->name ?? 'N/A' }}</td>
+                            <td>{{ $programacion->classroom->name ?? 'N/A' }}</td>
+                            <td>{{ $programacion->start_date}}</td>
+                            <td>{{ $programacion->end_date}}</td>
+                            <td>
+                                {{ $programacion->start_time }} - 
+                                {{ $programacion->end_time}}
+                            </td>
+                            <td>
+                              @php
+                                  $estados = [
+                                      'pendiente' => [
+                                          'class' => 'status-pendiente',
+                                          'text' => 'Pendiente',
+                                          'icon' => '⏱️'
+                                      ],
+                                      'en_ejecucion' => [
+                                          'class' => 'status-en_ejecucion',
+                                          'text' => 'En ejecución',
+                                          'icon' => '🔄'
+                                      ],
+                                      'finalizada_evaluada' => [
+                                          'class' => 'status-finalizada_evaluada',
+                                          'text' => 'Finalizada (Evaluada)',
+                                          'icon' => '✅'
+                                      ],
+                                      'finalizada_no_evaluada' => [
+                                          'class' => 'status-finalizada_no_evaluada',
+                                          'text' => 'Finalizada (Pendiente evaluación)',
+                                          'icon' => '⚠️'
+                                      ],
+                                  ];
+                                  
+                                  $estado = $estados[$programacion->status] ?? [
+                                      'class' => 'status-desconocido',
+                                      'text' => 'Desconocido',
+                                      'icon' => '❓'
+                                  ];
+                              @endphp
+                              
+                              <span class="status-badge {{ $estado['class'] }}">
+                                  <span class="status-icon">{{ $estado['icon'] }}</span>
+                                  {{ $estado['text'] }}
+                              </span>
                           </td>
-                          <td>
-                            @php
-                            $estados = [
-                                'en_ejecucion' => ['color' => 'status-pending', 'text' => 'En ejecución'],
-                                'finalizada_evaluada' => ['color' => 'status-active', 'text' => 'Finalizada y evaluada'],
-                                'finalizada_no_evaluada' => ['color' => 'status-cancelled', 'text' => 'Finalizada sin evaluar'],
-                            ];
-                            $estado = $estados[$programacion->estado] ?? ['color' => 'status-completed', 'text' => 'Desconocido'];
-                        @endphp
-                        <span class="status {{ $estado['color'] }}">
-                            {{ $estado['text'] }}
-                        </span>
-                        
-                        </td>
-                        
-                      </tr>
-                  @empty
-                      <tr>
-                          <td colspan="10" style="text-align: center;">No hay programaciones registradas</td>
-                      </tr>
-                  @endforelse
-              </tbody>
-          </table>
-      </div>
-  </div>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10" style="text-align: center;">No hay programaciones registradas</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const programFilter = document.getElementById('program-filter');
+            const statusFilter = document.getElementById('status-filter');
+            const resetBtn = document.getElementById('reset-filters');
+            const rows = document.querySelectorAll('#programming-table tbody tr');
+            const noResults = document.getElementById('no-results');
+
+            function applyFilters() {
+                const selectedProgram = programFilter.value.toLowerCase();
+                const selectedStatus = statusFilter.value.toLowerCase();
+                let visibleRows = 0;
+
+                rows.forEach(row => {
+                    const program = row.getAttribute('data-program').toLowerCase();
+                    const status = row.getAttribute('data-status').toLowerCase();
+
+                    const programMatch = selectedProgram === '' || program.includes(selectedProgram);
+                    const statusMatch = selectedStatus === '' || status === selectedStatus;
+
+                    if (programMatch && statusMatch) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Mostrar mensaje si no hay resultados
+                if (visibleRows === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+
+            // Event listeners
+            programFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+
+            resetBtn.addEventListener('click', function() {
+                programFilter.value = '';
+                statusFilter.value = '';
+                applyFilters();
+            });
+
+            // Aplicar filtros iniciales si hay valores en la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialProgram = urlParams.get('program');
+            const initialStatus = urlParams.get('status');
+
+            if (initialProgram) {
+                programFilter.value = initialProgram;
+            }
+            if (initialStatus) {
+                statusFilter.value = initialStatus;
+            }
+
+            if (initialProgram || initialStatus) {
+                applyFilters();
+            }
+        });
+    </script>
 </x-layout>

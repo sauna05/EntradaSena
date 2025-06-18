@@ -5,25 +5,25 @@
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f4f4f4;
-            
         }
+        
         .btn-register {
-    background-color: #28a745;
-    color: white;
-    padding: 4px 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-.btn-register:hover {
-    background-color: #218838;
-}
+        .btn-register:hover {
+            background-color: #218838;
+        }
 
-.status-ok {
-    color: #28a745;
-    font-weight: bold;
-}
+        .status-ok {
+            color: #28a745;
+            font-weight: bold;
+        }
   
         .container {
             width: 100%;
@@ -103,20 +103,97 @@
             border-radius: 4px;
             margin-bottom: 20px;
         }
+
+        /* Estilos para los filtros */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #6c757d;
+            display: none;
+        }
     </style>
   
-  
     <div class="container">
-        <h1 class="h1">Listado de Programaciones</h1>
+        <h1 class="h1">Listado de Registro de  Programaciones</h1>
         
         @if(session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
         @endif
+
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="program-filter">Filtrar por programa:</label>
+                <select id="program-filter">
+                    <option value="">Todos los programas</option>
+                    @foreach($programaciones->pluck('cohort.program.name')->unique()->filter() as $programName)
+                        <option value="{{ $programName }}">{{ $programName }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="status-filter">Filtrar por estado:</label>
+                <select id="status-filter">
+                    <option value="">Todos los estados</option>
+                    <option value="ok">Registrada</option>
+                    <option value="!ok">No registrada</option>
+                </select>
+            </div>
+
+            <button class="reset-btn" id="reset-filters">Restablecer filtros</button>
+        </div>
+
+        <div class="no-results" id="no-results">
+            No se encontraron programaciones con los filtros aplicados.
+        </div>
   
         <div class="table-responsive">
-            <table>
+            <table id="programming-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -134,7 +211,8 @@
                 </thead>
                 <tbody>
                     @forelse ($programaciones as $programacion)
-                        <tr>
+                        <tr data-program="{{ $programacion->cohort->program->name ?? '' }}" 
+                            data-status="{{ $programacion->statu_programming === 'ok' ? 'ok' : '!ok' }}">
                             <td>{{ $programacion->id }}</td>
                             <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
                             <td>{{ $programacion->cohort->program->name ?? 'N/A' }}</td>
@@ -165,6 +243,71 @@
                 </tbody>
             </table>
         </div>
-        
     </div>
-  </x-layout>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const programFilter = document.getElementById('program-filter');
+            const statusFilter = document.getElementById('status-filter');
+            const resetBtn = document.getElementById('reset-filters');
+            const rows = document.querySelectorAll('#programming-table tbody tr');
+            const noResults = document.getElementById('no-results');
+
+            function applyFilters() {
+                const selectedProgram = programFilter.value.toLowerCase();
+                const selectedStatus = statusFilter.value.toLowerCase();
+                let visibleRows = 0;
+
+                rows.forEach(row => {
+                    const program = row.getAttribute('data-program').toLowerCase();
+                    const status = row.getAttribute('data-status').toLowerCase();
+
+                    const programMatch = selectedProgram === '' || program.includes(selectedProgram);
+                    const statusMatch = selectedStatus === '' || 
+                                       (selectedStatus === 'ok' && status === 'ok') ||
+                                       (selectedStatus === '!ok' && status === '!ok');
+
+                    if (programMatch && statusMatch) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Mostrar mensaje si no hay resultados
+                if (visibleRows === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+
+            // Event listeners
+            programFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+
+            resetBtn.addEventListener('click', function() {
+                programFilter.value = '';
+                statusFilter.value = '';
+                applyFilters();
+            });
+
+            // Aplicar filtros iniciales si hay valores en la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialProgram = urlParams.get('program');
+            const initialStatus = urlParams.get('status');
+
+            if (initialProgram) {
+                programFilter.value = initialProgram;
+            }
+            if (initialStatus) {
+                statusFilter.value = initialStatus;
+            }
+
+            if (initialProgram || initialStatus) {
+                applyFilters();
+            }
+        });
+    </script>
+</x-layout>

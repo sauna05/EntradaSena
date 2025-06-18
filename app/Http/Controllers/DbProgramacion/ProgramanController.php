@@ -300,7 +300,7 @@ class ProgramanController extends Controller
     public function registerProgramming_index()
     {
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
-            'instructors' => Instructor::with(['person', 'competencies'])->get(),
+            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
             'cohorts' => Cohort::with('program')->get(),
             'ambientes' => Classroom::with('towns')->get(),
             'competencias' => Competencies::all(), // Pasa todas las competencias
@@ -308,12 +308,7 @@ class ProgramanController extends Controller
     }
 
 
-
-
-
-
-
-
+    //metodo de agregar filtro de programaciones
 
     public function programming_index()
     {
@@ -329,20 +324,35 @@ class ProgramanController extends Controller
             $now = Carbon::now();
 
             foreach ($programaciones as $prog) {
-                if ($now->gt(Carbon::parse($prog->end_date))) {
-                    // Finalizada
-                    $prog->estado = $prog->evaluated ? 'finalizada_evaluada' : 'finalizada_no_evaluada';
+                $startDate = Carbon::parse($prog->start_date);
+                $endDate = Carbon::parse($prog->end_date);
+
+                if ($now->lt($startDate)) {
+                    $prog->status = 'pendiente';
+                } elseif ($now->between($startDate, $endDate)) {
+                    $prog->status = 'en_ejecucion';
                 } else {
-                    // Siempre que esté activa (por defecto al crearla)
-                    $prog->estado = 'en_ejecucion';
+                    $prog->status = $prog->evaluated
+                        ? 'finalizada_evaluada'
+                        : 'finalizada_no_evaluada';
+                }
+
+                // Guardar solo si cambió el estado
+                if ($prog->isDirty('status')) {
+                    $prog->save();
                 }
             }
 
-            return view('pages.programming.Admin.programming_instructor.programming_programming_index', compact('programaciones'));
+            return view(
+                'pages.programming.Admin.programming_instructor.programming_programming_index',
+                compact('programaciones')
+            );
         } catch (Exception $ex) {
-            return redirect()->back()->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
+            return redirect()->back()
+                ->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
         }
     }
+
 
     //metodo para la vista de retornar la vista de programaciones con su estado deregistro
 
@@ -467,7 +477,6 @@ class ProgramanController extends Controller
                 'id_classroom' => $validated['ambiente_id'],
                 'hours_duration' => $validated['total_horas'],
                 'scheduled_hours' => $validated['horas_dia'] * count($validated['dias']),
-                'iniciada' => false,
                 'start_date' => $validated['fecha_inicio'],
                 'end_date' => $validated['fecha_fin'],
                 'start_time' => $validated['hora_inicio'],

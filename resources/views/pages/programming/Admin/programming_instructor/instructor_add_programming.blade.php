@@ -6,18 +6,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Programación de Instructores</title>
-{{-- <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const flashes = document.querySelectorAll('.flash-message');
-      flashes.forEach(flash => {
-          setTimeout(() => {
-              flash.style.transition = 'opacity 0.5s ease';
-              flash.style.opacity = '0';
-              setTimeout(() => flash.remove(), 500); // Lo quita del DOM tras la animación
-          }, 4000); // 4 segundos
-      });
-  });
-</script> --}}
 
 <style>
   body {
@@ -25,6 +13,16 @@
     background-color: #f4f6f8;
     margin: 0;
     padding: 0;
+  }
+  .alert-warning {
+    width: 100%;
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ffeeba;
+    display: none; /* Oculto por defecto */
   }
   .container {
     max-width: 950px;
@@ -113,7 +111,7 @@
 </head>
 <body>
 <div class="container">
-  <h2>Programación de Instructores</h2>
+  <h2>Programación de Cursos</h2>
 
   @if (session('success'))
       <div class="alert-success">
@@ -140,21 +138,27 @@
   <form id="programmingForm" action="{{ route('programming.register_programming_instructor_store') }}" method="POST">
     @csrf
 
-    <label for="instructor">Instructor:</label>
-    <select id="instructor" name="instructor_id" required>
-      <option value="">Seleccione un instructor</option>
-      @foreach ($instructors as $instructor)
-        <option value="{{ $instructor->id }}" {{ old('instructor_id') == $instructor->id ? 'selected' : '' }}>{{ $instructor->person->name }}</option>
-      @endforeach
-    </select>
-
-    <label for="ficha">Ficha:</label>
+    <label for="ficha">Selecione ficha y Programa </label>
     <select id="ficha" name="ficha_id" required>
-      <option value="">Selecione la ficha</option>
+      <option value="">Selecione </option>
       @foreach ($cohorts as $ficha)
         <option value="{{ $ficha->id }}" {{ old('ficha_id') == $ficha->id ? 'selected' : '' }}>{{ $ficha->number_cohort }} - {{$ficha->program->name}}</option>
       @endforeach
     </select>
+
+    <label for="instructor">Instructor:</label>
+    <select id="instructor" name="instructor_id" required>
+      <option value="">Seleccione un instructor</option>
+      @foreach ($instructors as $instructor)
+        <option value="{{ $instructor->id }}" {{ old('instructor_id') == $instructor->id ? 'selected' : '' }}> {{$instructor->person->document_number}} - {{ $instructor->person->name }} - {{$instructor->speciality->name}}</option>
+      @endforeach
+    </select>
+    <!-- Nuevo mensaje de alerta -->
+    <div id="noCompetenciesAlert" class="alert-warning">
+      El instructor seleccionado no tiene competencias vinculadas. Por favor, asigne competencias al instructor antes de continuar.
+    </div>
+
+
 
     <label for="competencia">Competencia:</label>
     <select id="competencia" name="competencia_id" disabled required>
@@ -220,7 +224,6 @@
     <button type="submit" class="submit-btn">Guardar Programación</button>
   </form>
 </div>
-
 <script>
   // Mapea instructor_id => [competencia_id, ...]
   const competenciasPorInstructor = @json(
@@ -232,12 +235,11 @@
   const selectInstructor = document.getElementById('instructor');
   const selectCompetencia = document.getElementById('competencia');
   const totalHorasInput = document.getElementById('total_horas');
+  const noCompetenciesAlert = document.getElementById('noCompetenciesAlert');
 
-   const todasLasCompetencias = @json($competencias->map(function($comp) {
+  const todasLasCompetencias = @json($competencias->map(function($comp) {
     return ['id' => $comp->id, 'name' => $comp->name, 'hours' => $comp->duration_hours ?? $comp->hours ?? 40];
-}));
-
-  
+  }));
 
   selectCompetencia.addEventListener('change', function() {
       const competenciaId = parseInt(this.value);
@@ -266,9 +268,17 @@
   selectInstructor.addEventListener('change', function() {
       const instructorId = this.value;
       selectCompetencia.innerHTML = '<option value="">Seleccione una competencia</option>';
+      noCompetenciesAlert.style.display = 'none'; // Ocultar alerta por defecto
       
-      if (!instructorId || !competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0) {
+      if (!instructorId) {
           selectCompetencia.disabled = true;
+          return;
+      }
+      
+      // Verificar si el instructor tiene competencias
+      if (!competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0) {
+          selectCompetencia.disabled = true;
+          noCompetenciesAlert.style.display = 'block'; // Mostrar alerta
           return;
       }
       
@@ -289,11 +299,6 @@
           selectCompetencia.value = oldValue;
       }
   });
-
-  // Ejecutar al cargar la página si hay instructor seleccionado
-  if (selectInstructor.value) {
-      selectInstructor.dispatchEvent(new Event('change'));
-  }
 
   // Calcular horas diarias automáticamente
   const horaInicio = document.getElementById('hora_inicio');
@@ -364,7 +369,6 @@
       }
   });
 
-
   // Validar días seleccionados
   const form = document.getElementById('programmingForm');
   const diasError = document.getElementById('diasError');
@@ -378,25 +382,37 @@
       } else {
           diasError.textContent = '';
       }
+
+      // Validar también si hay un instructor sin competencias seleccionado
+      const instructorId = selectInstructor.value;
+      if (instructorId && (!competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0)) {
+          e.preventDefault();
+          noCompetenciesAlert.style.display = 'block';
+          selectInstructor.focus();
+      }
   });
 
-document.getElementById('hora_inicio').addEventListener('change', validarHora);
-document.getElementById('hora_fin').addEventListener('change', validarHora);
+  document.getElementById('hora_inicio').addEventListener('change', validarHora);
+  document.getElementById('hora_fin').addEventListener('change', validarHora);
 
-function validarHora(e) {
-    const valor = e.target.value;
-    if (valor) {
-        const [hora, minuto] = valor.split(':').map(Number);
-        if (minuto !== 0 && minuto !== 30) {
-            alert('Solo se permiten horas en punto o media hora (:00 o :30)');
-            e.target.value = '';
-        }
-    }
-}
+  function validarHora(e) {
+      const valor = e.target.value;
+      if (valor) {
+          const [hora, minuto] = valor.split(':').map(Number);
+          if (minuto !== 0 && minuto !== 30) {
+              alert('Solo se permiten horas en punto o media hora (:00 o :30)');
+              e.target.value = '';
+          }
+      }
+  }
+
+  // Ejecutar al cargar la página si hay instructor seleccionado
+  if (selectInstructor.value) {
+      selectInstructor.dispatchEvent(new Event('change'));
+  }
 </script>
 
   
-
 
 </script>
 </body>

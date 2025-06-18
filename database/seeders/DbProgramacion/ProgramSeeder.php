@@ -13,88 +13,94 @@ class ProgramSeeder extends Seeder
      */
     public function run(): void
     {
-        // Programas de nivel 2 (Tecnólogo)
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0001",
-            "program_version" => "1",
-            "name" => "Análisis y Desarrollo de Software",
-            "instructor_id"=>1
-        ]);
+        // Programas de nivel 2 (Tecnólogo) - Diversificados
+        $diversePrograms = [
+            // 1. Tecnología
+            [
+                "id_level" => 2,
+                "program_code" => "T0011",
+                "program_version" => "1",
+                "name" => "Gestión Logística y Cadena de Suministro",
+                "instructor_id" => 2
+            ],
+            // 2. Gastronomía
+            [
+                "id_level" => 2,
+                "program_code" => "G0001",
+                "program_version" => "1",
+                "name" => "Gastronomía Internacional y Técnicas Moleculares",
+                "instructor_id" => 2
+            ],
+            // 3. Multimedia
+            [
+                "id_level" => 2,
+                "program_code" => "M0001",
+                "program_version" => "1",
+                "name" => "Producción Audiovisual y Efectos Digitales",
+                "instructor_id" => 2
+            ],
+            // 4. Administración
+            [
+                "id_level" => 2,
+                "program_code" => "A0001",
+                "program_version" => "1",
+                "name" => "Gestión de Empresas Creativas",
+                "instructor_id" => 2
+            ],
+            // 5. Salud
+            [
+                "id_level" => 2,
+                "program_code" => "S0001",
+                "program_version" => "1",
+                "name" => "Biotecnología Alimentaria",
+                "instructor_id" => 1
+            ],
+            // 6. Diseño
+            [
+                "id_level" => 2,
+                "program_code" => "D0001",
+                "program_version" => "1",
+                "name" => "Diseño de Experiencia de Usuario (UX/UI)",
+                "instructor_id" => 1
+            ],
+            // 7. Comercio
+            [
+                "id_level" => 2,
+                "program_code" => "C0001",
+                "program_version" => "1",
+                "name" => "Comercio Electrónico y Marketing Digital",
+                "instructor_id" => 3
+            ],
+            // 8. Artes
+            [
+                "id_level" => 2,
+                "program_code" => "R0001",
+                "program_version" => "1",
+                "name" => "Animación 3D y Arte Digital",
+                "instructor_id" => 2
+            ],
+            // 9. Turismo
+            [
+                "id_level" => 2,
+                "program_code" => "U0001",
+                "program_version" => "1",
+                "name" => "Gestión de Turismo Sostenible",
+                "instructor_id" => 3
+            ],
+            // 10. Manufactura
+            [
+                "id_level" => 2,
+                "program_code" => "F0001",
+                "program_version" => "1",
+                "name" => "Diseño de Moda Tecnológica (Wearables)",
+                "instructor_id" => 4
+            ]
+        ];
 
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0002",
-            "program_version" => "1",
-            "name" => "Gestión de Redes",
-            "instructor_id"=>1
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0003",
-            "program_version" => "2",
-            "name" => "Sistemas de Información",
-            "instructor_id" => 1
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0004",
-            "program_version" => "1",
-            "name" => "Desarrollo de Aplicaciones Móviles",
-            "instructor_id" => 2
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0005",
-            "program_version" => "3",
-            "name" => "Ciberseguridad",
-            "instructor_id" => 1
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0006",
-            "program_version" => "1",
-            "name" => "Big Data y Análisis de Datos",
-            "instructor_id" => 3
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0007",
-            "program_version" => "2",
-            "name" => "Inteligencia Artificial",
-            "instructor_id" => 2
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0008",
-            "program_version" => "1",
-            "name" => "Desarrollo Web",
-            "instructor_id" => 1
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0009",
-            "program_version" => "2",
-            "name" => "Automatización de Procesos",
-            "instructor_id" => 2
-        ]);
-
-        Program::create([
-            "id_level" => 2,
-            "program_code" => "T0010",
-            "program_version" => "1",
-            "name" => "Diseño de Videojuegos",
-            "instructor_id" => 3
-        ]);
-
-    
+        // Insertar todos los programas
+        foreach ($diversePrograms as $program) {
+            Program::create($program);
+        }
        
 
        

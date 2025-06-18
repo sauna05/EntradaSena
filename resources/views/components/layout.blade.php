@@ -314,8 +314,9 @@
                 <li>
                     <li>
                         <a class="menu-toggle">
-                            <i class="fa-solid fa-graduation-cap"></i> Programas
+                            <i class="fa-solid fa-home"></i> Inicio
                         </a>
+                        
                         <ul>
                             <li><a href="{{ route('programming.admin') }}"><i class="fa-solid fa-clipboard-list"></i> Gestión Programas</a></li>
                             <li><a href="{{ route('programing.competencies_program_index') }}"><i class="fa-solid fa-link"></i> Competencias Vinculadas</a></li>
@@ -327,7 +328,13 @@
                         </a>
                         <ul>
                             <li><a href="{{ route('programming.programming_index_states') }}"><i class="fa-solid fa-table-list"></i> Programaciones</a></li>
-                            <li><a href="{{ route('programming.register_programming_instructor_index') }}"><i class="fa-solid fa-user-clock"></i> Programar instructor</a></li>
+                            <li>
+                                <a href="{{ route('programming.register_programming_instructor_index') }}">
+                                  <i class="fa-solid fa-calendar"></i>
+                                  <i class="fa-solid fa-clock"></i> Programar Curso
+                                </a>
+                              </li>
+                              
                             <li><a href="{{ route('programming.programming_update_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programacion</a></li>
                             <li><a href="#"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
                         </ul>
@@ -339,7 +346,7 @@
                         <ul>
                             <li><a href="{{ route('programing.competencies_index') }}"><i class="fa-solid fa-list-check"></i> Gestión de Competencias</a></li>
                             <li><a href="{{ route('programing.competencies_index_program') }}"><i class="fa-solid fa-share-nodes"></i> Vincular a Programas y Fichas</a></li>
-                            <li><a href="#"><i class="fa-solid fa-clock"></i> Programar Competencia</a></li>
+                          
                         </ul>
                     </li>
                     <li>
@@ -353,7 +360,7 @@
                     </li>
                     <li>
                         <a class="menu-toggle">
-                            <i class="fa-solid fa-user-graduate"></i> Aprendiz
+                            <i class="fa-solid fa-user-graduate"></i> Aprendizes
                         </a>
                         <ul>
                             <li><a href="{{ route('programing.list_apprentices') }}"><i class="fa-solid fa-address-card"></i> Gestión de Aprendiz</a></li>

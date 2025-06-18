@@ -122,6 +122,8 @@
 
                     <label>Fin etapa práctica</label>
                     <input type="date" name="end_date_practical_stage" required>
+                    <label for="">Cantidad Matriculados</label>
+                    <input type="number" name="enrolled_quantity" required>
 
                     <div class="form-buttons">
                         <button type="submit" class="btn" style="background-color: green">Guardar</button>
@@ -140,6 +142,7 @@
                     <th>Ficha</th>
                     <th>Programa</th>
                     <th>Jornada</th>
+                    <th>Matriculados</th>
                     <th>Municipio</th>
                     <th>Etapa Escolar</th>
                     <th>Etapa Práctica</th>
@@ -150,7 +153,8 @@
                     <tr>
                         <td>{{ $cohort->number_cohort }}</td>
                         <td>{{ $cohort->program->name ?? 'N/A' }}</td>
-                        <td>{{ $cohort->time->name ?? 'N/A' }}</td>
+                        <td>{{ $cohort->cohortime->name ?? 'N/A' }}</td>
+                        <td>{{$cohort->enrolled_quantity }}  </td>
                         <td>{{ $cohort->town->name ?? 'N/A' }}</td>
                         <td>{{ $cohort->start_date_school_stage }} a {{ $cohort->end_date_school_stage }}</td>
                         <td>{{ $cohort->start_date_practical_stage }} a {{ $cohort->end_date_practical_stage }}</td>

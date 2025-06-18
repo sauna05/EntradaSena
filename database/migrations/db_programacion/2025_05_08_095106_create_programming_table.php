@@ -14,23 +14,36 @@ return new class extends Migration
         Schema::create('programming', function (Blueprint $table) {
             $table->id();
 
+            // Relaciones
             $table->foreignId('id_cohort')->constrained('cohorts')->onDelete('cascade');
             $table->foreignId('id_instructor')->constrained('instructors')->onDelete('cascade');
             $table->foreignId('id_competencie')->constrained('competencies')->onDelete('cascade');
-            $table->foreignId('id_classroom')->constrained('classrooms')->onDelete('cascade'); // <- Nueva relación
+            $table->foreignId('id_classroom')->constrained('classrooms')->onDelete('cascade');
 
+            // Control de horas
             $table->integer('hours_duration');
             $table->integer('scheduled_hours');
-
-            $table->boolean('iniciada');
+            $table->enum('status', [
+                'pendiente',       // Antes de la fecha de inicio
+                'en_ejecucion',    // Durante el rango de fechas
+                'finalizada_evaluada',
+                'finalizada_no_evaluada'
+            ])->default('pendiente');
+            // Fechas y tiempos
+            //fecha inicio y fecha fin
             $table->date('start_date');
             $table->date('end_date');
-
+            //hora inicio y hora fin
             $table->time('start_time');
             $table->time('end_time');
+
+            // Estado de programación
             $table->enum('statu_programming', ['sin_registrar', 'ok'])->default('sin_registrar');
 
-            // $table->string('programmed_by');
+            // Notificaciones (versión corregida)
+            $table->boolean('termination_notice')->default(false)->comment('Indica si se envió el aviso');
+            $table->timestamp('date_of_termination_notice')->nullable()->comment('Fecha y hora exacta del aviso');
+
             $table->boolean('evaluated')->default(false);
 
             $table->timestamps();

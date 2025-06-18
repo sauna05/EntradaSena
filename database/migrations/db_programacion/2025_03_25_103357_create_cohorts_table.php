@@ -25,16 +25,19 @@ return new class extends Migration
             $table->integer('hours_school_stage');
             $table->integer('hours_practical_stage');
 
-            //fechas `por etapas
+            //fechas por etapas
             $table->date('start_date_school_stage');
             $table->date('end_date_school_stage');
 
             $table->date('start_date_practical_stage');
             $table->date('end_date_practical_stage');
+
+            // Nuevo campo para cantidad de matriculados
+            $table->integer('enrolled_quantity')->default(0);
+
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
