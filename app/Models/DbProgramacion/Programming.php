@@ -41,4 +41,16 @@ class Programming extends Model
     {
         return $this->belongsToMany(Day::class, 'days_programing', 'programming_id', 'day_id');
     }
+    // Scope para verificar solape de fechas
+    public function scopeSolapaFechas($query, $fechaInicio, $fechaFin)
+    {
+        return $query->where(function ($q) use ($fechaInicio, $fechaFin) {
+            $q->whereBetween('start_date', [$fechaInicio, $fechaFin])
+                ->orWhereBetween('end_date', [$fechaInicio, $fechaFin])
+                ->orWhere(function ($q2) use ($fechaInicio, $fechaFin) {
+                    $q2->where('start_date', '<=', $fechaInicio)
+                        ->where('end_date', '>=', $fechaFin);
+                });
+        });
+    }
 }

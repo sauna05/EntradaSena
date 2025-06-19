@@ -334,45 +334,26 @@
         }
     </style>
 </head>
+
+
 <body>
+    
     <!-- Header -->
     <header class="header">
         <div class="header-container">
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
+        <a href="{{ route('gestion_entrada') }}" style="color: var(--gris-texto); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-door-open"></i> Gestión de Entrada
+        </a>
     </header>
+    
 
     <!-- Main Content -->
     <main class="main-content">
         <div class="form-container">
-            <!-- FORMULARIO ENTRADA -->
-            <form class="login-form" action="{{ route('entrance-login') }}" method="POST">
-                @csrf
-                <div class="icon-header"><i class="fas fa-door-open"></i></div>
-                <h2>Entrada</h2>
-
-                @if ($errors->has('entrance.user_name'))
-                    <div class="error-message">
-                        {{ $errors->first('entrance.user_name') }}
-                    </div>
-                @endif
-
-                <div class="input-group">
-                    <label for="user_name_entrada">Usuario</label>
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="user_name_entrada" name="user_name" placeholder="Usuario">
-                </div>
-
-                <div class="input-group">
-                    <label for="password_entrada">Contraseña</label>
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password_entrada" name="password" placeholder="Contraseña">
-                </div>
-
-                <button type="submit" class="submit-btn">Ingresar</button>
-            </form>
-
+           
             <!-- FORMULARIO PROGRAMACIÓN -->
             <form class="login-form" action="{{ route('programming-login') }}" method="POST">
                 @csrf
@@ -390,12 +371,25 @@
                     <i class="fas fa-user"></i>
                     <input type="text" id="user_name_program" name="user_name" placeholder="Usuario">
                 </div>
-
-                <div class="input-group">
+                <div class="input-group" style="position: relative;">
                     <label for="password_program">Contraseña</label>
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password_program" name="password" placeholder="Contraseña">
+                
+                    <input type="password" id="password_program" name="password" placeholder="Tu contraseña">
+                    
+                    <!-- Ojito dentro del input -->
+                    <i class="fas fa-eye-slash" id="eyeIcon" 
+                       style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #7f8c8d;"></i>
+                
+                    <!-- Checkbox debajo a la derecha -->
+                    <div style="position: absolute; right: 10px; bottom: -25px; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" id="togglePassword" style="cursor: pointer;">
+                        <label for="togglePassword" style="cursor: pointer; font-size: 0.85rem; color: #7f8c8d;">Mostrar</label>
+                    </div>
                 </div>
+                
+                
+                
+                
 
                 <div class="input-group">
                     <label for="module">Ingresar a:</label>
@@ -407,14 +401,36 @@
                 </div>
 
                 <button type="submit" class="submit-btn">Ingresar</button>
+                
             </form>
+            
         </div>
     </main>
+    
+    
 
     <!-- Footer -->
     <footer class="footer">
         <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-footer" />
         <p>&copy; {{ date('Y') }} Centro Agroempresarial y Acuícola. Todos los derechos reservados.</p>
     </footer>
+    <script>
+        const toggle = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password_program');
+        const eyeIcon = document.getElementById('eyeIcon');
+    
+        toggle.addEventListener('change', function () {
+            if (this.checked) {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            }
+        });
+    </script>
+    
 </body>
 </html>

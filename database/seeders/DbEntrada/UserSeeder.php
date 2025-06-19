@@ -37,29 +37,29 @@ class UserSeeder extends Seeder
             'password' => bcrypt("123123")
         ])->assignRole('Administrador_programacion');
 
-        User::create([
-            'id_person' => 1,
-            'user_name' => 'msentrada',
-            'password' => bcrypt("123123")
-            #Sena2025
-        ])->assignRole('Acceso-Entrada');
+        // User::create([
+        //     'id_person' => 1,
+        //     'user_name' => 'msentrada',
+        //     'password' => bcrypt("123123")
+        //     #Sena2025
+        // ])->assignRole('Acceso-Entrada');
 
-        User::create([
-            'id_person' => 2,
-            'user_name' => '123456789',
-            'password' => bcrypt("123456789")
-        ])->assignRole('Aprendiz');
+        // User::create([
+        //     'id_person' => 2,
+        //     'user_name' => '123456789',
+        //     'password' => bcrypt("123456789")
+        // ])->assignRole('Aprendiz');
 
-        User::create([
-            'id_person' => 3,
-            'user_name' => '1005188631',
-            'password' => bcrypt("1005188631")
-        ])->assignRole('Aprendiz');
+        // User::create([
+        //     'id_person' => 3,
+        //     'user_name' => '1005188631',
+        //     'password' => bcrypt("1005188631")
+        // ])->assignRole('Aprendiz');
 
-        User::create([
-            'id_person' => 4,
-            'user_name' => '1043434038',
-            'password' => bcrypt("1043434038")
-        ])->assignRole('Aprendiz');
+        // User::create([
+        //     'id_person' => 4,
+        //     'user_name' => '1043434038',
+        //     'password' => bcrypt("1043434038")
+        // ])->assignRole('Aprendiz');
     }
 }

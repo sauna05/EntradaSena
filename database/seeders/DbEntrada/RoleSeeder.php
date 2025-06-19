@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
         $role10 = Role::create(['name' => 'Administrador_programacion']);
 
         $role2 = Role::create(['name' => 'Admin-Entrada']);
-        $role3 = Role::create(['name' => 'Acceso-Entrada']);
+        // $role3 = Role::create(['name' => 'Acceso-Entrada']);
         $role4 = Role::create(['name' => 'Apoyo-Coordinacion-Juicios-Evaluativos']);
         $role5 = Role::create(['name' => 'Admin-Programacion']);
         $role6 = Role::create(['name' => 'Sofia-Programacion']);
@@ -32,8 +32,8 @@ class RoleSeeder extends Seeder
         // $role10 = Role::create(['name' => 'Instructor']);
 
         // Permisos del módulo de la entrada
-        Permission::create(['name' => 'entrance.create'])->syncRoles([$role3]);
-        Permission::create(['name' => 'entrance.store'])->syncRoles([$role3]);
+        // Permission::create(['name' => 'entrance.create'])->syncRoles([$role3]);
+        // Permission::create(['name' => 'entrance.store'])->syncRoles([$role3]);
 
         // Permisos del módulo de administración de la entrada
         Permission::create(['name' => 'entrance.admin'])->syncRoles([$role1, $role2]);

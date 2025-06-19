@@ -14,20 +14,25 @@ use App\Http\Controllers\DbProgramacion\ProgramanController;
 use App\Models\DbEntrada\User;
 use Illuminate\Support\Facades\Route;
 //Pagina inicial
+
+
 Route::get('/', function () {
     return view('pages.start_page');
 })->name('login');
+
+
 //Logout universal
 Route::post('logout', [EntranceAuthController::class, 'logout'])->name('logout');
 
 //Entrada ------------------------------------------------------------------------------
 
-//login
-Route::post('entrance/login', [EntranceAuthController::class, 'login'])->name('entrance-login');
+//Esta rutas no requieren permisos estas son de la gestion de entrada de documentos
+Route::get('entrance/entrada', [EntranceAuthController::class, 'entrada_asistencia'])->name('gestion_entrada');
+Route::post('/entrance/store', [EntranceExitController::class, 'store'])->name('entrance.store');
 
 //Modulo Entrada
-Route::get('/entrance', [EntranceExitController::class,  'create'])->middleware('can:entrance.create')->name('entrance.create');
-Route::post('/entrance/store', [EntranceExitController::class, 'store'])->middleware('can:entrance.store')->name('entrance.store');
+// Route::get('/entrance', [EntranceExitController::class,  'create'])->middleware('can:entrance.create')->name('entrance.create');
+
 
 //Modulo Entrada - Administrador
 //Primera vista del administrador-asistencia

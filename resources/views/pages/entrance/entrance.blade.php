@@ -167,23 +167,59 @@
             margin: 0;
         }
 
-        .logout-button {
-            background-color: var(--verde-boton);
-            color: var(--blanco);
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 3px 8px rgba(57, 169, 0, 0.4);
-        }
+        .content-wrapper {
+        padding-top: 120px;  /* Espacio para el header */
+        padding-bottom: 100px; /* Espacio para el footer */
+    }
 
-        .logout-button:hover {
-            background-color: var(--verde-boton-hover);
-        }
+    /* Campo de documento grande y destacado */
+    #document_number {
+        font-size: 2rem;
+        padding: 20px;
+        width: 60%;
+        max-width: 600px;
+        border: 2px solid var(--verde-sena);
+        border-radius: 10px;
+        display: block;
+        margin: 30px auto;
+        box-shadow: 0 4px 12px rgba(57,169,0,0.2);
+        text-align: center;
+    }
 
+    #document_number:focus {
+        outline: none;
+        border-color: var(--verde-header-hover);
+        box-shadow: 0 0 10px rgba(57,169,0,0.4);
+    }
+
+    /* Títulos más grandes y centrados */
+    h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    h2 {
+        font-size: 2rem;
+        text-align: center;
+        margin: 15px 0;
+    }
+
+    /* Mensaje de error destacado */
+    #error_message {
+        font-size: 1.5rem;
+        text-align: center;
+        color: red;
+        margin-top: 10px;
+    }
+
+    /* Etiqueta del campo centrada y grande */
+    label[for="document_number"] {
+        display: block;
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
         /* Cursor pointer para todos los enlaces del menú */
         .sidebar-menu a,
         .sidebar-menu .menu-toggle {
@@ -210,6 +246,20 @@
                 padding: 10px;
             }
         }
+        /* Estilos para el span de acción */
+            #action.entrada {
+            color: #28a745; /* verde suave */
+            }
+            #action.salida {
+            color: #ffc107; /* amarillo/ámbar suave */
+            }
+
+            /* Input de documento con texto menos intenso */
+            #document_number {
+            color: #444; /* un gris más suave en lugar de negro puro */
+            }
+
+
     </style>
 </head>
 <body>
@@ -220,12 +270,7 @@
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
-        @auth
-        <form action="{{ route('logout') }}" method="POST" class="logout-form">
-            @csrf
-            <button type="submit" class="logout-button">Cerrar sesión</button>
-        </form>
-        @endauth
+      
     </header>
 
 
@@ -234,20 +279,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-
-    <h1>SISTEMA DE ASISTENCIAS AL CENTRO DE FORMACIÓN</h1>
-    <h2>Acción: <span class="action" id="action"></span></h2>
-    <h1><span id="full_hour"></span></h1>
-
-    <div>
-        <label for="document_number">Número de Documento</label>
-        <input type="text" id="document_number" autofocus>
-        <button id="send">Ingresar</button>
+    <div class="content-wrapper">
+        <h1>SISTEMA DE ASISTENCIAS AL CENTRO DE FORMACIÓN</h1>
+        <h2>Acción: <span class="action" id="action"></span></h2>
+        <h1><span id="full_hour"></span></h1>
+    
+        <div>
+            <label for="document_number">Número de Documento</label>
+            <input type="text" id="document_number" autofocus>
+        </div>
+    
+        <h2>Nombre: <span id="name"></span></h2>
+        <h2>Cargo: <span id="position"></span></h2>
+        <div id="error_message" style="display: none;"></div>
     </div>
-
-    <h2>Nombre: <span id="name"></span></h2>
-    <h2>Cargo: <span id="position"></span></h2>
-    <div id="error_message" style="color: red; display: none;"></div>
+    
 
     <script>
         // Actualiza la hora en tiempo real
@@ -263,57 +309,56 @@
         updateHour();
 
         $(document).ready(function() {
-            // Función para enviar los datos
-            function sendDocumentNumber(documentNumber) {
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
+        function sendDocumentNumber(documentNumber) {
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-                $.ajax({
-                    url: "{{ route('entrance.store') }}",
-                    type: 'POST',
-                    data: {
-                        document_number: documentNumber,
-                        _token: csrfToken
-                    },
-                    success: function(response) {
-                        if (response.error) {
-                            // Mostrar mensaje de error si no está registrado
-                            $('#error_message').text(response.error).show();
-                            $('#document_number').val(''); // Limpiar el campo después de enviar
-                        } else {
-                            // Mostrar información cuando los datos son correctos
-                            $('#action').text(`${response.action}`);
-                            $('#position').text(`${response.position}`);
-                            $('#name').text(`${response.name}`);
-                            $('#error_message').hide(); // Ocultar cualquier mensaje de error previo
-                            $('#document_number').val(''); // Limpiar el campo
-                        }
-                    },
-                    // error: function(xhr) {
-                    //     console.log(xhr.responseText);
-                    //     $('#action').text('Error al enviar los datos');
-                    // }
-                });
+        $.ajax({
+            url: "{{ route('entrance.store') }}",
+            type: 'POST',
+            data: {
+                document_number: documentNumber,
+                _token: csrfToken
+            },
+            success: function(response) {
+            if (response.error) {
+                $('#error_message').text(response.error).show();
+                $('#document_number').val('').focus();
+            } else {
+                const actionText = response.action.toLowerCase(); // “entrada” o “salida”
+                const $action = $('#action');
+                $action.text(response.action)
+                    .removeClass('entrada salida')
+                    .addClass(actionText);
+                $('#position').text(response.position);
+                $('#name').text(response.name);
+                $('#error_message').hide();
+                $('#document_number').val('').focus();
             }
-
-            // Evento al hacer clic en el botón de ingresar
-            $('#send').click(function() {
-                let documentNumber = $('#document_number').val();
-                if (documentNumber) {
-                    sendDocumentNumber(documentNumber);
-                }
-            });
-
-            // // Detectar el escaneo del código de barras en el campo de documento
-            // $('#document_number').on('input', function() {
-            //     let documentNumber = $('#document_number').val();
-            //     if (documentNumber.length > 0) {
-            //         // Si el campo tiene algún valor (como el escaneo de código de barras), enviar los datos
-            //         sendDocumentNumber(documentNumber);
-            //     }
-            // });
+        }
         });
-    </script>
+    }
 
+        $(document).ready(function() {
+        // Al escribir, eliminamos todo lo que no sea dígito
+        $('#document_number').on('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Ya existente: enviar con ENTER
+        $('#document_number').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            let documentNumber = $(this).val();
+            if (documentNumber) {
+            sendDocumentNumber(documentNumber);
+            }
+        }
+        });
+  });
+ 
+});
+
+    </script>
 
 
 

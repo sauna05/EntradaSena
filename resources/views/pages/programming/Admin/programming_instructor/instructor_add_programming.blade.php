@@ -211,12 +211,15 @@
     <div class="two-cols">
       <div>
         <label for="horas_dia">Horas Diarias:</label>
-        <input type="number" id="horas_dia" name="horas_dia" min="1" max="8" 
-               value="{{ old('horas_dia', 1) }}" required readonly />
+        <input type="number" id="horas_dia" name="horas_dia" min="1" max="8"
+         step="0.01" value="{{ old('horas_dia', 1) }}" required readonly />
+
       </div>
       <div>
-        <label for="total_horas">Total de Horas de la Competencia:</label>
-        <input type="number" id="total_horas" name="total_horas" value="{{ old('total_horas') }}" required readonly />
+         {{-- aca validar que se cumplan las horas durante ese periodo de fecha --}}
+        <label for="total_horas">Horas A programar:</label>
+        <input type="number" id="total_horas" name="total_horas" min="1" step="0.01" 
+        value="{{ old('total_horas') }}" required readonly />
 
       </div>
     </div>
@@ -225,196 +228,151 @@
   </form>
 </div>
 <script>
-  // Mapea instructor_id => [competencia_id, ...]
-  const competenciasPorInstructor = @json(
-      $instructors->mapWithKeys(function($instructor) {
-          return [$instructor->id => $instructor->competencies->pluck('id')->toArray()];
-      })
-  );
-
-  const selectInstructor = document.getElementById('instructor');
-  const selectCompetencia = document.getElementById('competencia');
-  const totalHorasInput = document.getElementById('total_horas');
-  const noCompetenciesAlert = document.getElementById('noCompetenciesAlert');
-
-  const todasLasCompetencias = @json($competencias->map(function($comp) {
-    return ['id' => $comp->id, 'name' => $comp->name, 'hours' => $comp->duration_hours ?? $comp->hours ?? 40];
-  }));
-
-  selectCompetencia.addEventListener('change', function() {
-      const competenciaId = parseInt(this.value);
-
-      if (!competenciaId) {
-          totalHorasInput.value = '';
-          return;
-      }
-
-      const competencia = todasLasCompetencias.find(c => c.id === competenciaId);
-
-      if (competencia) {
-          totalHorasInput.value = competencia.hours;
-      } else {
-          totalHorasInput.value = '';
-      }
-  });
-
-  if (selectInstructor.value) {
-      selectInstructor.dispatchEvent(new Event('change'));
-  }
-  if (selectCompetencia.value) {
-      selectCompetencia.dispatchEvent(new Event('change'));
-  }
-
-  selectInstructor.addEventListener('change', function() {
-      const instructorId = this.value;
-      selectCompetencia.innerHTML = '<option value="">Seleccione una competencia</option>';
-      noCompetenciesAlert.style.display = 'none'; // Ocultar alerta por defecto
-      
-      if (!instructorId) {
-          selectCompetencia.disabled = true;
-          return;
-      }
-      
-      // Verificar si el instructor tiene competencias
-      if (!competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0) {
-          selectCompetencia.disabled = true;
-          noCompetenciesAlert.style.display = 'block'; // Mostrar alerta
-          return;
-      }
-      
-      // Filtra las competencias asignadas
-      const competenciasAsignadas = todasLasCompetencias.filter(comp =>
-          competenciasPorInstructor[instructorId].includes(comp.id)
-      );
-      
-      competenciasAsignadas.forEach(comp => {
-          selectCompetencia.innerHTML += `<option value="${comp.id}">${comp.name}</option>`;
-      });
-      
-      selectCompetencia.disabled = false;
-      
-      // Seleccionar valor anterior si existe
-      const oldValue = "{{ old('competencia_id') }}";
-      if (oldValue) {
-          selectCompetencia.value = oldValue;
-      }
-  });
-
-  // Calcular horas diarias automáticamente
-  const horaInicio = document.getElementById('hora_inicio');
-  const horaFin = document.getElementById('hora_fin');
-  const horasDia = document.getElementById('horas_dia');
-  const horasCalculadas = document.getElementById('horasCalculadas');
-
-  function calcularHoras() {
-      if (horaInicio.value && horaFin.value) {
-          const inicio = new Date(`2000-01-01T${horaInicio.value}`);
-          const fin = new Date(`2000-01-01T${horaFin.value}`);
-          
-          // Validar que la hora de inicio sea después de las 8 am
-          const horaMinima = new Date(`2000-01-01T08:00`);
-          if (inicio < horaMinima) {
-              horasCalculadas.textContent = 'La hora de inicio debe ser a partir de las 8:00 am';
-              horasDia.value = '';
-              return;
-          } else {
-              horasCalculadas.textContent = '';
-          }
-          
-          // Validar que la hora fin sea mayor que la hora inicio
-          if (fin <= inicio) {
-              horasCalculadas.textContent = 'La hora de fin debe ser posterior a la hora de inicio';
-              horasDia.value = '';
-              return;
-          } else {
-              horasCalculadas.textContent = '';
-          }
-          
-          // Calcular diferencia en horas
-          const diffMs = fin - inicio;
-          const diffHrs = diffMs / (1000 * 60 * 60);
-          
-          // Redondear a 1 decimal
-          const horasRedondeadas = Math.round(diffHrs * 10) / 10;
-          
-          // Validar máximo 8 horas
-          if (horasRedondeadas > 8) {
-              horasCalculadas.textContent = 'El horario no puede exceder 8 horas diarias';
-              horasDia.value = '';
-          } else {
-              horasDia.value = horasRedondeadas;
-              horasCalculadas.textContent = '';
-          }
-      }
-  }
-
-  horaInicio.addEventListener('change', calcularHoras);
-  horaFin.addEventListener('change', calcularHoras);
-
-  // Validar fechas
-  const fechaInicio = document.getElementById('fecha_inicio');
-  const fechaFin = document.getElementById('fecha_fin');
-
-  fechaInicio.addEventListener('change', function() {
-      if (fechaFin.value && new Date(fechaInicio.value) > new Date(fechaFin.value)) {
-          alert('La fecha de inicio no puede ser posterior a la fecha de fin');
-          fechaInicio.value = '';
-      }
-  });
-
-  fechaFin.addEventListener('change', function() {
-      if (fechaInicio.value && new Date(fechaFin.value) < new Date(fechaInicio.value)) {
-          alert('La fecha de fin no puede ser anterior a la fecha de inicio');
-          fechaFin.value = '';
-      }
-  });
-
-  // Validar días seleccionados
-  const form = document.getElementById('programmingForm');
-  const diasError = document.getElementById('diasError');
-
-  form.addEventListener('submit', function(e) {
-      const diasSeleccionados = document.querySelectorAll('input[name="dias[]"]:checked').length;
-      
-      if (diasSeleccionados === 0) {
-          e.preventDefault();
-          diasError.textContent = 'Debe seleccionar al menos un día de la semana';
-      } else {
-          diasError.textContent = '';
-      }
-
-      // Validar también si hay un instructor sin competencias seleccionado
-      const instructorId = selectInstructor.value;
-      if (instructorId && (!competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0)) {
-          e.preventDefault();
-          noCompetenciesAlert.style.display = 'block';
-          selectInstructor.focus();
-      }
-  });
-
-  document.getElementById('hora_inicio').addEventListener('change', validarHora);
-  document.getElementById('hora_fin').addEventListener('change', validarHora);
-
-  function validarHora(e) {
-      const valor = e.target.value;
-      if (valor) {
-          const [hora, minuto] = valor.split(':').map(Number);
-          if (minuto !== 0 && minuto !== 30) {
-              alert('Solo se permiten horas en punto o media hora (:00 o :30)');
-              e.target.value = '';
-          }
-      }
-  }
-
-  // Ejecutar al cargar la página si hay instructor seleccionado
-  if (selectInstructor.value) {
-      selectInstructor.dispatchEvent(new Event('change'));
-  }
-</script>
-
+  document.addEventListener('DOMContentLoaded', function () {
+      const horaInicioInput = document.getElementById('hora_inicio');
+      const horaFinInput = document.getElementById('hora_fin');
+      const horasDiaInput = document.getElementById('horas_dia');
+      const totalHorasInput = document.getElementById('total_horas');
+      const diasCheckboxes = document.querySelectorAll('input[name="dias[]"]');
+      const fechaInicioInput = document.getElementById('fecha_inicio');
+      const fechaFinInput = document.getElementById('fecha_fin');
+      const horasCalculadasDiv = document.getElementById('horasCalculadas');
+      const selectInstructor = document.getElementById('instructor');
+      const selectCompetencia = document.getElementById('competencia');
+      const noCompetenciesAlert = document.getElementById('noCompetenciesAlert');
   
-
-</script>
+      let competenciaHoras = 0;
+  
+      const competenciasPorInstructor = @json(
+          $instructors->mapWithKeys(function($instructor) {
+              return [$instructor->id => $instructor->competencies->pluck('id')->toArray()];
+          })
+      );
+  
+      const todasLasCompetencias = @json($competencias->map(function($comp) {
+          return ['id' => $comp->id, 'name' => $comp->name, 'hours' => $comp->duration_hours ?? $comp->hours ?? 40];
+      }));
+  
+      selectInstructor.addEventListener('change', function () {
+          const instructorId = this.value;
+          selectCompetencia.innerHTML = '<option value="">Seleccione una competencia</option>';
+          noCompetenciesAlert.style.display = 'none';
+  
+          if (!instructorId) {
+              selectCompetencia.disabled = true;
+              return;
+          }
+  
+          if (!competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0) {
+              selectCompetencia.disabled = true;
+              noCompetenciesAlert.style.display = 'block';
+              return;
+          }
+  
+          const competenciasAsignadas = todasLasCompetencias.filter(comp =>
+              competenciasPorInstructor[instructorId].includes(comp.id)
+          );
+  
+          competenciasAsignadas.forEach(comp => {
+              selectCompetencia.innerHTML += `<option value="${comp.id}">${comp.name}</option>`;
+          });
+  
+          selectCompetencia.disabled = false;
+      });
+  
+      selectCompetencia.addEventListener('change', function () {
+          const competenciaId = parseInt(this.value);
+          const competencia = todasLasCompetencias.find(c => c.id === competenciaId);
+          competenciaHoras = competencia ? competencia.hours : 0;
+          calcularTotalHoras();
+      });
+  
+      function calcularHorasDiarias() {
+          const horaInicio = horaInicioInput.value;
+          const horaFin = horaFinInput.value;
+  
+          if (horaInicio && horaFin) {
+              const [h1, m1] = horaInicio.split(':').map(Number);
+              const [h2, m2] = horaFin.split(':').map(Number);
+  
+              const minutosInicio = h1 * 60 + m1;
+              const minutosFin = h2 * 60 + m2;
+  
+              const diferenciaMinutos = minutosFin - minutosInicio;
+  
+              if (diferenciaMinutos > 0) {
+                  const horas = diferenciaMinutos / 60;
+                  horasDiaInput.value = horas.toFixed(2);
+                  horasCalculadasDiv.textContent = '';
+              } else {
+                  horasDiaInput.value = '';
+                  horasCalculadasDiv.textContent = '⚠️ La hora final debe ser mayor a la hora inicial';
+              }
+  
+              calcularTotalHoras();
+          }
+      }
+  
+      function calcularTotalHoras() {
+          const fechaInicio = fechaInicioInput.value;
+          const fechaFin = fechaFinInput.value;
+          const horasDia = parseFloat(horasDiaInput.value);
+  
+          if (!fechaInicio || !fechaFin || isNaN(horasDia)) {
+              totalHorasInput.value = '';
+              return;
+          }
+  
+          const startDate = new Date(fechaInicio);
+          const endDate = new Date(fechaFin);
+  
+          if (endDate < startDate) {
+              totalHorasInput.value = '';
+              horasCalculadasDiv.textContent = '⚠️ La fecha fin debe ser mayor o igual a la fecha inicio';
+              return;
+          }
+  
+          const diasSeleccionados = Array.from(diasCheckboxes)
+              .filter(cb => cb.checked)
+              .map(cb => cb.value);
+  
+          let totalHoras = 0;
+          let currentDate = new Date(startDate);
+  
+          while (currentDate <= endDate) {
+              const diaSemana = capitalize(currentDate.toLocaleDateString('es-ES', { weekday: 'long' }));
+              if (diasSeleccionados.includes(diaSemana)) {
+                  totalHoras += horasDia;
+              }
+              currentDate.setDate(currentDate.getDate() + 1);
+          }
+  
+          totalHorasInput.value = totalHoras.toFixed(2);
+  
+          if (competenciaHoras > 0 && totalHoras < competenciaHoras) {
+              horasCalculadasDiv.textContent = `⚠️ Las horas programadas (${totalHoras.toFixed(2)}) son menores a las requeridas por la competencia (${competenciaHoras})`;
+          } else {
+              horasCalculadasDiv.textContent = '';
+          }
+      }
+  
+      function capitalize(str) {
+          return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      }
+  
+      horaInicioInput.addEventListener('change', calcularHorasDiarias);
+      horaFinInput.addEventListener('change', calcularHorasDiarias);
+      diasCheckboxes.forEach(cb => cb.addEventListener('change', calcularTotalHoras));
+      fechaInicioInput.addEventListener('change', calcularTotalHoras);
+      fechaFinInput.addEventListener('change', calcularTotalHoras);
+  
+      // Inicializa si hay valores previos
+      if (selectInstructor.value) {
+          selectInstructor.dispatchEvent(new Event('change'));
+      }
+  });
+  </script>
+  
 </body>
 </html>
 </x-layout>
