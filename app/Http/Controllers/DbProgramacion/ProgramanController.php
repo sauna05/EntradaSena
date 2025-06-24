@@ -307,6 +307,34 @@ class ProgramanController extends Controller
         ]);
     }
 
+   public function programming_index_edit($id){
+    $programacion = Programming::with([
+            'instructor.person', // Si Instructor tiene una relación con Person
+            'cohort.program',    // Si Cohort tiene una relación con Program
+            'classroom.towns',   // Si Classroom tiene una relación con Towns
+            'competencie',       // Si Competencie es la relación directa
+            'days'               // Para los días asociados a esta programación
+        ])->findOrFail($id);
+
+        // Datos para los dropdowns/selects del formulario
+        $instructors = Instructor::with(['person', 'competencies', 'speciality'])->get();
+        $cohorts = Cohort::with('program')->get();
+        $ambientes = Classroom::with('towns')->get();
+        $competencias = Competencies::all();
+        $allDays = Day::all(); // Si tienes una tabla de todos los días de la semana
+
+        return view('pages.programming.Admin.programming_instructor.programming_instructor_update', [
+            'programacion' => $programacion, // Pasa la programación encontrada a la vista
+            'instructors' => $instructors,
+            'cohorts' => $cohorts,
+            'ambientes' => $ambientes,
+            'competencias' => $competencias,
+            'allDays' => $allDays, // Pasa todos los días para el checkbox/selector
+        ]);
+
+   }
+
+
 
     //metodo de agregar filtro de programaciones
 
@@ -507,6 +535,127 @@ class ProgramanController extends Controller
     /**
      * Verifica si hay cruce de programación
      */
+
+     //metodo para reporgramar
+     public function update_programmig(Request $request, $id)
+    {
+        try {
+            // Buscar la programación existente
+            $programacion = Programming::findOrFail($id);
+
+            // Validación de los datos recibidos
+            $validated = $request->validate([
+                'instructor_id' => 'required|exists:db_programacion.instructors,id',
+                'ficha_id' => 'required|exists:db_programacion.cohorts,id',
+                'competencia_id' => 'required|exists:db_programacion.competencies,id',
+                'ambiente_id' => 'required|exists:db_programacion.classrooms,id',
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+                'hora_inicio' => 'required',
+                'hora_fin' => 'required',
+                'horas_dia' => 'required|numeric|min:1|max:8',
+                'total_horas' => 'required|numeric|min:1',
+                'dias' => 'required|array',
+                'dias.*' => 'string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+            ]);
+
+            $horaInicioNueva = Carbon::parse($validated['hora_inicio']);
+            $horaFinNueva = Carbon::parse($validated['hora_fin']);
+
+            /** ------------------------------
+             * VALIDACIÓN DE AMBIENTE OCUPADO (excluyendo la programación actual)
+             * ------------------------------ */
+            $programacionesAmbiente = Programming::where('id_classroom', $validated['ambiente_id'])
+                ->where('id', '!=', $id) // Excluir la programación actual
+                ->where(function ($query) use ($validated) {
+                    $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhereBetween('end_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhere(function ($query) use ($validated) {
+                            $query->where('start_date', '<=', $validated['fecha_inicio'])
+                                ->where('end_date', '>=', $validated['fecha_fin']);
+                        });
+                })
+                ->with('days')
+                ->get();
+
+            foreach ($programacionesAmbiente as $programacion) {
+                $diasProgramados = $programacion->days->pluck('name')->toArray();
+                $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
+
+                if (!empty($diasCoinciden)) {
+                    $horaInicioExistente = Carbon::parse($programacion->start_time)->format('H:i');
+                    $horaFinExistente = Carbon::parse($programacion->end_time)->format('H:i');
+
+                    if (
+                        $horaInicioNueva < Carbon::parse($programacion->end_time) &&
+                        $horaFinNueva > Carbon::parse($programacion->start_time)
+                    ) {
+                        $diasMensaje = implode(', ', $diasCoinciden);
+                        $mensaje = "El ambiente está ocupado el/los día(s): {$diasMensaje} entre las {$horaInicioExistente} y {$horaFinExistente}.";
+                        return redirect()->back()->with('error', $mensaje);
+                    }
+                }
+            }
+
+            /** --------------------------------------------
+             * VALIDACIÓN DE INSTRUCTOR (excluyendo la programación actual)
+             * -------------------------------------------- */
+            $programacionesInstructor = Programming::where('id_instructor', $validated['instructor_id'])
+                ->where('id', '!=', $id) // Excluir la programación actual
+                ->where(function ($query) use ($validated) {
+                    $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhereBetween('end_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
+                        ->orWhere(function ($query) use ($validated) {
+                            $query->where('start_date', '<=', $validated['fecha_inicio'])
+                                ->where('end_date', '>=', $validated['fecha_fin']);
+                        });
+                })
+                ->with('days')
+                ->get();
+
+            foreach ($programacionesInstructor as $programacion) {
+                $diasProgramados = $programacion->days->pluck('name')->toArray();
+                $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
+
+                if (!empty($diasCoinciden)) {
+                    $horaInicioExistente = Carbon::parse($programacion->start_time)->format('H:i');
+                    $horaFinExistente = Carbon::parse($programacion->end_time)->format('H:i');
+
+                    if (
+                        $horaInicioNueva < Carbon::parse($programacion->end_time) &&
+                        $horaFinNueva > Carbon::parse($programacion->start_time)
+                    ) {
+                        $diasMensaje = implode(', ', $diasCoinciden);
+                        $mensaje = "El instructor ya tiene programación el/los día(s): {$diasMensaje} entre las {$horaInicioExistente} y {$horaFinExistente}.";
+                        return redirect()->back()->with('error', $mensaje);
+                    }
+                }
+            }
+
+            // Actualizar la programación
+
+            $programacion->update([
+                'id_cohort' => $validated['ficha_id'],
+                'id_instructor' => $validated['instructor_id'],
+                'id_competencie' => $validated['competencia_id'], // CORRECTO según migración
+                'id_classroom' => $validated['ambiente_id'],
+                'hours_duration' => $validated['total_horas'],
+                'scheduled_hours' => $validated['horas_dia'] * count($validated['dias']),
+                'start_date' => $validated['fecha_inicio'],
+                'end_date' => $validated['fecha_fin'],
+                'start_time' => $validated['hora_inicio'],
+                'end_time' => $validated['hora_fin'],
+            ]);
+
+            // Actualizar los días asociados
+            $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
+            $programacion->days()->sync($diasSeleccionados);
+
+            return redirect()->back()->with('success', 'Programación actualizada correctamente');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error al actualizar la programación: ' . $e->getMessage());
+        }
+    }
     protected function hayCruce($programaciones, $diasNuevos, $horaInicioNueva, $horaFinNueva, &$mensaje)
     {
         foreach ($programaciones as $programacion) {
@@ -522,6 +671,8 @@ class ProgramanController extends Controller
         }
         return false;
     }
+
+
 
     public function index_classroom()
     {

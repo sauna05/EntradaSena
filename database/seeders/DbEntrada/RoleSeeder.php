@@ -74,6 +74,10 @@ class RoleSeeder extends Seeder
         // Permiso para entrada de los aprendices
         Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
 
+        //permisos para la vista y de reprogramacion
+        Permission::create(['name' => 'programmig.programming_update_index'])->syncRoles([$role10, $role5]);
+        Permission::create(['name' => 'programmig.programming_update_store'])->syncRoles([$role10, $role5]);
+
 
 
 
@@ -115,7 +119,7 @@ class RoleSeeder extends Seeder
         //permiso para actualizar programacion a ok despues que se registre en sofia plus
         // 1 prmero permiso para la vista de actualizar programacion
         Permission::create(['name' => 'programing.programming_update_index'])->assignRole($role10, $role2);
-        //2 permiso para actulizar la programacion a estado ok 
+        //2 permiso para actulizar la programacion a estado ok
         Permission::create(['name' => 'programing.programming_update'])->assignRole($role10, $role2);
 
         //permiso para el listado de programaciones y sus estados

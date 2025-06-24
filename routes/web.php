@@ -209,3 +209,16 @@ Route::post('programming/admin/programmig_instructors_profile_store', [Programan
 
 Route::get('programming/admin/Ambientes_classrom_index', [ProgramanController::class, 'index_classroom'])
     ->middleware('can:programing.classrooms_programming_classrooms_index')->name('ambientes_index');
+
+//rutas para la reprogramacion
+// Permission::create(['name' => 'programmig.programming_update_index'])->syncRoles([$role10, $role5]);
+// Permission::create(['name' => 'programmig.programming_update_store'])->syncRoles([$role10, $role5]);
+
+
+Route::get('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'programming_index_edit'])
+    ->middleware('can:programmig.programming_update_index')
+    ->name('programmig.programming_update_index');
+
+Route::put('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'update_programmig'])
+    ->middleware('can:programmig.programming_update_store')
+    ->name('programmig.programming_update_store');
