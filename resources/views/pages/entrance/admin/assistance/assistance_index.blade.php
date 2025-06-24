@@ -215,7 +215,7 @@
             @endforeach
         </select>
 
-        <a href="{{ route('entrance.assistance.all') }}">Todas las asistencias</a>
+        {{-- <a href="{{ route('entrance.assistance.all') }}">Todas las asistencias</a> --}}
 
       
         <label for="">Filtrar Por dia</label>

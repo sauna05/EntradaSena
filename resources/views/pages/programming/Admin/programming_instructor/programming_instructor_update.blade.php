@@ -135,10 +135,9 @@
       </div>
   @endif
 
-  <form action="" method="POST">
+  <form action="{{route('programmig.programming_update_store',$programacion->id)}}" method="POST">
     @csrf
     @method('PUT')
-
 
     <label for="ficha">Selecione ficha y Programa </label>
     <select id="ficha" name="ficha_id" required>
@@ -194,15 +193,13 @@
    <div class="two-cols">
   <div>
     <label for="fecha_inicio">Fecha Inicio:</label>
-    <input type="date" id="fecha_inicio" name="fecha_inicio"
-           value="{{ old('fecha_inicio') }}"
-           required />
+    <input type="date" name="fecha_inicio" 
+    value="{{ old('fecha_inicio', isset($programacion) ? \Carbon\Carbon::parse($programacion->start_date)->format('Y-m-d') : '') }}">
   </div>
   <div>
     <label for="fecha_fin">Fecha Fin:</label>
-    <input type="date" id="fecha_fin" name="fecha_fin"
-           value="{{ old('fecha_fin') }}"
-           required />
+    <input type="date" name="fecha_fin" 
+    value="{{ old('fecha_fin', isset($programacion) ? \Carbon\Carbon::parse($programacion->end_date)->format('Y-m-d') : '') }}">
   </div>
 </div>
 

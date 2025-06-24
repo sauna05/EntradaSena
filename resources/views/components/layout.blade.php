@@ -355,7 +355,7 @@
                         </a>
                         <ul>
                             <li><a href="{{ route('programing.instructor_programan_index') }}"><i class="fa-solid fa-users-gear"></i> Gestión de Instructores</a></li>
-                            <li><a href="{{ route('programming.programming_instructors_profiles') }}"><i class="fa-solid fa-user-plus"></i> Agregar Competencias A Perfil</a></li>
+                            <li><a href="{{ route('programming.programming_instructors_profiles') }}"><i class="fa-solid fa-user-plus"></i> Vincular Competencias Al Perfil</a></li>
                         </ul>
                     </li>
                     <li>

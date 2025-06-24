@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DbProgramacion;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ProgramacionCompetenciaMail;
 use App\Models\DbProgramacion\Apprentice;
 use App\Models\DbProgramacion\Classroom;
 use App\Models\DbProgramacion\Cohort;
@@ -15,6 +16,7 @@ use App\Models\DbProgramacion\Programming;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProgramanController extends Controller
 {
@@ -526,6 +528,21 @@ class ProgramanController extends Controller
             // Asociar los días seleccionados
             $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
             $programming->days()->sync($diasSeleccionados);
+            // Enviar correo al instructor
+            // $instructor = $programming->instructor; // Asegúrate que la relación 'instructor' esté definida en el modelo Programming
+
+            // if ($instructor && $instructor->person->email) {
+            //     // Cargar relaciones necesarias para el correo (opcional pero recomendado)
+            //     $programming->load(['instructor', 'cohort', 'competency', 'classroom', 'days']);
+
+            //     Mail::to($instructor->person->email)->send(new ProgramacionCompetenciaMail($programming));
+            // }
+            // Enviar correo inmediatamente al instructor
+            $instructorEmail = $programming->instructor->person->email ?? null;
+
+            if ($instructorEmail) {
+                Mail::to($instructorEmail)->send(new ProgramacionCompetenciaMail($programming));
+            }
 
             return redirect()->back()->with('success', 'Programación registrada correctamente');
         } catch (Exception $e) {
@@ -645,7 +662,10 @@ class ProgramanController extends Controller
                 'end_date' => $validated['fecha_fin'],
                 'start_time' => $validated['hora_inicio'],
                 'end_time' => $validated['hora_fin'],
+ 
             ]);
+            //statu_programming  evaluated
+
 
             // Actualizar los días asociados
             $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
