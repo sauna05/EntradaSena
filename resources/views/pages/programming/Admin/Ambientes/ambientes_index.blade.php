@@ -97,7 +97,16 @@
                                 
                                 <div>
                                     @foreach($bloques as $b)
-                                        <span class="badge bg-danger">{{ substr($b['start'],0,5) }} - {{ substr($b['end'],0,5) }}</span>
+                                        <div style="margin-bottom: 5px;">
+                                            <span class="badge bg-danger">
+                                                {{ substr($b['start'],0,5) }} - {{ substr($b['end'],0,5) }}
+                                            </span>
+                                            @if(isset($b['instructor']))
+                                                <div style="font-size: 0.8rem; margin-top: 2px;">
+                                                    Instructor: {{ $b['instructor'] }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     @endforeach
                                 </div>
                                 <div>

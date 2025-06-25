@@ -4,7 +4,8 @@ namespace App\Http\Controllers\DbProgramacion;
 
 use App\Http\Controllers\Controller;
 use App\Models\DbProgramacion\Classroom;
-use App\Models\DbProgramacion\Cohort as dbProgramacionCohort;
+use App\Models\DbProgramacion\Cohort;
+use App\Models\DbProgramacion\Programming as dbProgramacionCohort;
 use App\Models\DbProgramacion\CohorTime;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Person;
@@ -18,9 +19,23 @@ class CohortController extends Controller
     public function indexCohort()
     {
         $instructors = Instructor::with('person')->get();
-
         $programs = Program::all();
-        $cohorts = dbProgramacionCohort::all();
+
+        // Obtener cohortes con relaciones necesarias y calcular horas
+        $cohorts = Cohort::with(['program', 'cohortime', 'town'])
+            ->withSum([
+                'programmings as horas_cumplidas' => function ($query) {
+                    $query->whereIn('status', ['finalizada_evaluada', 'finalizada_no_evaluada']);
+                }
+            ], 'hours_duration')
+            ->withSum('programmings as horas_programadas', 'hours_duration')
+            ->get()
+            ->each(function ($cohort) {
+                $cohort->porcentaje_avance = $cohort->hours_school_stage > 0
+                    ? round(($cohort->horas_cumplidas / $cohort->hours_school_stage) * 100, 2)
+                    : 0;
+            });       
+
         $towns = Town::all();
         $classroom = Classroom::all();
         $cohortimes = CohorTime::all();

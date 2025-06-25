@@ -136,36 +136,49 @@
         </div>
 
         <!-- Tabla de fichas -->
-        <table>
-            <thead>
+       <!-- Tabla de fichas -->
+       <table>
+        <thead>
+            <tr>
+                <th>Ficha</th>
+                <th>Programa</th>
+                <th>Jornada</th>
+                <th>Municipio</th>
+                <th>Horas Asignadas</th>
+                <th>Horas Programadas</th>
+                {{-- <th>Horas Cumplidas</th> --}}
+                <th>Avance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($cohorts as $cohort)
                 <tr>
-                    <th>Ficha</th>
-                    <th>Programa</th>
-                    <th>Jornada</th>
-                    <th>Matriculados</th>
-                    <th>Municipio</th>
-                    <th>Etapa Escolar</th>
-                    <th>Etapa Práctica</th>
+                    <td>{{ $cohort->number_cohort }}</td>
+                    <td>{{ $cohort->program->name ?? 'N/A' }}</td>
+                    <td>{{ $cohort->cohortime->name ?? 'N/A' }}</td>
+                    <td>{{ $cohort->town->name ?? 'N/A' }}</td>
+                    <td>{{ $cohort->hours_school_stage }} hrs</td>
+                    <td>{{ $cohort->horas_programadas }} hrs</td>
+                    {{-- <td>{{ $cohort->horas_cumplidas }} hrs</td> --}}
+                    <td>
+                        @php
+                            $color = match(true) {
+                                $cohort->porcentaje_avance >= 100 => 'success',
+                                $cohort->porcentaje_avance >= 75 => 'warning',
+                                default => 'danger'
+                            };
+                        @endphp
+                        <div class="progress">
+                            <div class="progress-bar bg-{{ $color }}" 
+                                 style="width: {{ $cohort->porcentaje_avance }}%">
+                                {{ $cohort->porcentaje_avance }}%
+                            </div>
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse ($cohorts as $cohort)
-                    <tr>
-                        <td>{{ $cohort->number_cohort }}</td>
-                        <td>{{ $cohort->program->name ?? 'N/A' }}</td>
-                        <td>{{ $cohort->cohortime->name ?? 'N/A' }}</td>
-                        <td>{{$cohort->enrolled_quantity }}  </td>
-                        <td>{{ $cohort->town->name ?? 'N/A' }}</td>
-                        <td>{{ $cohort->start_date_school_stage }} a {{ $cohort->end_date_school_stage }}</td>
-                        <td>{{ $cohort->start_date_practical_stage }} a {{ $cohort->end_date_practical_stage }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6">No hay fichas registradas.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            @endforeach
+        </tbody>
+    </table>
     </div>
 
 

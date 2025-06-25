@@ -31,27 +31,32 @@
             background-color: var(--gris-fondo);
         }
 
-        /* Header */
         .header {
-            background-color: var(--blanco);
-            color: var(--verde-header);
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
+        background-color: var(--blanco);
+        color: var(--verde-header);
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        gap: 20px; /* Espacio entre elementos */
+    }
 
         .logo-header {
             height: 70px; /* Logo más grande */
             margin-right: 15px;
             object-fit: contain;
         }
-
         .header-container {
             display: flex;
             align-items: center;
+            flex-grow: 1;
         }
+        .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* Espacio uniforme entre elementos */
+    }
 
         .texto-header {
             font-size: 24px;
@@ -102,6 +107,18 @@
         .sidebar-menu > li > a.menu-toggle.active {
             background-color: #c5f3de;
             color: var(--verde-header-hover);
+        }
+        .logo-footer {
+            height: 60px; /* Logo más grande */
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         /* Flecha animada */
@@ -203,18 +220,6 @@
 
 
 
-        .logo-footer {
-            height: 60px; /* Logo más grande */
-            margin-bottom: 10px;
-            object-fit: contain;
-        }
-
-        .footer p {
-            margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
 
         /* Botón cerrar sesión */
         form.logout-form {
@@ -244,6 +249,8 @@
             cursor: pointer;
         }
 
+
+
         /* Responsividad */
         @media (max-width: 800px) {
             .main-layout {
@@ -270,39 +277,41 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="header">
         <div class="header-container">
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
-
+    
+        <div class="header-actions">
             <!-- Apartado de usuario -->
-        <div class="usuario-info">
-            <i class="fa-solid fa-user-circle"></i>
-            <span>{{ Auth::user()->user_name ?? 'Invitado' }}</span>
+            <div class="usuario-info" title="{{ Auth::user()->user_name ?? 'Invitado' }}">
+                <i class="fa-solid fa-user-circle"></i>
+                <span>{{ Auth::user()->user_name ?? 'Invitado' }}</span>
+            </div>
+    
+            <!-- Notificaciones -->
+            <div class="notificaciones" title="Notificaciones">
+                <i class="fa-solid fa-bell"></i>
+                <span class="contador">3</span>
+            </div>
+    
+            <!-- Programaciones sin registrar -->
+            <div class="programaciones-info" title="Programaciones pendientes">
+                <i class="fa-solid fa-calendar-xmark"></i>
+                <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
+            </div>
+    
+            @auth
+            <form action="{{ route('logout') }}" method="POST" class="logout-form">
+                @csrf
+                <button type="submit" class="logout-button" title="Cerrar sesión">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
+            @endauth
         </div>
-
-        <!-- Notificaciones -->
-        <div class="notificaciones">
-            <i class="fa-solid fa-bell"></i>
-            <span class="contador">3</span> <!-- Cambia por un valor dinámico si quieres -->
-        </div>
-
-        <!-- Programaciones sin registrar -->
-        <div class="programaciones-info">
-            {{-- <span>Sin registrar</span> --}}
-            <i class="fa-solid fa-calendar-xmark"></i>
-            <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
-        </div>
-
-
-        @auth
-        <form action="{{ route('logout') }}" method="POST" class="logout-form">
-            @csrf
-            <button type="submit" class="logout-button">Cerrar sesión</button>
-        </form>
-        @endauth
     </header>
 
     <!-- Layout -->

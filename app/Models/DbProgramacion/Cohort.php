@@ -29,6 +29,10 @@ class Cohort extends Model
         'enrolled_quantity',
     ];
 
+    public function programmings()
+    {
+        return $this->hasMany(Programming::class, 'id_cohort');
+    }
     public function program()
     {
         return $this->belongsTo(Program::class, 'id_program');

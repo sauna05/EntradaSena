@@ -696,7 +696,7 @@ class ProgramanController extends Controller
 
     public function index_classroom()
     {
-        $ambientes = Classroom::with(['programming.days'])->get();
+        $ambientes = Classroom::with(['programming.days', 'programming.instructor.person'])->get();
         $jornadaInicio = '08:00:00';
         $jornadaFin = '18:00:00';
 
@@ -734,7 +734,8 @@ class ProgramanController extends Controller
                         $horasProgramadas[] = [
                             'fecha' => $fechaStr,
                             'start' => $p->start_time,
-                            'end' => $p->end_time
+                            'end' => $p->end_time,
+                            'instructor' => $p->instructor->person->name ?? 'Sin instructor' // Agregamos el nombre del instructor
                         ];
 
                         $bloques = $horasDisponiblesPorDia[$fechaStr]['bloques'] ?? [];
@@ -748,7 +749,6 @@ class ProgramanController extends Controller
                     $fechaInicio->addDay();
                 }
             }
-
             // Calcular horas disponibles por fecha
             $horas_disponibles = [];
             foreach ($horasDisponiblesPorDia as $fecha => $info) {

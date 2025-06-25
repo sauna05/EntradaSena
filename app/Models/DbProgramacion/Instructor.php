@@ -24,6 +24,17 @@ class Instructor extends Model
         return $this->belongsTo(Speciality::class, 'id_speciality');
     }
 
+    //estado de instructor
+
+    public function instructor_status(){
+        return $this->belongsTo(InstructorStatus::class, 'id_status');
+    }
+
+    public function link_types()
+    {
+        return $this->belongsTo(LinkType::class, 'id_link_type');
+    }
+
 
     public function Cohort()
     {

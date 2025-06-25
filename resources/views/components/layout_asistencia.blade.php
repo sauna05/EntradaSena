@@ -245,7 +245,10 @@
         @auth
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf
-            <button type="submit" class="logout-button">Cerrar sesión</button>
+            <button type="submit" class="logout-button" title="Cerrar sesión">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Cerrar sesión</span>
+            </button>
         </form>
         @endauth
     </header>

@@ -169,7 +169,7 @@
     <select id="ambiente" name="ambiente_id" required>
       <option value="">Selecione Ambiente</option>
       @foreach ($ambientes as $ambiente)
-        <option value="{{ $ambiente->id }}" {{ old('ambiente_id') == $ambiente->id ? 'selected' : '' }}>{{ $ambiente->name }} - {{$ambiente->towns->name}}</option>
+        <option value="{{ $ambiente->id }}" {{ old('ambiente_id') == $ambiente->id ? 'selected' : '' }}> {{$ambiente->Block->name}} - {{ $ambiente->name }} - {{$ambiente->towns->name}}</option>
       @endforeach
     </select>
 
