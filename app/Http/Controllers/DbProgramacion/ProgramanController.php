@@ -9,6 +9,7 @@ use App\Models\DbProgramacion\Classroom;
 use App\Models\DbProgramacion\Cohort;
 use App\Models\DbProgramacion\Competencies;
 use App\Models\DbProgramacion\Day;
+use App\Models\DbProgramacion\Days_training;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Program as dbProgramacionPrograman;
 use App\Models\DbProgramacion\Program_Level;
@@ -413,7 +414,7 @@ class ProgramanController extends Controller
 
         return redirect()->back()->with('success', '¡Programación marcada como registrada!');
     }
-
+   
 
 
 
@@ -546,7 +547,7 @@ class ProgramanController extends Controller
 
             return redirect()->back()->with('success', 'Programación registrada correctamente');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
         }
     }
     /**
@@ -692,6 +693,24 @@ class ProgramanController extends Controller
         return false;
     }
 
+    //metodo para actualizar a evaluda la competencia
+    public function evaluateProgramming($id)
+    {
+        $prog = Programming::findOrFail($id);
+
+        // Solo permitir evaluar si está en estado finalizada_no_evaluada
+        if ($prog->status === 'finalizada_no_evaluada') {
+            $prog->status = 'finalizada_evaluada';
+            $prog->evaluated = true;
+            $prog->save();
+
+            return redirect()->back()->with('success', '¡Programación evaluada correctamente!');
+        }
+
+        return redirect()->back()->with('error', 'Esta programación no puede ser evaluada.');
+    }
+
+
 
 
     public function index_classroom()
@@ -784,5 +803,40 @@ class ProgramanController extends Controller
         });
 
         return view('pages.programming.Admin.Ambientes.ambientes_index', compact('ambientes'));
+    }
+
+    //metodos para gestionar calendario academico
+    public function daysCalendar()
+    {
+        $query = Days_training::query();
+
+        // Si no hay filtro de año, usar el actual por defecto
+        $year = request()->get('year', now()->year);
+        $query->whereYear('date', $year);
+
+        // Si el usuario seleccionó un mes, también filtrarlo
+        if (request()->filled('month')) {
+            $query->whereMonth('date', request('month'));
+        }
+
+        $days = $query->orderBy('date','desc')->get();
+
+        return view('pages.programming.Admin.programming_instructor.programming_day_calendar_index', compact('days'));
+    }
+
+
+    public function daysCalendarStore(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date|unique:db_programacion.days_without_training,date',
+            'reason' => 'required|string|max:255'
+        ]);
+
+        Days_training::create([
+            'date' => $request->date,
+            'reason' => $request->reason
+        ]);
+
+        return redirect()->back()->with('success', 'Día registrado exitosamente.');
     }
 }

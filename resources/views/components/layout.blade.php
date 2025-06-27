@@ -345,7 +345,7 @@
                               </li>
                               
                             <li><a href="{{ route('programming.programming_update_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programacion</a></li>
-                            <li><a href="#"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
+                            <li><a href="{{route('programing.unrecorded_days_index')}}"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
                         </ul>
                     </li>
                     <li>

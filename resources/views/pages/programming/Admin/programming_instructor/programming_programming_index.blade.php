@@ -158,6 +158,22 @@
             align-self: flex-end;
         }
 
+        .btn-evaluar {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: none;
+    }
+
+    .btn-reprogramar {
+        background-color: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: none;
+    }
+
         .reset-btn:hover {
             background-color: #5a6268;
         }
@@ -306,20 +322,30 @@
                                     @endif --}}
                                 </div>
                             </td>
-                           <td class="action-cell">
-                                @if($programacion->status === 'finalizada_evaluada')
+                            <td class="action-cell">
+                                @if($programacion->status === 'finalizada_no_evaluada')
+                                    {{-- Botón para Evaluar --}}
+                                    <form action="{{ route('programmig.evaluate', $programacion->id) }}" method="POST" onsubmit="return confirm('¿Está seguro que desea evaluar esta programación?')">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn-evaluar" style="cursor: pointer">
+                                            <i class="fas fa-check-circle"></i> Evaluar
+                                        </button>
+                                    </form>
+                            
+                                @elseif($programacion->status === 'finalizada_evaluada')
+                                    {{-- Botón para Reprogramar --}}
                                     <form action="{{ route('programmig.programming_update_index', $programacion->id) }}" method="GET" onsubmit="return confirm('¿Está seguro que desea reprogramar?')">
-                                        @csrf {{-- No es necesario para GET, pero no hace daño --}}
-                                        <button type="submit" class="btn-reprogramar">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            Reprogramar
+                                        @csrf
+                                        <button type="submit" class="btn-reprogramar" style="cursor: pointer">
+                                            <i class="fas fa-calendar-alt"></i> Reprogramar
                                         </button>
                                     </form>
                                 @else
                                     <span class="text-muted">N/A</span>
                                 @endif
-                             </td>
-
+                            </td>
+                            
 
 
                         </tr>

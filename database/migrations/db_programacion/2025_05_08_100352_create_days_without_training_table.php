@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('days_without_training', function (Blueprint $table) {
             $table->id();
+            $table->date('date')->unique(); // la fecha que se marcará como no laborable
+            $table->string('reason'); // motivo: festivo, mantenimiento, evento, etc.
             $table->timestamps();
         });
     }

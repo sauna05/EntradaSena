@@ -180,9 +180,9 @@ Route::get('programming/admin/instructor_programming_index', [ProgramanControlle
 Route::get('programming/admin/programmig_programming_index', [ProgramanController::class, 'programming_index'])
     ->middleware('can:programing.programming_index_states')->name('programming.programming_index_states');
 
-    //ruta para registrar programacion
+//ruta para registrar programacion
 
-Route::post('programming/admin/programmig_programming_store', [ProgramanController::class, 'register_programmig'])
+Route::post('programming/admin/programmig_programming_store', [ProgramanController::class, 'register_programmig']) //register_programming
     ->middleware('can:programing.register_programming_instructor_store')->name('programming.register_programming_instructor_store');
 
 
@@ -222,3 +222,18 @@ Route::get('programming/admin/programming_instructor_update/{id}', [ProgramanCon
 Route::put('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'update_programmig'])
     ->middleware('can:programmig.programming_update_store')
     ->name('programmig.programming_update_store');
+
+//ruta para actualizar a competencia evaluda
+Route::put('programming/admin/evaluate/{id}', [ProgramanController::class, 'evaluateProgramming'])
+    ->middleware('can:programmig.programming_update_store_programing')
+    ->name('programmig.evaluate');
+
+//gestionar vista de calendario
+Route::get('programming/admin/days_not_programming', [ProgramanController::class, 'daysCalendar'])
+    ->middleware('can:programing.unrecorded_days_index')
+    ->name('programing.unrecorded_days_index');
+//programing.unrecorded_days_store
+
+Route::post('programming/admin/days_not_programming_store', [ProgramanController::class, 'daysCalendarStore'])
+    ->middleware('can:programing.unrecorded_days_store')
+    ->name('programing.unrecorded_days_store');
