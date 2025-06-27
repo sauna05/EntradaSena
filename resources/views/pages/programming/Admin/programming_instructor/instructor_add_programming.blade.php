@@ -212,7 +212,7 @@
       <div>
         <label for="horas_dia">Horas Diarias:</label>
         <input type="number" id="horas_dia" name="horas_dia" min="1" max="8"
-         step="0.01" value="{{ old('horas_dia', 1) }}" required readonly />
+         step="0.01" value="{{ old('horas_dia', 1) }}"  readonly />
 
       </div>
       <div>

@@ -414,7 +414,9 @@ class ProgramanController extends Controller
 
         return redirect()->back()->with('success', '¡Programación marcada como registrada!');
     }
-   
+
+    //para calendario
+
 
 
 
@@ -433,8 +435,6 @@ class ProgramanController extends Controller
                 'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
                 'hora_inicio' => 'required',
                 'hora_fin' => 'required',
-                'horas_dia' => 'required|numeric|min:1|max:8',
-                'total_horas' => 'required|numeric|min:1',
                 'dias' => 'required|array',
                 'dias.*' => 'string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
             ]);
@@ -442,9 +442,7 @@ class ProgramanController extends Controller
             $horaInicioNueva = Carbon::parse($validated['hora_inicio']);
             $horaFinNueva = Carbon::parse($validated['hora_fin']);
 
-            /** ------------------------------
-             * VALIDACIÓN DE AMBIENTE OCUPADO
-             * ------------------------------ */
+            /** VALIDACIÓN DE AMBIENTE OCUPADO */
             $programacionesAmbiente = Programming::where('id_classroom', $validated['ambiente_id'])
                 ->where(function ($query) use ($validated) {
                     $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
@@ -462,7 +460,6 @@ class ProgramanController extends Controller
                 $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
 
                 if (!empty($diasCoinciden)) {
-                    // No necesitas Carbon para comparar, pero si lo quieres usar para formatear la hora está bien.
                     $horaInicioExistente = Carbon::parse($programacion->start_time)->format('H:i');
                     $horaFinExistente = Carbon::parse($programacion->end_time)->format('H:i');
 
@@ -477,10 +474,7 @@ class ProgramanController extends Controller
                 }
             }
 
-
-            /** --------------------------------------------
-             * VALIDACIÓN DE INSTRUCTOR CON DOBLE ASIGNACIÓN
-             * -------------------------------------------- */
+            /** VALIDACIÓN DE INSTRUCTOR CON DOBLE ASIGNACIÓN */
             $programacionesInstructor = Programming::where('id_instructor', $validated['instructor_id'])
                 ->where(function ($query) use ($validated) {
                     $query->whereBetween('start_date', [$validated['fecha_inicio'], $validated['fecha_fin']])
@@ -492,6 +486,7 @@ class ProgramanController extends Controller
                 })
                 ->with('days')
                 ->get();
+
             foreach ($programacionesInstructor as $programacion) {
                 $diasProgramados = $programacion->days->pluck('name')->toArray();
                 $diasCoinciden = array_intersect($validated['dias'], $diasProgramados);
@@ -511,34 +506,68 @@ class ProgramanController extends Controller
                 }
             }
 
+            /** CÁLCULO DE HORAS TOTALES EXCLUYENDO FECHAS NO LABORABLES */
+            $diasSemana = [
+                'Lunes' => 1,
+                'Martes' => 2,
+                'Miércoles' => 3,
+                'Jueves' => 4,
+                'Viernes' => 5,
+                'Sábado' => 6,
+                'Domingo' => 0,
+            ];
 
-            // Crear la programación si no hay conflictos
+            $diasNumericos = array_map(fn($dia) => $diasSemana[$dia], $validated['dias']);
+            $horasPorDia = $horaInicioNueva->floatDiffInHours($horaFinNueva);
+
+            $start = Carbon::parse($validated['fecha_inicio']);
+            $end = Carbon::parse($validated['fecha_fin']);
+
+            $fechasExcluidas = \App\Models\DbProgramacion\Days_training::pluck('date')
+                ->map(fn($f) => Carbon::parse($f)->format('Y-m-d'))->toArray();
+
+            $totalHoras = 0;
+            $diasEfectivos = 0;
+
+            while ($start->lte($end)) {
+                $diaEsValido = in_array($start->dayOfWeek, $diasNumericos);
+                $fechaNoLaborable = in_array($start->format('Y-m-d'), $fechasExcluidas);
+
+                if ($diaEsValido && !$fechaNoLaborable) {
+                    $totalHoras += $horasPorDia;
+                    $diasEfectivos++;
+                }
+
+                $start->addDay();
+            }
+
+            // VALIDACIÓN FINAL: NO registrar si no hay días efectivos o totalHoras insuficientes
+            if ($diasEfectivos <= 0 || $totalHoras <= 0) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'La programación no tiene días hábiles válidos. Por favor, selecciona un rango de fechas más amplio o revisa los días excluidos.');
+            }
+
+
+            /** CREACIÓN DE LA PROGRAMACIÓN */
             $programming = Programming::create([
                 'id_cohort' => $validated['ficha_id'],
                 'id_instructor' => $validated['instructor_id'],
                 'id_competencie' => $validated['competencia_id'],
                 'id_classroom' => $validated['ambiente_id'],
-                'hours_duration' => $validated['total_horas'],
-                'scheduled_hours' => $validated['horas_dia'] * count($validated['dias']),
+                'hours_duration' => $totalHoras,
+                'scheduled_hours' => $horasPorDia,
                 'start_date' => $validated['fecha_inicio'],
                 'end_date' => $validated['fecha_fin'],
                 'start_time' => $validated['hora_inicio'],
                 'end_time' => $validated['hora_fin'],
             ]);
 
-            // Asociar los días seleccionados
+            // Asociar días seleccionados
             $diasSeleccionados = Day::whereIn('name', $validated['dias'])->pluck('id')->toArray();
             $programming->days()->sync($diasSeleccionados);
+
             // Enviar correo al instructor
-            // $instructor = $programming->instructor; // Asegúrate que la relación 'instructor' esté definida en el modelo Programming
-
-            // if ($instructor && $instructor->person->email) {
-            //     // Cargar relaciones necesarias para el correo (opcional pero recomendado)
-            //     $programming->load(['instructor', 'cohort', 'competency', 'classroom', 'days']);
-
-            //     Mail::to($instructor->person->email)->send(new ProgramacionCompetenciaMail($programming));
-            // }
-            // Enviar correo inmediatamente al instructor
             $instructorEmail = $programming->instructor->person->email ?? null;
 
             if ($instructorEmail) {
@@ -550,6 +579,7 @@ class ProgramanController extends Controller
             return redirect()->back()->withInput()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
         }
     }
+
     /**
      * Verifica si hay cruce de programación
      */
@@ -828,8 +858,20 @@ class ProgramanController extends Controller
     public function daysCalendarStore(Request $request)
     {
         $request->validate([
-            'date' => 'required|date|unique:db_programacion.days_without_training,date',
-            'reason' => 'required|string|max:255'
+            'date' => [
+                'required',
+                'date',
+                'unique:db_programacion.days_without_training,date',
+                function ($attribute, $value, $fail) {
+                    $dayOfWeek = Carbon::parse($value)->dayOfWeek;
+
+                    // 0 = domingo, 6 = sábado
+                    if ($dayOfWeek === 0 || $dayOfWeek === 6) {
+                        $fail('Solo se pueden registrar días de lunes a viernes.');
+                    }
+                },
+            ],
+            'reason' => 'required|string|max:255',
         ]);
 
         Days_training::create([
