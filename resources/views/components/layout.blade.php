@@ -282,26 +282,26 @@
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
-    
+
         <div class="header-actions">
             <!-- Apartado de usuario -->
             <div class="usuario-info" title="{{ Auth::user()->user_name ?? 'Invitado' }}">
                 <i class="fa-solid fa-user-circle"></i>
                 <span>{{ Auth::user()->user_name ?? 'Invitado' }}</span>
             </div>
-    
+
             <!-- Notificaciones -->
             <div class="notificaciones" title="Notificaciones">
                 <i class="fa-solid fa-bell"></i>
                 <span class="contador">3</span>
             </div>
-    
+
             <!-- Programaciones sin registrar -->
             <div class="programaciones-info" title="Programaciones pendientes">
                 <i class="fa-solid fa-calendar-xmark"></i>
                 <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
             </div>
-    
+
             @auth
             <form action="{{ route('logout') }}" method="POST" class="logout-form">
                 @csrf
@@ -325,7 +325,7 @@
                         <a class="menu-toggle">
                             <i class="fa-solid fa-home"></i> Inicio
                         </a>
-                        
+
                         <ul>
                             <li><a href="{{ route('programming.admin') }}"><i class="fa-solid fa-clipboard-list"></i> Gestión Programas</a></li>
                             <li><a href="{{ route('programing.competencies_program_index') }}"><i class="fa-solid fa-link"></i> Competencias Vinculadas</a></li>
@@ -343,7 +343,7 @@
                                   <i class="fa-solid fa-clock"></i> Programar Curso
                                 </a>
                               </li>
-                              
+
                             <li><a href="{{ route('programming.programming_update_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programacion</a></li>
                             <li><a href="{{route('programing.unrecorded_days_index')}}"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
                         </ul>
@@ -355,7 +355,7 @@
                         <ul>
                             <li><a href="{{ route('programing.competencies_index') }}"><i class="fa-solid fa-list-check"></i> Gestión de Competencias</a></li>
                             <li><a href="{{ route('programing.competencies_index_program') }}"><i class="fa-solid fa-share-nodes"></i> Vincular a Programas y Fichas</a></li>
-                          
+
                         </ul>
                     </li>
                     <li>
@@ -383,7 +383,7 @@
                         <ul>
                             <li><a href="{{ route('programing.cohort_index') }}"><i class="fa-solid fa-file-lines"></i> Gestión de Fichas</a></li>
                             <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Agregar Aprendiz a Ficha</a></li>
-                            <li><a href="#"><i class="fa-solid fa-cloud-arrow-down"></i> Agregar desde Senasofia</a></li>
+                      
                         </ul>
                     </li>
                     <li>
@@ -392,7 +392,7 @@
                         </a>
                         <ul>
                             <li><a href="{{ route('ambientes_index') }}"><i class="fa-solid fa-warehouse"></i> Gestión de Ambientes</a></li>
-                            <li><a href="#"><i class="fa-solid fa-cloud-download-alt"></i> Agregar desde Senasofia</a></li>
+
                         </ul>
                     </li>
             </ul>

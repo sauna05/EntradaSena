@@ -693,7 +693,7 @@ class ProgramanController extends Controller
                 'end_date' => $validated['fecha_fin'],
                 'start_time' => $validated['hora_inicio'],
                 'end_time' => $validated['hora_fin'],
- 
+
             ]);
             //statu_programming  evaluated
 

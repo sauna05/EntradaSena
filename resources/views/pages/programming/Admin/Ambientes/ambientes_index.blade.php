@@ -20,7 +20,7 @@
             vertical-align: top;
         }
         thead {
-            background: #3498db;
+            background: #455661;
             color: white;
         }
         .badge {
@@ -94,7 +94,7 @@
                                 <div class="bg-light">
                                     <strong>{{ \Carbon\Carbon::parse($fecha)->translatedFormat('l d/m/Y') }}</strong>
                                 </div>
-                                
+
                                 <div>
                                     @foreach($bloques as $b)
                                         <div style="margin-bottom: 5px;">
