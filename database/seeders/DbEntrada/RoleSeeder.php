@@ -134,7 +134,7 @@ class RoleSeeder extends Seeder
         //permisos de la gestion de ambientes
         //permiso para la visualizacion de ambientes
         Permission::create(['name' => 'programing.classrooms_programming_classrooms_index'])->assignRole($role10, $role2);
- 
+
         Permission::create(['name' => 'programmig.programming_update_store_programing'])->assignRole($role10, $role2);
         //permiso para el agregado de ambientes
 
@@ -143,6 +143,10 @@ class RoleSeeder extends Seeder
         //agregar permisos Para gestion de formulario
         Permission::create(['name' => 'programing.unrecorded_days_index'])->assignRole($role10, $role2);
         Permission::create(['name' => 'programing.unrecorded_days_store'])->assignRole($role10, $role2);
-        
+
+        //Permiso para registro de ambientes
+        Permission::create(['name' => 'programing.classroom_store'])->assignRole($role10, $role2);
+
+
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DbProgramacion;
 use App\Http\Controllers\Controller;
 use App\Mail\ProgramacionCompetenciaMail;
 use App\Models\DbProgramacion\Apprentice;
+use App\Models\DbProgramacion\Block;
 use App\Models\DbProgramacion\Classroom;
 use App\Models\DbProgramacion\Cohort;
 use App\Models\DbProgramacion\Competencies;
@@ -14,6 +15,7 @@ use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Program as dbProgramacionPrograman;
 use App\Models\DbProgramacion\Program_Level;
 use App\Models\DbProgramacion\Programming;
+use App\Models\DbProgramacion\Town;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -292,13 +294,31 @@ class ProgramanController extends Controller
 
     //metodo de controlador para listar  los instructores que estan registrados
 
-    public function instructores_index()
+   public function instructores_index()
     {
-        $instructores = Instructor::with(['person', 'speciality'])->get();
+        $instructores = Instructor::with(['person', 'speciality', 'programming'])->get();
 
+        // Para cada instructor, calcular horas programadas y horas restantes
+        $instructores->transform(function ($instructor) {
+            // Sumar las horas programadas solo de programaciones activas o relevantes
+            // Por ejemplo, puedes filtrar por status si quieres solo las vigentes o todas
+            $horasProgramadas = $instructor->programming
+                ->whereIn('status', ['pendiente', 'en_ejecucion']) // Opcional: filtra estados si quieres
+                ->sum('scheduled_hours');
+
+            $instructor->horas_restantes = $instructor->assigned_hours - $horasProgramadas;
+
+            // Evitar valores negativos
+            if ($instructor->horas_restantes < 0) {
+                $instructor->horas_restantes = 0;
+            }
+
+            return $instructor;
+        });
 
         return view('pages.programming.Admin.programming_instructor.programming_instructor_index', compact('instructores'));
     }
+
 
     public function registerProgramming_index()
     {
@@ -740,11 +760,29 @@ class ProgramanController extends Controller
         return redirect()->back()->with('error', 'Esta programación no puede ser evaluada.');
     }
 
+    public function classroom_store(Request $request)
+    {
+        $request->validate([
+            'id_town' => 'required|exists:db_programacion.towns,id',
+            'id_block' => 'required|exists:db_programacion.blocks,id',
+            'name' => 'required|string|max:255',
+        ]);
+
+        Classroom::create([
+            'id_town' => $request->id_town,
+            'id_block' => $request->id_block,
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Ambiente registrado correctamente.');
+    }
 
 
 
     public function index_classroom()
     {
+        $municipios=Town::all();
+        $bloques=Block::all();
         $ambientes = Classroom::with(['programming.days', 'programming.instructor.person'])->get();
         $jornadaInicio = '08:00:00';
         $jornadaFin = '18:00:00';
@@ -832,7 +870,7 @@ class ProgramanController extends Controller
             $ambiente->horas_disponibles = $horas_disponibles;
         });
 
-        return view('pages.programming.Admin.Ambientes.ambientes_index', compact('ambientes'));
+        return view('pages.programming.Admin.Ambientes.ambientes_index', compact('ambientes','municipios','bloques'));
     }
 
     //metodos para gestionar calendario academico
@@ -881,4 +919,8 @@ class ProgramanController extends Controller
 
         return redirect()->back()->with('success', 'Día registrado exitosamente.');
     }
+    //agregar que una ves se programen las horas del instructor se le descuenten de las asignadas
+
+
+
 }

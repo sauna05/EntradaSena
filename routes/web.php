@@ -233,7 +233,13 @@ Route::get('programming/admin/days_not_programming', [ProgramanController::class
     ->middleware('can:programing.unrecorded_days_index')
     ->name('programing.unrecorded_days_index');
 //programing.unrecorded_days_store
-
+//ruta para registras dias no progamables
 Route::post('programming/admin/days_not_programming_store', [ProgramanController::class, 'daysCalendarStore'])
     ->middleware('can:programing.unrecorded_days_store')
-    ->name('programing.unrecorded_days_store');
+    ->name('programing.unrecorded_days_store');//programing.classroom_store
+
+//ruta para registrar Ambiente
+Route::post('programming/admin/classroom_store', [ProgramanController::class, 'classroom_store'])
+    ->middleware('can:programing.classroom_store')
+    ->name('programing.classroom_store');
+

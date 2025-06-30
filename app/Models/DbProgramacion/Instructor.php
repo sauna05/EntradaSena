@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Instructor extends Model
 {
 
+
     use HasFactory;
     protected $connection = 'db_programacion';
     protected $table = 'instructors';
@@ -18,7 +19,11 @@ class Instructor extends Model
     {
         return $this->belongsTo(Person::class, 'id_person');
     }
-    
+    public function programming()
+    {
+        return $this->hasMany(Programming::class, 'id_instructor');
+    }
+
     public function speciality()
     {
         return $this->belongsTo(Speciality::class, 'id_speciality');

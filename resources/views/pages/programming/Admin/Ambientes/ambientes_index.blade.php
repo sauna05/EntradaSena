@@ -2,6 +2,20 @@
     <x-slot:title>Gestión de Ambientes</x-slot:title>
 
     <style>
+        .alert-success{
+         width: 100%;
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        border: 1px solid #c3e6cb;
+    }
+        .error-message {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 5px;
+    }
         .container {
             max-width: 1000px;
             margin: 30px auto;
@@ -10,18 +24,19 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        table {
+         table {
             width: 100%;
             border-collapse: collapse;
+            background-color: white;
         }
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-            vertical-align: top;
-        }
+
         thead {
-            background: #455661;
-            color: white;
+            background-color: #ecf0f1;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
         }
         .badge {
             padding: 3px 8px;
@@ -43,6 +58,17 @@
     </style>
 
     <div class="container">
+    @if (session('success'))
+        <div class="alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert-danger">
+            {{ session('error') }}
+        </div>
+  @endif
         <h1 style="text-align: center;">Gestión de Ambientes</h1>
 
         <div>
@@ -61,6 +87,42 @@
                     <option value="{{ sprintf('%02d', $m) }}">{{ \Carbon\Carbon::create()->month($m)->format('F') }}</option>
                 @endfor
             </select>
+            <button onclick="openModal()" style="margin-bottom: 20px; padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            + Registrar Nuevo Ambiente
+        </button>
+        </div>
+                <div id="modalRegistroAmbiente" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background-color: rgba(0,0,0,0.4);">
+            <div style="background:#fff; margin: 5% auto; padding: 20px; border-radius: 10px; width: 400px; position: relative;">
+                <span style="position:absolute; top:10px; right:15px; font-size: 28px; font-weight: bold; cursor:pointer;" onclick="closeModal()">&times;</span>
+                <h2>Registrar Nuevo Ambiente</h2>
+
+                <form action="{{ route('programing.classroom_store') }}" method="POST">
+                    @csrf
+
+                    <label for="id_town">Municipio:</label><br>
+                    <select id="id_town" name="id_town" required style="width: 100%; padding: 8px; margin-bottom: 15px;">
+                        <option value="">Seleccione un municipio</option>
+                        @foreach($municipios as $municipio)
+                            <option value="{{ $municipio->id }}">{{ $municipio->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <label for="id_block">Bloque:</label><br>
+                    <select id="id_block" name="id_block" required style="width: 100%; padding: 8px; margin-bottom: 15px;">
+                        <option value="">Seleccione un bloque</option>
+                        @foreach($bloques as $bloque)
+                            <option value="{{ $bloque->id }}">{{ $bloque->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <label for="name">Nombre del Ambiente:</label><br>
+                    <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; margin-bottom: 20px;" placeholder="Ejemplo: Aula 101">
+
+                    <button type="submit" style="background-color: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">
+                        Guardar Ambiente
+                    </button>
+                </form>
+            </div>
         </div>
 
         <table>
@@ -130,6 +192,21 @@
     </div>
 
     <script>
+        function openModal() {
+           document.getElementById('modalRegistroAmbiente').style.display = 'block';
+            }
+
+            function closeModal() {
+                document.getElementById('modalRegistroAmbiente').style.display = 'none';
+            }
+
+            // Cerrar modal si se hace clic fuera del contenido
+            window.onclick = function(event) {
+                const modal = document.getElementById('modalRegistroAmbiente');
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
         function filtrarVista() {
             const ambiente = document.getElementById('filtroAmbiente').value;
             const mes = document.getElementById('filtroMes').value;
