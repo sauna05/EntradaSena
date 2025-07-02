@@ -27,7 +27,8 @@ return new class extends Migration
                 'pendiente',       // Antes de la fecha de inicio
                 'en_ejecucion',    // Durante el rango de fechas
                 'finalizada_evaluada',
-                'finalizada_no_evaluada'
+                'finalizada_no_evaluada',
+                'reprogramada'
             ])->default('pendiente');
             // Fechas y tiempos
             //fecha inicio y fecha fin

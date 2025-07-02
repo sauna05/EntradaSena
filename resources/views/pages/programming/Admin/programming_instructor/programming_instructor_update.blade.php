@@ -1,12 +1,11 @@
 <x-layout>
-  <x-slot:title>Programación de Instructores</x-slot:title>
+  <x-slot:title>Reprogramación de Instructores</x-slot:title>
   <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Programación de Instructores</title>
-
+<title>Reprogramación de Instructores</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -14,6 +13,14 @@
     margin: 0;
     padding: 0;
   }
+    #buscarInstructor {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
   .alert-warning {
     width: 100%;
     background-color: #fff3cd;
@@ -22,7 +29,7 @@
     margin: 10px 0;
     border-radius: 4px;
     border: 1px solid #ffeeba;
-    display: none; /* Oculto por defecto */
+    display: none;
   }
   .container {
     max-width: 950px;
@@ -107,11 +114,25 @@
   .time-container input {
     width: auto;
   }
+  .alert-info {
+    width: 100%;
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #bee5eb;
+  }
+  .excluded-dates {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #6c757d;
+  }
 </style>
 </head>
 <body>
 <div class="container">
-  <h2>Programación de Cursos</h2>
+  <h2>Reprogramación de Cursos</h2>
 
   @if (session('success'))
       <div class="alert-success">
@@ -135,84 +156,83 @@
       </div>
   @endif
 
-  <form action="{{route('programmig.programming_update_store',$programacion->id)}}" method="POST">
+  <form id="programmingForm" action="{{ route('programmig.programming_update_store', $programacion->id) }}" method="POST">
     @csrf
     @method('PUT')
 
-    <label for="ficha">Selecione ficha y Programa </label>
-    <select id="ficha" name="ficha_id" required>
-      <option value="">Selecione </option>
+    <label for="ficha">Seleccione ficha y Programa</label>
+    <select id="ficha" name="id_cohort" required>
+      <option value="">Seleccione</option>
       @foreach ($cohorts as $ficha)
         <option value="{{ $ficha->id }}"
-            {{ old('ficha_id', isset($programacion) ? $programacion->id_cohort : '') == $ficha->id ? 'selected' : '' }}>
-            {{ $ficha->number_cohort }} - {{$ficha->program->name}}
+          {{ old('id_cohort', $programacion->id_cohort ?? '') == $ficha->id ? 'selected' : '' }}>
+          {{ $ficha->number_cohort }} - {{ $ficha->program->name }}
         </option>
       @endforeach
     </select>
 
+    <label for="buscarInstructor">Buscar Instructor:</label>
+    <input type="text" id="buscarInstructor" placeholder="Escribe el nombre del instructor">
+
     <label for="instructor">Instructor:</label>
-    <select id="instructor" name="instructor_id" required>
+    <select id="instructor" name="id_instructor" required>
       <option value="">Seleccione un instructor</option>
       @foreach ($instructors as $instructor)
         <option value="{{ $instructor->id }}"
-            {{ old('instructor_id', isset($programacion) ? $programacion->id_instructor : '') == $instructor->id ? 'selected' : '' }}>
-            {{$instructor->person->document_number}} - {{ $instructor->person->name }} - {{$instructor->speciality->name}}
+          {{ old('id_instructor', $programacion->id_instructor ?? '') == $instructor->id ? 'selected' : '' }}>
+          {{ $instructor->person->document_number }} - {{ $instructor->person->name }} - {{ $instructor->speciality->name }}
         </option>
       @endforeach
     </select>
+
     <div id="noCompetenciesAlert" class="alert-warning">
       El instructor seleccionado no tiene competencias vinculadas. Por favor, asigne competencias al instructor antes de continuar.
     </div>
 
     <label for="competencia">Competencia:</label>
-    <select id="competencia" name="competencia_id" required>
+    <select id="competencia" name="id_competencie" required>
       <option value="">Seleccione una competencia</option>
-      @if(isset($programacion))
-        @foreach($competencias as $comp)
-            @if($comp->instructors->pluck('id')->contains($programacion->id_instructor))
-                <option value="{{ $comp->id }}"
-                    {{ old('competencia_id', $programacion->id_competencie) == $comp->id ? 'selected' : '' }}>
-                    {{ $comp->name }}
-                </option>
-            @endif
-        @endforeach
-      @endif
+      @foreach ($competencias as $comp)
+        @if ($comp->instructors->pluck('id')->contains($programacion->id_instructor))
+          <option value="{{ $comp->id }}"
+            {{ old('id_competencie', $programacion->id_competencie ?? '') == $comp->id ? 'selected' : '' }}>
+            {{ $comp->name }}
+          </option>
+        @endif
+      @endforeach
     </select>
 
     <label for="ambiente">Ambiente:</label>
-    <select id="ambiente" name="ambiente_id" required>
-      <option value="">Selecione Ambiente</option>
+    <select id="ambiente" name="id_classroom" required>
+      <option value="">Seleccione Ambiente</option>
       @foreach ($ambientes as $ambiente)
         <option value="{{ $ambiente->id }}"
-            {{ old('ambiente_id', isset($programacion) ? $programacion->id_classroom : '') == $ambiente->id ? 'selected' : '' }}>
-            {{ $ambiente->name }} - {{$ambiente->towns->name}}
+          {{ old('id_classroom', $programacion->id_classroom ?? '') == $ambiente->id ? 'selected' : '' }}>
+          {{ $ambiente->Block->name }} - {{ $ambiente->name }} - {{ $ambiente->towns->name }}
         </option>
       @endforeach
     </select>
 
-   <div class="two-cols">
-  <div>
-    <label for="fecha_inicio">Fecha Inicio:</label>
-    <input type="date" name="fecha_inicio" 
-    value="{{ old('fecha_inicio', isset($programacion) ? \Carbon\Carbon::parse($programacion->start_date)->format('Y-m-d') : '') }}">
-  </div>
-  <div>
-    <label for="fecha_fin">Fecha Fin:</label>
-    <input type="date" name="fecha_fin" 
-    value="{{ old('fecha_fin', isset($programacion) ? \Carbon\Carbon::parse($programacion->end_date)->format('Y-m-d') : '') }}">
-  </div>
-</div>
-
+    <div class="two-cols">
+      <div>
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input type="date" id="fecha_inicio" name="start_date"
+          value="{{ old('start_date') }}" required />
+      </div>
+      <div>
+        <label for="fecha_fin">Fecha Fin:</label>
+        <input type="date" id="fecha_fin" name="end_date"
+          value="{{ old('end_date') }}" required />
+      </div>
+    </div>
 
     <label>Horario:</label>
     <div class="time-container">
-      <input type="time" id="hora_inicio" name="hora_inicio"
-             value="{{ old('hora_inicio', isset($programacion) ? \Carbon\Carbon::parse($programacion->start_time)->format('H:i') : '') }}"
-             required min="08:00" step="1800" />
+      <input type="time" id="hora_inicio" name="start_time"
+        value="{{ old('start_time', $programacion->start_time ?? '') }}" required min="08:00" step="1800" />
       <span>a</span>
-      <input type="time" id="hora_fin" name="hora_fin"
-             value="{{ old('hora_fin', isset($programacion) ? \Carbon\Carbon::parse($programacion->end_time)->format('H:i') : '') }}"
-             required min="08:00" step="1800" />
+      <input type="time" id="hora_fin" name="end_time"
+        value="{{ old('end_time', $programacion->end_time ?? '') }}" required min="08:00" step="1800" />
     </div>
     <div id="horasCalculadas" class="error-message"></div>
 
@@ -220,12 +240,12 @@
     <div class="day-checkboxes">
       @php
           $dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-          $diasSeleccionados = old('dias', isset($programacion) ? $programacion->days->pluck('name')->toArray() : []);
+          $diasProgramados = $programacion->days->pluck('name')->toArray();
       @endphp
       @foreach ($dias as $dia)
           <label>
               <input type="checkbox" name="dias[]" value="{{ $dia }}"
-                  {{ in_array($dia, $diasSeleccionados) ? 'checked' : '' }}>
+                  {{ in_array($dia, old('dias', $diasProgramados)) ? 'checked' : '' }}>
               {{ $dia }}
           </label>
       @endforeach
@@ -235,25 +255,29 @@
     <div class="two-cols">
       <div>
         <label for="horas_dia">Horas Diarias:</label>
-        <input type="number" id="horas_dia" name="horas_dia" min="1" max="8"
-         step="0.01" value="{{ old('horas_dia', isset($programacion) ? $programacion->scheduled_hours / max(1, $programacion->days->count()) : 1) }}"
-         required readonly />
+        <input type="number" id="horas_dia" name="scheduled_hours" min="1" max="8" step="0.01"
+          value="{{ old('scheduled_hours', $programacion->scheduled_hours ?? 1) }}" readonly />
       </div>
       <div>
         <label for="total_horas">Horas A programar:</label>
-        <input type="number" id="total_horas" name="total_horas" min="1" step="0.01"
-        value="{{ old('total_horas', isset($programacion) ? $programacion->hours_duration : '') }}" required readonly />
+        <input type="number" id="total_horas" name="hours_duration" min="1" step="0.01"
+          value="{{ old('hours_duration', $programacion->hours_duration ?? '') }}" required readonly />
       </div>
     </div>
 
-   <button type="submit" class="submit-btn">
-      Actualizar Programación
-    </button>
+    <div id="fechas-excluidas-info" class="alert-info" style="display: none;">
+      <div id="excluded-dates-list" class="excluded-dates"></div>
+      <div id="effective-days-info"></div>
+    </div>
+
+    <button type="submit" class="submit-btn">Realizar Reprogramación</button>
 </form>
 
 </div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
+      // Obtener elementos del DOM
       const horaInicioInput = document.getElementById('hora_inicio');
       const horaFinInput = document.getElementById('hora_fin');
       const horasDiaInput = document.getElementById('horas_dia');
@@ -265,66 +289,79 @@
       const selectInstructor = document.getElementById('instructor');
       const selectCompetencia = document.getElementById('competencia');
       const noCompetenciesAlert = document.getElementById('noCompetenciesAlert');
-
+      const fechasExcluidasInfo = document.getElementById('fechas-excluidas-info');
+      const excludedDatesList = document.getElementById('excluded-dates-list');
+      const effectiveDaysInfo = document.getElementById('effective-days-info');
+  
+      const fechasExcluidas = @json(
+      \App\Models\DbProgramacion\Days_training::pluck('date')
+          ->map(function($f) {
+              return Carbon\Carbon::parse($f)->format('Y-m-d');
+          })
+          ->toArray()
+  );
+      // Mapeo de competencias
       let competenciaHoras = 0;
-
       const competenciasPorInstructor = @json(
           $instructors->mapWithKeys(function($instructor) {
               return [$instructor->id => $instructor->competencies->pluck('id')->toArray()];
           })
       );
-
+  
       const todasLasCompetencias = @json($competencias->map(function($comp) {
           return ['id' => $comp->id, 'name' => $comp->name, 'hours' => $comp->duration_hours ?? $comp->hours ?? 40];
       }));
-
-      selectInstructor.addEventListener('change', function () {
+  
+      // Evento change para el select de instructores
+      selectInstructor.addEventListener('change', function() {
           const instructorId = this.value;
           selectCompetencia.innerHTML = '<option value="">Seleccione una competencia</option>';
           noCompetenciesAlert.style.display = 'none';
-
+  
           if (!instructorId) {
               selectCompetencia.disabled = true;
               return;
           }
-
+  
           if (!competenciasPorInstructor[instructorId] || competenciasPorInstructor[instructorId].length === 0) {
               selectCompetencia.disabled = true;
               noCompetenciesAlert.style.display = 'block';
               return;
           }
-
+  
           const competenciasAsignadas = todasLasCompetencias.filter(comp =>
               competenciasPorInstructor[instructorId].includes(comp.id)
           );
-
+  
           competenciasAsignadas.forEach(comp => {
               selectCompetencia.innerHTML += `<option value="${comp.id}">${comp.name}</option>`;
           });
-
+  
           selectCompetencia.disabled = false;
       });
-
-      selectCompetencia.addEventListener('change', function () {
+  
+      // Evento change para el select de competencias
+      selectCompetencia.addEventListener('change', function() {
           const competenciaId = parseInt(this.value);
           const competencia = todasLasCompetencias.find(c => c.id === competenciaId);
           competenciaHoras = competencia ? competencia.hours : 0;
           calcularTotalHoras();
       });
-
+  
+      // Función para calcular horas diarias
       function calcularHorasDiarias() {
           const horaInicio = horaInicioInput.value;
           const horaFin = horaFinInput.value;
-
+  
           if (horaInicio && horaFin) {
               const [h1, m1] = horaInicio.split(':').map(Number);
               const [h2, m2] = horaFin.split(':').map(Number);
-
+  
               const minutosInicio = h1 * 60 + m1;
               const minutosFin = h2 * 60 + m2;
-
+  
               const diferenciaMinutos = minutosFin - minutosInicio;
-
+  
               if (diferenciaMinutos > 0) {
                   const horas = diferenciaMinutos / 60;
                   horasDiaInput.value = horas.toFixed(2);
@@ -333,72 +370,172 @@
                   horasDiaInput.value = '';
                   horasCalculadasDiv.textContent = '⚠️ La hora final debe ser mayor a la hora inicial';
               }
-
+  
               calcularTotalHoras();
+              verificarFechasExcluidas();
           }
       }
-
+  
+      // Función para verificar fechas excluidas
+      function verificarFechasExcluidas() {
+          const fechaInicio = fechaInicioInput.value;
+          const fechaFin = fechaFinInput.value;
+          const diasSeleccionados = Array.from(diasCheckboxes)
+              .filter(cb => cb.checked)
+              .map(cb => cb.value);
+  
+          if (!fechaInicio || !fechaFin || diasSeleccionados.length === 0) {
+              fechasExcluidasInfo.style.display = 'none';
+              return;
+          }
+  
+          const diasSemana = {
+              'Lunes': 1, 'Martes': 2, 'Miércoles': 3,
+              'Jueves': 4, 'Viernes': 5, 'Sábado': 6,
+              'Domingo': 0
+          };
+  
+          const diasNumericos = diasSeleccionados.map(dia => diasSemana[dia]);
+          const start = new Date(fechaInicio);
+          const end = new Date(fechaFin);
+  
+          let diasExcluidos = [];
+          let diasEfectivos = 0;
+          let currentDate = new Date(start);
+  
+          while (currentDate <= end) {
+              const diaSemana = currentDate.getDay();
+              const fechaFormato = currentDate.toISOString().split('T')[0];
+  
+              if (diasNumericos.includes(diaSemana)) {
+                  if (fechasExcluidas.includes(fechaFormato)) {
+                      diasExcluidos.push(new Date(fechaFormato).toLocaleDateString('es-ES'));
+                  } else {
+                      diasEfectivos++;
+                  }
+              }
+              currentDate.setDate(currentDate.getDate() + 1);
+          }
+  
+          // Mostrar información al usuario
+          if (diasExcluidos.length > 0) {
+              fechasExcluidasInfo.style.display = 'block';
+              excludedDatesList.innerHTML = `<strong>Fechas no laborables detectadas:</strong> ${diasExcluidos.join(', ')}`;
+              effectiveDaysInfo.innerHTML = `<strong>Días efectivos de programación:</strong> ${diasEfectivos}`;
+          } else {
+              fechasExcluidasInfo.style.display = 'none';
+          }
+      }
+  
+      // Función para calcular horas totales
       function calcularTotalHoras() {
           const fechaInicio = fechaInicioInput.value;
           const fechaFin = fechaFinInput.value;
           const horasDia = parseFloat(horasDiaInput.value);
-
+  
           if (!fechaInicio || !fechaFin || isNaN(horasDia)) {
               totalHorasInput.value = '';
               return;
           }
-
+  
           const startDate = new Date(fechaInicio);
           const endDate = new Date(fechaFin);
-
-          if (endDate < startDate) {
+  
+          if (endDate <= startDate) {
               totalHorasInput.value = '';
-              horasCalculadasDiv.textContent = '⚠️ La fecha fin debe ser mayor o igual a la fecha inicio';
+              horasCalculadasDiv.textContent = '⚠️ La fecha fin debe ser mayor  a la fecha inicio';
               return;
           }
-
+  
           const diasSeleccionados = Array.from(diasCheckboxes)
               .filter(cb => cb.checked)
               .map(cb => cb.value);
-
+  
           let totalHoras = 0;
           let currentDate = new Date(startDate);
-
+          let diasExcluidosCount = 0;
+  
           while (currentDate <= endDate) {
               const diaSemana = capitalize(currentDate.toLocaleDateString('es-ES', { weekday: 'long' }));
+              const fechaFormato = currentDate.toISOString().split('T')[0];
+  
               if (diasSeleccionados.includes(diaSemana)) {
-                  totalHoras += horasDia;
+                  if (!fechasExcluidas.includes(fechaFormato)) {
+                      totalHoras += horasDia;
+                  } else {
+                      diasExcluidosCount++;
+                  }
               }
               currentDate.setDate(currentDate.getDate() + 1);
           }
-
+  
           totalHorasInput.value = totalHoras.toFixed(2);
-
-          if (competenciaHoras > 0 && totalHoras < competenciaHoras) {
-              horasCalculadasDiv.textContent = `⚠️ Las horas programadas (${totalHoras.toFixed(2)}) son menores a las requeridas por la competencia (${competenciaHoras})`;
-          } else {
-              horasCalculadasDiv.textContent = '';
+  
+          // Mostrar advertencia si hay horas faltantes
+          if (competenciaHoras > 0) {
+              if (totalHoras < competenciaHoras) {
+                  const horasFaltantes = competenciaHoras - totalHoras;
+                  horasCalculadasDiv.innerHTML = `
+                      ⚠️ <strong>Horas programadas:</strong> ${totalHoras.toFixed(2)}<br>
+                      <strong>Horas requeridas por la competencia:</strong> ${competenciaHoras}<br>
+                      <strong>Horas faltantes:</strong> ${horasFaltantes.toFixed(2)}<br>
+                      ${diasExcluidosCount > 0 ? `<small>(${diasExcluidosCount} días excluidos)</small>` : ''}
+                  `;
+              } else {
+                  horasCalculadasDiv.textContent = '';
+              }
           }
       }
-
+  
+      // Función auxiliar para capitalizar strings
       function capitalize(str) {
           return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       }
-
+  
+      // Event listeners
       horaInicioInput.addEventListener('change', calcularHorasDiarias);
       horaFinInput.addEventListener('change', calcularHorasDiarias);
-      diasCheckboxes.forEach(cb => cb.addEventListener('change', calcularTotalHoras));
-      fechaInicioInput.addEventListener('change', calcularTotalHoras);
-      fechaFinInput.addEventListener('change', calcularTotalHoras);
-
-      // Inicializa si hay valores previos
+      diasCheckboxes.forEach(cb => cb.addEventListener('change', function() {
+          calcularTotalHoras();
+          verificarFechasExcluidas();
+      }));
+      fechaInicioInput.addEventListener('change', function() {
+          calcularTotalHoras();
+          verificarFechasExcluidas();
+      });
+      fechaFinInput.addEventListener('change', function() {
+          calcularTotalHoras();
+          verificarFechasExcluidas();
+      });
+  
+      // Inicializar si hay valores en los campos
       if (selectInstructor.value) {
           selectInstructor.dispatchEvent(new Event('change'));
       }
+      if (fechaInicioInput.value && fechaFinInput.value) {
+          verificarFechasExcluidas();
+      }
+      const buscarInput = document.getElementById('buscarInstructor');
+      const selectOriginal = selectInstructor.cloneNode(true); // copia original para restaurar
+  
+      buscarInput.addEventListener('input', function () {
+          const filtro = this.value.toLowerCase();
+          const opcionesOriginales = Array.from(selectOriginal.options);
+  
+          selectInstructor.innerHTML = ''; // limpia el select actual
+  
+          opcionesOriginales.forEach(op => {
+              const texto = op.text.toLowerCase();
+              if (texto.includes(filtro) || filtro === '') {
+                  selectInstructor.appendChild(op.cloneNode(true));
+              }
+          });
+  
+          // Forzar actualización de competencias si ya hay uno seleccionado
+          selectInstructor.dispatchEvent(new Event('change'));
+      });
   });
   </script>
-
 </body>
 </html>
 </x-layout>
-

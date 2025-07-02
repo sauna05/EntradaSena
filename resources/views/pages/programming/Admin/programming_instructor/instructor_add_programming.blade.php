@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Programación de Instructores</title>
+
 
 <style>
   body {
@@ -14,6 +14,14 @@
     margin: 0;
     padding: 0;
   }
+    #buscarInstructor {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
   .alert-warning {
     width: 100%;
     background-color: #fff3cd;
@@ -159,6 +167,8 @@
         <option value="{{ $ficha->id }}" {{ old('ficha_id') == $ficha->id ? 'selected' : '' }}>{{ $ficha->number_cohort }} - {{$ficha->program->name}}</option>
       @endforeach
     </select>
+    <label for="buscarInstructor">Buscar Instructor:</label>
+    <input type="text" id="buscarInstructor" placeholder="Escribe el nombre del instructor">
 
     <label for="instructor">Instructor:</label>
     <select id="instructor" name="instructor_id" required>
@@ -408,9 +418,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const startDate = new Date(fechaInicio);
         const endDate = new Date(fechaFin);
 
-        if (endDate < startDate) {
+        if (endDate <= startDate) {
             totalHorasInput.value = '';
-            horasCalculadasDiv.textContent = '⚠️ La fecha fin debe ser mayor o igual a la fecha inicio';
+            horasCalculadasDiv.textContent = '⚠️ La fecha fin debe ser mayor  a la fecha inicio';
             return;
         }
 
@@ -482,6 +492,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fechaInicioInput.value && fechaFinInput.value) {
         verificarFechasExcluidas();
     }
+    const buscarInput = document.getElementById('buscarInstructor');
+    const selectOriginal = selectInstructor.cloneNode(true); // copia original para restaurar
+
+    buscarInput.addEventListener('input', function () {
+        const filtro = this.value.toLowerCase();
+        const opcionesOriginales = Array.from(selectOriginal.options);
+
+        selectInstructor.innerHTML = ''; // limpia el select actual
+
+        opcionesOriginales.forEach(op => {
+            const texto = op.text.toLowerCase();
+            if (texto.includes(filtro) || filtro === '') {
+                selectInstructor.appendChild(op.cloneNode(true));
+            }
+        });
+
+        // Forzar actualización de competencias si ya hay uno seleccionado
+        selectInstructor.dispatchEvent(new Event('change'));
+    });
 });
 </script>
 </body>

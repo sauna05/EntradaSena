@@ -219,7 +219,7 @@ Route::get('programming/admin/programming_instructor_update/{id}', [ProgramanCon
     ->middleware('can:programmig.programming_update_index')
     ->name('programmig.programming_update_index');
 
-Route::put('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'update_programmig'])
+Route::put('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'updateProgramming'])
     ->middleware('can:programmig.programming_update_store')
     ->name('programmig.programming_update_store');
 
