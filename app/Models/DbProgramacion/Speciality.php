@@ -18,4 +18,9 @@ class Speciality extends Model
     {
         return $this->hasMany(Instructor::class);
     }
+    public function competencies()
+    {
+        return $this->hasMany(Competencies::class);
+    }
+
 }

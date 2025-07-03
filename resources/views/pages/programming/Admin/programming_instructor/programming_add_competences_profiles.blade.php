@@ -9,7 +9,17 @@
         <form action="{{route('programming.instructors_competencies_profile_store')}}" method="POST" id="asignarForm">
             @csrf
 
-            <label for="isntructor">Selecciona un instructor Segun su especialidad:</label>
+            {{-- Nuevo filtro de especialidad --}}
+            <label for="especialidadSelect">Filtrar por Especialidad:</label>
+            <select id="especialidadSelect">
+                <option value="">Todas las especialidades</option>
+                @foreach ($especialidad as $esp)
+                    <option value="{{ $esp->id }}">{{ $esp->name }}</option>
+                @endforeach
+            </select>
+
+            {{-- Selector de instructor --}}
+            <label for="isntructor">Selecciona un instructor según su especialidad:</label>
             <select id="programa" name="instructor_id" required>
                 <option value=""> Selecciona un instructor </option>
                 @forelse ($instructors as $perfil)
@@ -20,8 +30,8 @@
                     <option disabled>No hay instructores disponibles</option>
                 @endforelse
             </select>
-            
 
+            {{-- Tabla de competencias --}}
             <table>
                 <thead>
                     <tr>
@@ -30,15 +40,17 @@
                         <th>Código</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach($competencias as $competencia)
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="competencias[]" value="{{ $competencia->id }}">
-                            </td>
-                            <td>{{ $competencia->name }}</td>
-                            <td>{{ $competencia->duration_hours }} hr </td>
-                        </tr>
+                <tbody id="competenciasContainer">
+                    @foreach($especialidad as $esp)
+                        @foreach($esp->competencies as $competencia)
+                            <tr data-especialidad="{{ $esp->id }}">
+                                <td>
+                                    <input type="checkbox" name="competencias[]" value="{{ $competencia->id }}">
+                                </td>
+                                <td>{{ $competencia->name }}</td>
+                                <td>{{ $competencia->duration_hours }} hr </td>
+                            </tr>
+                        @endforeach
                     @endforeach
                 </tbody>
             </table>
@@ -48,4 +60,21 @@
             </div>
         </form>
     </div>
+
+    {{-- Script para filtrar por especialidad --}}
+    <script>
+        document.getElementById('especialidadSelect').addEventListener('change', function () {
+            const selectedId = this.value;
+            const rows = document.querySelectorAll('#competenciasContainer tr');
+
+            rows.forEach(row => {
+                const rowEspId = row.getAttribute('data-especialidad');
+                if (selectedId === '' || rowEspId === selectedId) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </x-layout>

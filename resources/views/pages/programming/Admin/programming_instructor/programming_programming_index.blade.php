@@ -97,15 +97,15 @@
             color: #383d41;
         }
         .disponible-badge {
-        font-size: 0.7rem;
-        color: #666;
-        background-color: #f0f0f0;
-        padding: 2px 5px;
-        border-radius: 3px;
-        margin-left: 5px;
-        font-weight: normal;
-        border: 1px solid #ddd;
-    }
+            font-size: 0.7rem;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+            font-weight: normal;
+            border: 1px solid #ddd;
+        }
 
         .alert-danger {
             background-color: #f8d7da;
@@ -159,20 +159,38 @@
         }
 
         .btn-evaluar {
-        background-color: #28a745;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 6px;
-        border: none;
-    }
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: none;
+        }
 
-    .btn-reprogramar {
-        background-color: #007bff;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 6px;
-        border: none;
-    }
+        .btn-reprogramar {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: none;
+        }
+
+        .btn-excel {
+            background-color: #1d6f42;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-excel:hover {
+            background-color: #165a36;
+        }
 
         .reset-btn:hover {
             background-color: #5a6268;
@@ -232,16 +250,22 @@
         <div class="no-results" id="no-results">
             No se encontraron programaciones con los filtros aplicados.
         </div>
+        
+        <!-- Botón de descarga Excel -->
+        <button id="export-excel" class="btn-excel">
+            <i class="fas fa-file-excel"></i> Descargar Excel
+        </button>
 
         <div class="table-responsive">
             <table id="programming-table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Instructor</th>
                         <th>Programa</th>
                         <th>Ficha</th>
+                        <th>Instructor</th>
                         <th>Competencia</th>
+                        <th>Duracion</th>
                         <th>Ambiente</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
@@ -258,10 +282,11 @@
                                 data-disponible="true"
                             @endif>
                             <td>{{ $programacion->id }}</td>
-                            <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
+                           
                             <td>{{ $programacion->cohort->program->name ?? 'N/A' }}</td>
                             <td>{{ $programacion->cohort->number_cohort ?? 'N/A' }}</td>
-                          <td>
+                            <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
+                            <td>
                                 {{ $programacion->competencie->name ?? 'N/A' }}
                                 @if($programacion->status === 'finalizada_evaluada')
                                     <span class="disponible-badge" title="Esta competencia está disponible para reprogramación">
@@ -269,6 +294,7 @@
                                     </span>
                                 @endif
                             </td>
+                            <td>{{$programacion->hours_duration}}  hrs </td>
                             <td>{{ $programacion->classroom->name ?? 'N/A' }}</td>
                             <td>{{ $programacion->start_date }}</td>
                             <td>{{ $programacion->end_date }}</td>
@@ -313,13 +339,6 @@
                                         <span class="status-icon">{{ $estado['icon'] }}</span>
                                         {{ $estado['text'] }}
                                     </span>
-
-                                    {{-- @if($programacion->status === 'finalizada_evaluada')
-                                        <span class="status-badge status-disponible">
-                                            <span class="status-icon">🔄</span>
-                                            Disponible
-                                        </span>
-                                    @endif --}}
                                 </div>
                             </td>
                             <td class="action-cell">
@@ -345,9 +364,6 @@
                                     <span class="text-muted">N/A</span>
                                 @endif
                             </td>
-                            
-
-
                         </tr>
                     @empty
                         <tr>
@@ -359,14 +375,13 @@
         </div>
     </div>
 
+    <!-- Incluir SheetJS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- Incluir Font Awesome para el ícono de Excel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <script>
-        // // Función para manejar la reprogramación
-        // function reprogramar {
-        //     return confirm('¿Estás seguro de reprogramar esta competencia?') ;
-
-
-        // }
-
         document.addEventListener('DOMContentLoaded', function() {
             const programFilter = document.getElementById('program-filter');
             const statusFilter = document.getElementById('status-filter');
@@ -416,6 +431,164 @@
                 programFilter.value = '';
                 statusFilter.value = '';
                 applyFilters();
+            });
+
+            document.getElementById('export-excel').addEventListener('click', function() {
+                // Obtener la tabla
+                const table = document.getElementById('programming-table');
+                
+                // Obtener todas las filas visibles (considerando los filtros)
+                const visibleRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => 
+                    row.style.display !== 'none'
+                );
+                
+                // Preparar los datos
+                const data = [];
+                
+                // Obtener encabezados (excluyendo la columna Acción)
+                const headers = [];
+                const headerCells = table.querySelectorAll('thead tr th');
+                headerCells.forEach((cell, index) => {
+                    // Excluir la columna "Acción" (última columna)
+                    if (index < headerCells.length - 1) {
+                        headers.push(cell.textContent.trim());
+                    }
+                });
+                data.push(headers);
+                
+                // Obtener datos de cada fila visible
+                visibleRows.forEach(row => {
+                    const rowData = [];
+                    const cells = row.querySelectorAll('td');
+                    
+                    cells.forEach((cell, index) => {
+                        // Excluir la columna "Acción" (última columna)
+                        if (index < cells.length - 1) {
+                            let cellValue;
+                            
+                            // Caso especial para estado (columna 10)
+                            if (index === 9) {
+                                const statusBadge = cell.querySelector('.status-badge');
+                                if (statusBadge) {
+                                    // Obtener solo el texto, eliminando iconos y espacios extra
+                                    cellValue = statusBadge.textContent.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ()\s]/g, '').trim();
+                                } else {
+                                    cellValue = cell.textContent.trim();
+                                }
+                            } 
+                            // Caso especial para duración (columna 5)
+                            else if (index === 5) {
+                                cellValue = cell.textContent.trim().replace('hrs', '').trim();
+                            }
+                            // Para las demás columnas
+                            else {
+                                cellValue = cell.textContent.trim();
+                            }
+                            
+                            rowData.push(cellValue);
+                        }
+                    });
+                    
+                    data.push(rowData);
+                });
+                
+                // Crear libro de trabajo
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                
+                // Aplicar estilos a las celdas
+                if (!ws['!cols']) ws['!cols'] = [];
+                
+                // Definir anchos de columnas
+                const colWidths = [
+                    { wch: 5 },   // #
+                    { wch: 25 },  // Programa
+                    { wch: 10 },  // Ficha
+                    { wch: 25 },  // Instructor
+                    { wch: 30 },  // Competencia
+                    { wch: 10 },  // Duración
+                    { wch: 15 },  // Ambiente
+                    { wch: 12 },  // Fecha Inicio
+                    { wch: 12 },  // Fecha Fin
+                    { wch: 20 },  // Horario
+                    { wch: 25 }   // Estado
+                ];
+                
+                ws['!cols'] = colWidths;
+                
+                // Estilo para los encabezados
+                const headerStyle = {
+                    font: { bold: true, color: { rgb: "FFFFFF" } },
+                    fill: { fgColor: { rgb: "4472C4" } }, // Azul corporativo
+                    alignment: { horizontal: "center" },
+                    border: {
+                        top: { style: "thin", color: { rgb: "000000" } },
+                        bottom: { style: "thin", color: { rgb: "000000" } },
+                        left: { style: "thin", color: { rgb: "000000" } },
+                        right: { style: "thin", color: { rgb: "000000" } }
+                    }
+                };
+                
+                // Aplicar estilo a los encabezados
+                for (let col = 0; col < headers.length; col++) {
+                    const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+                    if (!ws[cellAddress]) continue;
+                    
+                    ws[cellAddress].s = headerStyle;
+                }
+                
+                // Estilo para las celdas de datos
+                const dataStyle = {
+                    font: { name: "Calibri", sz: 11 },
+                    alignment: { vertical: "center" },
+                    border: {
+                        top: { style: "thin", color: { rgb: "D9D9D9" } },
+                        bottom: { style: "thin", color: { rgb: "D9D9D9" } },
+                        left: { style: "thin", color: { rgb: "D9D9D9" } },
+                        right: { style: "thin", color: { rgb: "D9D9D9" } }
+                    }
+                };
+                
+                // Aplicar estilo a los datos
+                for (let row = 1; row < data.length; row++) {
+                    for (let col = 0; col < headers.length; col++) {
+                        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                        if (!ws[cellAddress]) continue;
+                        
+                        // Si es la columna de duración, alinear a la derecha
+                        if (col === 5) {
+                            ws[cellAddress].s = { ...dataStyle, alignment: { ...dataStyle.alignment, horizontal: "right" } };
+                        } 
+                        // Si es la columna de estado, aplicar formato según estado
+                        else if (col === 10) {
+                            const estado = ws[cellAddress].v;
+                            let fillColor;
+                            
+                            if (estado.includes("Pendiente")) fillColor = { rgb: "D0E3FF" };
+                            else if (estado.includes("ejecución")) fillColor = { rgb: "FFF3BF" };
+                            else if (estado.includes("Evaluada")) fillColor = { rgb: "D4EDDA" };
+                            else if (estado.includes("Pendiente evaluación")) fillColor = { rgb: "F8D7DA" };
+                            else fillColor = { rgb: "FFFFFF" };
+                            
+                            ws[cellAddress].s = { 
+                                ...dataStyle, 
+                                fill: { fgColor: fillColor },
+                                font: { ...dataStyle.font, bold: true }
+                            };
+                        }
+                        // Para las demás celdas
+                        else {
+                            ws[cellAddress].s = dataStyle;
+                        }
+                    }
+                }
+                
+                // Añadir hoja al libro
+                XLSX.utils.book_append_sheet(wb, ws, "Programaciones");
+                
+                // Generar archivo y descargar
+                const fileName = `Programaciones_${new Date().toISOString().slice(0,10)}.xlsx`;
+                XLSX.writeFile(wb, fileName);
             });
 
             // Aplicar filtros iniciales si hay valores en la URL

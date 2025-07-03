@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('specialty_competencie', function (Blueprint $table) {
             $table->id();
+         
+         
             $table->timestamps();
         });
     }

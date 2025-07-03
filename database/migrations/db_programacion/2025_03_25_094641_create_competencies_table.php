@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::connection('db_programacion')->create('competencies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('speciality_id')
+                ->constrained('specialities')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('name');
             $table->integer('duration_hours');
             $table->timestamps();
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('competencies');
+        Schema::connection('db_programacion')->dropIfExists('competencies');
     }
 };

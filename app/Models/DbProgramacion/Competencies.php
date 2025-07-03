@@ -22,6 +22,12 @@ class Competencies extends Model
             ->using(CompetenciePrograman::class);
     }
 
+    public function speciality()
+    {
+        // Cambiar de belongsToMany a belongsTo ya que es una relación muchos a uno
+        return $this->belongsTo(Speciality::class, 'speciality_id');
+    }
+
     public function instructors()
     {
         return $this->belongsToMany(Instructor::class, 'instructor_competencie', 'competence_id', 'instructor_id')

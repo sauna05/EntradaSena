@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::connection('db_programacion')->create('specialities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-
             $table->timestamps();
         });
     }
