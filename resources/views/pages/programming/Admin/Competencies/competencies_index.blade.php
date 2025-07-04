@@ -230,6 +230,18 @@
             <form method="POST" action="{{ route('programing.competencies_store') }}">
                 @csrf
                 <div class="form-group">
+                    <label for="">Especialidad</label>
+                    <select name="speciality_id" id="">
+                        <option value="">selecione especialidad</option>
+                        @forelse ($especialidad as $espe )
+                            <option value="{{ $espe->id }}">{{$espe->name}} </option>
+                        @empty
+                            
+                        @endforelse
+                    </select>
+                    
+                </div>
+                <div class="form-group">
                     <label for="name">Nombre de la competencia</label>
                     <input type="text" id="name" name="name" required>
                 </div>

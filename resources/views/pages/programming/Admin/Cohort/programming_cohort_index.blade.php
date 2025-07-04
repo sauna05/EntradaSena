@@ -144,9 +144,9 @@
                 <th>Programa</th>
                 <th>Jornada</th>
                 <th>Municipio</th>
-                <th>Horas Asignadas</th>
-                <th>Horas Programadas</th>
-                {{-- <th>Horas Cumplidas</th> --}}
+                <th>Hrs etapa lectiva</th>
+                <th>Hrs programadas</th>
+                <th>Hrs cumplidas</th>
                 <th>Avance</th>
             </tr>
         </thead>
@@ -159,7 +159,7 @@
                     <td>{{ $cohort->town->name ?? 'N/A' }}</td>
                     <td>{{ $cohort->hours_school_stage }} hrs</td>
                     <td>{{ $cohort->horas_programadas }} hrs</td>
-                    {{-- <td>{{ $cohort->horas_cumplidas }} hrs</td> --}}
+                    <td>{{ $cohort->horas_cumplidas }} hrs</td>
                     <td>
                         @php
                             $color = match(true) {
@@ -170,7 +170,7 @@
                         @endphp
                         <div class="progress">
                             <div class="progress-bar bg-{{ $color }}" 
-                                 style="width: {{ $cohort->porcentaje_avance }}%">
+                                 style="width: {{ min($cohort->porcentaje_avance, 100) }}%">
                                 {{ $cohort->porcentaje_avance }}%
                             </div>
                         </div>

@@ -31,10 +31,19 @@ class CohortController extends Controller
             ->withSum('programmings as horas_programadas', 'hours_duration')
             ->get()
             ->each(function ($cohort) {
+                // Calcular horas pendientes (horas totales - horas programadas)
+                $cohort->horas_pendientes = max($cohort->hours_school_stage - $cohort->horas_programadas, 0);
+
+                // Calcular porcentaje de avance (horas cumplidas / horas totales)
                 $cohort->porcentaje_avance = $cohort->hours_school_stage > 0
                     ? round(($cohort->horas_cumplidas / $cohort->hours_school_stage) * 100, 2)
                     : 0;
-            });       
+
+                // Calcular porcentaje de programación (horas programadas / horas totales)
+                $cohort->porcentaje_programado = $cohort->hours_school_stage > 0
+                    ? round(($cohort->horas_programadas / $cohort->hours_school_stage) * 100, 2)
+                    : 0;
+            });
 
         $towns = Town::all();
         $classroom = Classroom::all();
@@ -49,7 +58,6 @@ class CohortController extends Controller
             'classroom'
         ));
     }
-
 
 
     public function registerCohort(Request $request)

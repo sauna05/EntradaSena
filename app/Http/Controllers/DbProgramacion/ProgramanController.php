@@ -275,7 +275,8 @@ class ProgramanController extends Controller
     public function Listcompetencies()
     {
         $competencies = Competencies::all();
-        return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies'));
+        $especialidad=Speciality::all();
+        return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies','especialidad'));
     }
 
     // Guardar nueva competencia
@@ -283,6 +284,7 @@ class ProgramanController extends Controller
     {
         // Validar datos
         $validated = $request->validate([
+            'speciality_id'=> 'required|exists:db_programacion.specialities,id',
             'name' => 'required|string|max:255',
             'duration_hours' => 'required|integer|min:1',
         ]);
