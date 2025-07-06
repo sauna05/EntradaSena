@@ -146,6 +146,13 @@
             margin-bottom: 8px;
             color: #555;
         }
+        .form-group select{
+             padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+        }
 
         .form-group input {
             padding: 10px 14px;
@@ -236,10 +243,10 @@
                         @forelse ($especialidad as $espe )
                             <option value="{{ $espe->id }}">{{$espe->name}} </option>
                         @empty
-                            
+
                         @endforelse
                     </select>
-                    
+
                 </div>
                 <div class="form-group">
                     <label for="name">Nombre de la competencia</label>

@@ -146,6 +146,8 @@ class RoleSeeder extends Seeder
 
         //Permiso para registro de ambientes
         Permission::create(['name' => 'programing.classroom_store'])->assignRole($role10, $role2);
+        //permiso para eliminar dia calendario
+        Permission::create(['name' => 'programing.unrecorded_days_delete'])->assignRole($role10, $role2);
 
 
     }

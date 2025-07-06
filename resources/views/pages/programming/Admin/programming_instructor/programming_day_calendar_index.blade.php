@@ -203,20 +203,29 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Motivo</th>
+                        <th>Accion</th>
                     </tr>
                 </thead>
-                <tbody>
+               <tbody>
                     @forelse ($days as $day)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($day->date)->locale('es')->isoFormat('dddd D [de] MMMM [de] YYYY') }}</td>
                             <td>{{ $day->reason }}</td>
+                            <td>
+                                <form action="{{ route('programing.unrecorded_days_delete', $day->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este día?')" style="background:#dc3545;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;">Eliminar</button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="2">No hay fechas registradas.</td>
+                            <td colspan="3">No hay fechas registradas.</td>
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>

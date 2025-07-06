@@ -243,3 +243,10 @@ Route::post('programming/admin/classroom_store', [ProgramanController::class, 'c
     ->middleware('can:programing.classroom_store')
     ->name('programing.classroom_store');
 
+//ruta para eliminar dia de calendario academico
+//programing.unrecorded_days_delete
+Route::delete('programming/admin/days_not_programming_delete/{id}', [ProgramanController::class, 'day_delete'])
+    ->middleware('can:programing.unrecorded_days_delete')
+    ->name('programing.unrecorded_days_delete');
+
+    

@@ -86,7 +86,7 @@ class ProgramanController extends Controller
         return view('pages.programming.Admin.Competencies.competencies_add_programan', compact('programas', 'competencias'));
     }
 
-    //metodo para la vista de agregar competencia al perfil de instructor 
+    //metodo para la vista de agregar competencia al perfil de instructor
     public function asignarCompetences_index_instructor()
     {
         $instructors = Instructor::with('person')->get(); // Lista de programas
@@ -125,7 +125,7 @@ class ProgramanController extends Controller
     }
 
 
-        
+
 
 
     public function competenciesAdd_store(Request $request)
@@ -155,7 +155,7 @@ class ProgramanController extends Controller
     }
 
 
-    
+
 
 
 
@@ -329,7 +329,7 @@ class ProgramanController extends Controller
         ]);
     }
 
-  
+
 
 
     //metodo de agregar filtro de programaciones
@@ -954,6 +954,13 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Día registrado exitosamente.');
     }
     //agregar que una ves se programen las horas del instructor se le descuenten de las asignadas
+
+    public function day_delete($id)
+    {
+        $day = Days_training::findOrFail($id);
+        $day->delete();
+        return redirect()->back()->with('success', 'Día eliminado correctamente.');
+    }
 
 
 
