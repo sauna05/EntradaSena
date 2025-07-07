@@ -13,28 +13,28 @@ class TownSeeder extends Seeder
      */
     public function run(): void
     {
-        Town::create([
-            "name"=> "Fonseca"
-        ]);
+        $municipios = [
+            "Albania",
+            "Barrancas",
+            "Dibulla",
+            "Distracción",
+            "El Molino",
+            "Fonseca",
+            "Hatonuevo",
+            "La Jagua del Pilar",
+            "Maicao",
+            "Manaure",
+            "Riohacha", // Capital del departamento
+            "San Juan del Cesar",
+            "Uribia",
+            "Urumita",
+            "Villanueva"
+        ];
 
-        Town::create([
-            "name" => "Distracción"
-        ]);
-
-        Town::create([
-            "name" => "Barrancas"
-        ]);
-
-        Town::create([
-            "name" => "Hatonuevo"
-        ]);
-
-        Town::create([
-            "name" => "San Juan del Cesar"
-        ]);
-
-        Town::create([
-            "name" => "Riohacha"
-        ]);
+        foreach ($municipios as $municipio) {
+            Town::firstOrCreate([
+                "name" => $municipio
+            ]);
+        }
     }
 }

@@ -58,7 +58,7 @@ class EntranceAdminController extends Controller
 
 
     public function peopleShow($id){
-        
+
         $person = Person::with('days_available')->findOrFail($id);
 
         // $email = DbProgramacionPerson::where('document_number',$person->document_number)->pluck('email');
@@ -229,7 +229,7 @@ class EntranceAdminController extends Controller
         ]);
 
         $personToUpdate = Person::findOrFail($id);
-        
+
         $personToUpdate->update([
             'id_position' => $data['id_position'],
             'name' => $data['name'],
@@ -268,38 +268,38 @@ class EntranceAdminController extends Controller
         set_time_limit(600);
         ini_set('memory_limit', '2048M');
 
-        $id_position_apprentice_entrance= Position::where('name','Aprendiz')->first();
+        $id_position_apprentice_entrance = Position::where('name', 'Aprendiz')->first();
         $id_position_apprentice_programming = DbProgramacionPosition::where('name', 'Aprendiz')->first();
-        $id_status_apprentice = ApprenticeStatus::where('name','En Formacion')->first();
+        $id_status_apprentice = ApprenticeStatus::where('name', 'En Formacion')->first();
+
+        if (!$id_position_apprentice_entrance || !$id_position_apprentice_programming || !$id_status_apprentice) {
+            return response()->json(['success' => false, 'message' => 'Datos de configuración faltantes'], 400);
+        }
+
         $towns_dictionary = Town::pluck('id', 'name')
-            ->mapWithKeys(fn($id, $name) => [strtolower($name) => $id])
+            ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
             ->toArray();
 
         try {
             Log::info('Iniciando importación de personas...');
-            // Validación de columnas del excel
+
             $data = $request->validate([
                 'people' => 'required|array',
                 'people.*.NUMERO_DOCUMENTO' => 'required|max:13',
                 'people.*.NOMBRES' => 'nullable|string',
                 'people.*.APELLIDOS' => 'nullable|string',
                 'people.*.FECHA_INICIO' => 'nullable|date',
-                'people.*.FECHA_FINALIZACION' => 'nullable|date|after_or_equal:people.*.FECHA_INICIO',
+                'people.*.FECHA_FINALIZACION' => 'nullable|date',
                 'people.*.MUNICIPIO' => 'nullable|string',
                 'people.*.NUMERO_CELULAR' => 'nullable|string',
                 'people.*.CORREO' => 'nullable|string',
                 'people.*.DIRECCION' => 'nullable|string',
             ]);
 
-            Log::info('Total registros recibidos:', ['cantidad' => count($data['people'])]);
-
-            // Eliminar duplicados dentro del archivo Excel
             $people = collect($data['people'])->unique('NUMERO_DOCUMENTO')->values()->toArray();
-            Log::info('Personas únicas en el archivo:', ['cantidad' => count($people)]);
+            Log::info('Total registros únicos:', ['cantidad' => count($people)]);
 
-            // Obtener los documentos que ya están en la BD
             $documentosExistentes = Person::pluck('document_number')->flip();
-            Log::info('Total documentos en la BD:', ['cantidad' => count($documentosExistentes)]);
 
             $nuevosRegistros = 0;
             $errores = [];
@@ -308,57 +308,58 @@ class EntranceAdminController extends Controller
 
             foreach ($people as $row) {
                 try {
-                    $town_id = null;
-                    // Si el documento ya existe en db, lo ignoramos
-                    if (isset($documentosExistentes[$row['NUMERO_DOCUMENTO']])) {
-                        continue;
+                    $document = trim($row['NUMERO_DOCUMENTO']);
+
+                    if (isset($documentosExistentes[$document])) continue;
+
+                    // Validar fecha final >= fecha inicio
+                    $fecha_inicio = !empty($row['FECHA_INICIO']) ? new \DateTime($row['FECHA_INICIO']) : null;
+                    $fecha_fin = !empty($row['FECHA_FINALIZACION']) ? new \DateTime($row['FECHA_FINALIZACION']) : null;
+
+                    if ($fecha_inicio && $fecha_fin && $fecha_fin < $fecha_inicio) {
+                        throw new \Exception("La fecha de finalización no puede ser anterior a la de inicio.");
                     }
 
-                    // Crear persona em db_personas - people
+                    $nombre_completo = trim(($row['NOMBRES'] ?? '') . ' ' . ($row['APELLIDOS'] ?? ''));
+
                     $person = Person::create([
-                        'document_number' => $row['NUMERO_DOCUMENTO'],
+                        'document_number' => $document,
                         'id_position' => $id_position_apprentice_entrance->id,
-                        'name' => trim(($row['NOMBRES'] ?? '') . " " . ($row['APELLIDOS'] ?? '')),
-                        'start_date' => $row['FECHA_INICIO'] ?? null,
-                        'end_date' => $row['FECHA_FINALIZACION'] ?? null,
+                        'name' => $nombre_completo,
+                        'start_date' => $fecha_inicio ? $fecha_inicio->format('Y-m-d') : null,
+                        'end_date' => $fecha_fin ? $fecha_fin->format('Y-m-d') : null,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
 
-                    $days = [1,2,3,4,5];
-                    $person->days_available()->sync($days);
+                    $person->days_available()->sync([1, 2, 3, 4, 5]);
 
-                    // Crear usuario vinculado en db_personas
-                    User::create([
-                        'id_person' => $person->id,
-                        'user_name' => $person->document_number,
-                        'password' => bcrypt($person->document_number),
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-
-                    //Verificaion del municipio con un array de municipios(towns) creado arriba
-
-                    $town_name = strtolower($row['MUNICIPIO']);
-                    
-                    if(isset($towns_dictionary[$town_name])){
-                        $town_id = $towns_dictionary[$town_name];
+                    // Crear usuario solo si no existe
+                    if (!User::where('user_name', $document)->exists()) {
+                        User::create([
+                            'id_person' => $person->id,
+                            'user_name' => $document,
+                            'password' => bcrypt($document),
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
                     }
 
-                   $personProg = DbProgramacionPerson::create([
-                        'document_number' => $row['NUMERO_DOCUMENTO'],
+                    $town_name = strtolower(trim($row['MUNICIPIO'] ?? ''));
+                    $town_id = $towns_dictionary[$town_name] ?? null;
+
+                    $personProg = DbProgramacionPerson::create([
+                        'document_number' => $document,
                         'id_position' => $id_position_apprentice_programming->id,
-                        'name' => trim(($row['NOMBRES'] ?? '') . " " . ($row['APELLIDOS'] ?? '')),
-                        'address' => trim($row['CORREO'] ?? ''),
+                        'name' => $nombre_completo,
+                        'address' => trim($row['DIRECCION'] ?? ''),
                         'phone_number' => trim($row['NUMERO_CELULAR'] ?? ''),
-                        'id_town' => $town_id ?? null,
-                        'email' => trim($row['CORREO']),
+                        'id_town' => $town_id,
+                        'email' => trim($row['CORREO'] ?? ''),
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
 
-
-                    //Se registra en la tabla aprendices
                     Apprentice::create([
                         'id_person' => $personProg->id,
                         'id_status' => $id_status_apprentice->id,
@@ -366,21 +367,17 @@ class EntranceAdminController extends Controller
                         'updated_at' => now()
                     ]);
 
-
+                    $documentosExistentes[$document] = true;
                     $nuevosRegistros++;
-                    Log::info('Persona registrada:', ['document' => $person->document_number, 'name' => $person->name]);
 
-                    // Agregar el documento al array de existentes para evitar futuros duplicados
-                    $documentosExistentes[$row['NUMERO_DOCUMENTO']] = true;
+                    Log::info('Persona registrada correctamente', ['documento' => $document]);
                 } catch (\Exception $e) {
-                    // Guardar error sin detener el proceso
-                    $errores[] = ['document' => $row['NUMERO_DOCUMENTO'], 'error' => $e->getMessage()];
-                    Log::error('Error con el documento ' . $row['NUMERO_DOCUMENTO'] . ': ' . $e->getMessage());
+                    $errores[] = ['documento' => $row['NUMERO_DOCUMENTO'], 'error' => $e->getMessage()];
+                    Log::error('Error con documento ' . $row['NUMERO_DOCUMENTO'] . ': ' . $e->getMessage());
                 }
             }
 
             DB::commit();
-            Log::info('Importación finalizada.', ['total_registrados' => $nuevosRegistros, 'total_errores' => count($errores)]);
 
             return response()->json([
                 'success' => true,
@@ -390,7 +387,7 @@ class EntranceAdminController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error en la importación: ' . $e->getMessage());
+            Log::error('Error general en la importación: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error en la importación',
@@ -398,5 +395,4 @@ class EntranceAdminController extends Controller
             ], 500);
         }
     }
-
 }

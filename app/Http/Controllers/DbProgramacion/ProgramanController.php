@@ -793,6 +793,8 @@ class ProgramanController extends Controller
 
         return redirect()->back()->with('error', 'Esta programación no puede ser evaluada.');
     }
+    //metodo para registrar un nuevo ambiente
+
 
     public function classroom_store(Request $request)
     {
@@ -811,8 +813,44 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Ambiente registrado correctamente.');
     }
 
+    public function deleteClassroom($id){
+
+        //ELOQUENT ORM
+        $ambiente_eliminar=Classroom::findOrfail($id);
+        $ambiente_eliminar->delete();
+
+        return redirect()->back()->with('success','Ambiente eliminado correctamente');
+
+    }
+
+    //metido para editar ambiente
+    public function classroom_update(Request $request, $id)
+    {
+        $request->validate([
+            'id_town' => 'required|exists:db_programacion.towns,id',
+            'id_block' => 'required|exists:db_programacion.blocks,id',
+            'name' => 'required|string|max:255',
+        ]);
+
+        $classroom = Classroom::findOrFail($id);
+
+        $classroom->update([
+            'id_town' => $request->id_town,
+            'id_block' => $request->id_block,
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back() // Ajusta esta ruta
+            ->with('success', 'Ambiente actualizado correctamente.');
+    }
 
 
+
+
+
+
+
+    //metodo para visualizar el estado de horario de los ambientes disponibles no disponibles  y demas
     public function index_classroom()
     {
         $municipios=Town::all();

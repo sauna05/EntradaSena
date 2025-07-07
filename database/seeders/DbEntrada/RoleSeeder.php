@@ -149,6 +149,8 @@ class RoleSeeder extends Seeder
         //permiso para eliminar dia calendario
         Permission::create(['name' => 'programing.unrecorded_days_delete'])->assignRole($role10, $role2);
 
-
+        //permiso para eliminar ambiene
+        Permission::create(['name' => 'programing.ambiente_delete'])->assignRole($role10, $role2);
+        Permission::create(['name' => 'programing.ambiente_update'])->assignRole($role10, $role2);
     }
 }

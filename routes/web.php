@@ -249,4 +249,12 @@ Route::delete('programming/admin/days_not_programming_delete/{id}', [ProgramanCo
     ->middleware('can:programing.unrecorded_days_delete')
     ->name('programing.unrecorded_days_delete');
 
+//metodo para eliminar ambiente programing.ambiente_delete programing.ambiente_update
+Route::delete('programming/admin/classroom_delete/{id}', [ProgramanController::class, 'deleteClassroom'])
+    ->middleware('can:programing.ambiente_delete')
+    ->name('programing.ambiente_delete');
     
+//ruta para editar ambiente
+Route::put('programming/admin/classroom_update/{id}', [ProgramanController::class, 'classroom_update'])
+    ->middleware('can:programing.ambiente_update')
+    ->name('programing.ambiente_update');
