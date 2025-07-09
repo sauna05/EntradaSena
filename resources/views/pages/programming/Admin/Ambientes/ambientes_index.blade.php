@@ -1,5 +1,6 @@
 <x-layout>
     <x-slot:title>Gestión de Ambientes</x-slot:title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .alert-success{
@@ -300,6 +301,15 @@
         }
 
         function openEditModal(id, name, id_town, id_block) {
+            // Verificar si el ambiente tiene programación
+            const filaAmbiente = document.querySelector(`.ambiente-${id}`);
+            const tieneProgramacion = filaAmbiente.querySelector('.badge.bg-danger') !== null;
+
+            if (tieneProgramacion) {
+                alert('No se puede editar este ambiente porque tiene horarios asignados. Primero elimine las programaciones asociadas.');
+                return;
+            }
+
             // Configurar el formulario de edición
             document.getElementById('editForm').action = `/programming/admin/classroom_update/${id}`;
             document.getElementById('edit_name').value = name;
@@ -309,6 +319,26 @@
             // Mostrar el modal de edición
             document.getElementById('modalEditarAmbiente').style.display = 'block';
         }
+        // Modificar el evento de eliminación para verificar programación
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const form = this.closest('form');
+                const id = form.action.split('/').pop();
+                const filaAmbiente = document.querySelector(`.ambiente-${id}`);
+                const tieneProgramacion = filaAmbiente.querySelector('.badge.bg-danger') !== null;
+
+                if (tieneProgramacion) {
+                    e.preventDefault();
+                    alert('No se puede eliminar este ambiente porque tiene horarios asignados. Primero elimine las programaciones asociadas.');
+                    return false;
+                }
+
+                if (!confirm('¿Estás seguro de eliminar este Ambiente? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
 
         function closeModal() {
             document.getElementById('modalRegistroAmbiente').style.display = 'none';
