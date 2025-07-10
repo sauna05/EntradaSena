@@ -336,18 +336,34 @@
                             <i class="fa-solid fa-calendar-alt"></i> Programación
                         </a>
                         <ul>
-                            <li><a href="{{ route('programming.programming_index_states') }}"><i class="fa-solid fa-table-list"></i> Programaciones</a></li>
+                            <li>
+                                <a href="{{ route('programming.programming_index_states') }}">
+                                    <i class="fa-solid fa-chart-line"></i> Estado Competencias
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('programmig.programaciones_index') }}">
+                                    <i class="fa-solid fa-table-list"></i> Programaciones
+                                </a>
+                            </li>
                             <li>
                                 <a href="{{ route('programming.register_programming_instructor_index') }}">
-                                  <i class="fa-solid fa-calendar"></i>
-                                  <i class="fa-solid fa-clock"></i> Programar Curso
+                                    <i class="fa-solid fa-calendar-plus"></i> Programar Curso
                                 </a>
-                              </li>
-
-                            <li><a href="{{ route('programming.programming_update_index') }}"><i class="fa-solid fa-plus-circle"></i> Registrar Programacion</a></li>
-                            <li><a href="{{route('programing.unrecorded_days_index')}}"><i class="fa-solid fa-calendar-days"></i> Ver Calendario</a></li>
+                            </li>
+                            <li>
+                                <a href="{{ route('programming.programming_update_index') }}">
+                                    <i class="fa-solid fa-pen-to-square"></i> Registrar Programación
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('programing.unrecorded_days_index') }}">
+                                    <i class="fa-solid fa-calendar-days"></i> Ver Calendario
+                                </a>
+                            </li>
                         </ul>
                     </li>
+
                     <li>
                         <a class="menu-toggle">
                             <i class="fa-solid fa-cubes"></i> Competencias
@@ -383,7 +399,7 @@
                         <ul>
                             <li><a href="{{ route('programing.cohort_index') }}"><i class="fa-solid fa-file-lines"></i> Gestión de Fichas</a></li>
                             <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Agregar Aprendiz a Ficha</a></li>
-                      
+
                         </ul>
                     </li>
                     <li>

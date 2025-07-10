@@ -3,29 +3,29 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        .alert-success{
-         width: 100%;
-        background-color: #d4edda;
-        color: #155724;
-        padding: 10px;
-        margin-bottom: 20px;
-        border-radius: 4px;
-        border: 1px solid #c3e6cb;
-    }
-    .alert-danger {
-        width: 100%;
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 10px;
-        margin-bottom: 20px;
-        border-radius: 4px;
-        border: 1px solid #f5c6cb;
-    }
-        .error-message {
-        color: #dc3545;
-        font-size: 0.875em;
-        margin-top: 5px;
-    }
+            .alert-success{
+            width: 100%;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            width: 100%;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+        }
+            .error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
         .container {
             max-width: 1000px;
             margin: 30px auto;
@@ -104,6 +104,16 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .table-wrapper {
+            max-height: 450px;
+            overflow-y: auto;
+            margin-top: 25px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+        }
+
+
+
     </style>
 
     <div class="container">
@@ -137,8 +147,9 @@
                 @endfor
             </select>
             <button onclick="openModal('create')" style="margin-bottom: 20px; padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            + Registrar Nuevo Ambiente
-        </button>
+                <i class="fas fa-plus"></i> Registrar
+            </button>
+
         </div>
 
         <!-- Modal para Crear -->
@@ -212,85 +223,88 @@
             </div>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Ambiente</th>
-                    <th>Rango</th>
-                    <th>Programación</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($ambientes as $ambiente)
-                <tr class="row-ambiente ambiente-{{ $ambiente->id }}">
-                    <td><strong>{{ $ambiente->name }}</strong></td>
-                    <td>
-                        @if($ambiente->rango_fechas)
-                            {{ \Carbon\Carbon::parse($ambiente->rango_fechas['inicio'])->format('d/m/Y') }} -
-                            {{ \Carbon\Carbon::parse($ambiente->rango_fechas['fin'])->format('d/m/Y') }}
-                        @else
-                            <span class="text-muted">Sin programación</span>
-                        @endif
-                    </td>
-                    <td>
-                        @php
-                            $programados = collect($ambiente->horas_programadas)->groupBy('fecha');
-                            $disponibles = collect($ambiente->horas_disponibles)->keyBy('fecha');
-                        @endphp
+        <div class="table-wrapper">
 
-                        @forelse($programados as $fecha => $bloques)
-                            <div class="bloque-fecha" data-mes="{{ \Carbon\Carbon::parse($fecha)->format('m') }}">
-                                <div class="bg-light">
-                                    <strong>{{ \Carbon\Carbon::parse($fecha)->translatedFormat('l d/m/Y') }}</strong>
-                                </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ambiente</th>
+                        <th>Rango</th>
+                        <th>Programación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($ambientes as $ambiente)
+                    <tr class="row-ambiente ambiente-{{ $ambiente->id }}">
+                        <td><strong>{{ $ambiente->name }}</strong></td>
+                        <td>
+                            @if($ambiente->rango_fechas)
+                                {{ \Carbon\Carbon::parse($ambiente->rango_fechas['inicio'])->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::parse($ambiente->rango_fechas['fin'])->format('d/m/Y') }}
+                            @else
+                                <span class="text-muted">Sin programación</span>
+                            @endif
+                        </td>
+                        <td>
+                            @php
+                                $programados = collect($ambiente->horas_programadas)->groupBy('fecha');
+                                $disponibles = collect($ambiente->horas_disponibles)->keyBy('fecha');
+                            @endphp
 
-                                <div>
-                                    @foreach($bloques as $b)
-                                        <div style="margin-bottom: 5px;">
-                                            <span class="badge bg-danger">
-                                                {{ substr($b['start'],0,5) }} - {{ substr($b['end'],0,5) }}
-                                            </span>
-                                            @if(isset($b['instructor']))
-                                                <div style="font-size: 0.8rem; margin-top: 2px;">
-                                                    Instructor: {{ $b['instructor'] }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <div>
-                                    @if($disponibles->has($fecha))
-                                        @foreach($disponibles[$fecha]['disponibles'] as $d)
-                                            <span class="badge bg-success">{{ substr($d['start'],0,5) }} - {{ substr($d['end'],0,5) }}</span>
+                            @forelse($programados as $fecha => $bloques)
+                                <div class="bloque-fecha" data-mes="{{ \Carbon\Carbon::parse($fecha)->format('m') }}">
+                                    <div class="bg-light">
+                                        <strong>{{ \Carbon\Carbon::parse($fecha)->translatedFormat('l d/m/Y') }}</strong>
+                                    </div>
+
+                                    <div>
+                                        @foreach($bloques as $b)
+                                            <div style="margin-bottom: 5px;">
+                                                <span class="badge bg-danger">
+                                                    {{ substr($b['start'],0,5) }} - {{ substr($b['end'],0,5) }}
+                                                </span>
+                                                @if(isset($b['instructor']))
+                                                    <div style="font-size: 0.8rem; margin-top: 2px;">
+                                                        Instructor: {{ $b['instructor'] }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                         @endforeach
-                                    @else
-                                        <span class="text-muted">No hay horas libres</span>
-                                    @endif
+                                    </div>
+                                    <div>
+                                        @if($disponibles->has($fecha))
+                                            @foreach($disponibles[$fecha]['disponibles'] as $d)
+                                                <span class="badge bg-success">{{ substr($d['start'],0,5) }} - {{ substr($d['end'],0,5) }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="text-muted">No hay horas libres</span>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                        @empty
-                            <span class="text-muted">Sin programación</span>
-                        @endforelse
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-edit" onclick="openEditModal({{ $ambiente->id }}, '{{ $ambiente->name }}', {{ $ambiente->id_town }}, {{ $ambiente->id_block }})">
-                                <i class="fas fa-edit btn-icon"></i> Editar
-                            </button>
-                            <form action="{{ route('programing.ambiente_delete', $ambiente->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este Ambiente?')">
-                                    <i class="fas fa-trash-alt btn-icon"></i> Eliminar
+                            @empty
+                                <span class="text-muted">Sin programación</span>
+                            @endforelse
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit" onclick="openEditModal({{ $ambiente->id }}, '{{ $ambiente->name }}', {{ $ambiente->id_town }}, {{ $ambiente->id_block }})">
+                                    <i class="fas fa-edit btn-icon"></i> Editar
                                 </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                                <form action="{{ route('programing.ambiente_delete', $ambiente->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este Ambiente?')">
+                                        <i class="fas fa-trash-alt btn-icon"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>

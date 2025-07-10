@@ -152,5 +152,10 @@ class RoleSeeder extends Seeder
         //permiso para eliminar ambiene
         Permission::create(['name' => 'programing.ambiente_delete'])->assignRole($role10, $role2);
         Permission::create(['name' => 'programing.ambiente_update'])->assignRole($role10, $role2);
+
+        //vista pra reprogramar y registrar
+        Permission::create(['name' => 'programaciones_index'])->assignRole($role10, $role2);
+        Permission::create(['name' => 'programaciones_store'])->assignRole($role10, $role2);
+
     }
 }

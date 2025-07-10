@@ -3,139 +3,52 @@
 namespace Database\Seeders\DbProgramacion;
 
 use App\Models\DbProgramacion\Person;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PersonSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //rol Cordinador
-        Person::create([
-            'id_position' => 1,
-            'id_town' => 1,
-            'document_number' => '1111111111',
-            'name' => 'Marlon Saenz',
-            'email' => 'Marlonsaenz@gmail.com',
-            'address' => 'Calle 20#32-43',
-            'phone_number' => '300123123',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        // 10 personas iniciales (coordinador, aprendices e instructores)
+        $people = [
+            [1, 1, '1111111111', 'Marlon Saenz', 'Marlonsaenz@gmail.com', 'Calle 20#32-43', '300123123'],
+            [3, 3, '3333333333', 'Carlos Perez', 'carlos.perez@example.com', 'Avenida 5#45-67', '3203334444'],
+            [3, 2, '4444444444', 'Lucia Fernandez', 'lucia.fernandez@example.com', 'Calle 8#23-56', '3004445555'],
+            [3, 1, '5555555555', 'Miguel Angel Ruiz', 'miguel.ruiz@example.com', 'Carrera 15#10-20', '3015556666'],
+            [3, 5, '6666666666', 'Paula Andrea Soto', 'paula.soto@example.com', 'Calle 21#54-32', '3026667777'],
+            [3, 3, '7777777777', 'Juan Camilo Vargas', 'juan.vargas@example.com', 'Avenida 7#11-22', '3037778888'],
+            [4, 4, '8888888888', 'Sara Juliana Lopez', 'sara.lopez@example.com', 'Calle 16#30-40', '3048889999'],
+            [4, 2, '9999999999', 'David Esteban Castro', 'david.castro@example.com', 'Carrera 25#15-60', '3059990000'],
+            [4, 1, '1010101010', 'Valentina Rios', 'valentina.rios@example.com', 'Calle 3#9-87', '3061010101'],
+            [4, 5, '1212121212', 'Sebastian Gomez', 'sebastian.gomez@example.com', 'Avenida 12#34-56', '3071212121'],
+        ];
 
-        //estos seran con rol Aprendiz
+        // 40 personas adicionales (IDs de documento únicos a partir de 1313131313)
+        for ($i = 0; $i < 40; $i++) {
+            $id_position = [1, 3, 4][array_rand([1, 3, 4])];
+            $id_town = rand(1, 5);
+            $doc_number = strval(1313131313 + $i);
+            $name = "Persona " . ($i + 11);
+            $email = "persona" . ($i + 11) . "@example.com";
+            $address = "Calle " . rand(1, 50) . "#" . rand(10, 99) . "-" . rand(10, 99);
+            $phone = '3' . rand(100000000, 999999999);
 
-        Person::create([
-            'id_position' => 3,
-            'id_town' => 3,
-            'document_number' => '3333333333',
-            'name' => 'Carlos Perez',
-            'email' => 'carlos.perez@example.com',
-            'address' => 'Avenida 5#45-67',
-            'phone_number' => '3203334444',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+            $people[] = [$id_position, $id_town, $doc_number, $name, $email, $address, $phone];
+        }
 
-        Person::create([
-            'id_position' => 3,
-            'id_town' => 2,
-            'document_number' => '4444444444',
-            'name' => 'Lucia Fernandez',
-            'email' => 'lucia.fernandez@example.com',
-            'address' => 'Calle 8#23-56',
-            'phone_number' => '3004445555',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Person::create([
-            'id_position' => 3,
-            'id_town' => 1,
-            'document_number' => '5555555555',
-            'name' => 'Miguel Angel Ruiz',
-            'email' => 'miguel.ruiz@example.com',
-            'address' => 'Carrera 15#10-20',
-            'phone_number' => '3015556666',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Person::create([
-            'id_position' => 3,
-            'id_town' => 5,
-            'document_number' => '6666666666',
-            'name' => 'Paula Andrea Soto',
-            'email' => 'paula.soto@example.com',
-            'address' => 'Calle 21#54-32',
-            'phone_number' => '3026667777',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Person::create([
-            'id_position' => 3,
-            'id_town' => 3,
-            'document_number' => '7777777777',
-            'name' => 'Juan Camilo Vargas',
-            'email' => 'juan.vargas@example.com',
-            'address' => 'Avenida 7#11-22',
-            'phone_number' => '3037778888',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        //estos seran con rol instructor
-        Person::create([
-            'id_position' => 4,
-            'id_town' => 4,
-            'document_number' => '8888888888',
-            'name' => 'Sara Juliana Lopez',
-            'email' => 'sara.lopez@example.com',
-            'address' => 'Calle 16#30-40',
-            'phone_number' => '3048889999',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Person::create([
-            'id_position' => 4,
-            'id_town' => 2,
-            'document_number' => '9999999999',
-            'name' => 'David Esteban Castro',
-            'email' => 'david.castro@example.com',
-            'address' => 'Carrera 25#15-60',
-            'phone_number' => '3059990000',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Person::create([
-            'id_position' => 4,
-            'id_town' => 1,
-            'document_number' => '1010101010',
-            'name' => 'Valentina Rios',
-            'email' => 'valentina.rios@example.com',
-            'address' => 'Calle 3#9-87',
-            'phone_number' => '3061010101',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Person::create([
-            'id_position' => 4,
-            'id_town' => 5,
-            'document_number' => '1212121212',
-            'name' => 'Sebastian Gomez',
-            'email' => 'sebastian.gomez@example.com',
-            'address' => 'Avenida 12#34-56',
-            'phone_number' => '3071212121',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        
+        // Crear todos los registros
+        foreach ($people as $person) {
+            Person::create([
+                'id_position' => $person[0],
+                'id_town' => $person[1],
+                'document_number' => $person[2],
+                'name' => $person[3],
+                'email' => $person[4],
+                'address' => $person[5],
+                'phone_number' => $person[6],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }

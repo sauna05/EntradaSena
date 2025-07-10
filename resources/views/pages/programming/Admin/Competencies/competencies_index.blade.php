@@ -2,16 +2,19 @@
     <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Listado de Competencias</x-slot:title>
 
-
     <style>
-        .container {
-            max-width: 900%; /* ancho limitado */
-            margin: 40px auto;
-            padding: 20px;
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -23,7 +26,7 @@
         }
 
         .btn-primary {
-            background-color: #6c757d; /* gris oscuro */
+            background-color: #6c757d;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -33,25 +36,31 @@
             transition: background-color 0.3s ease;
             display: block;
             margin: 0 auto 25px auto;
-            width: 200px;
+            width: 220px;
             text-align: center;
             user-select: none;
         }
 
         .btn-primary:hover {
-            background-color: #5a6268; /* gris más oscuro al hover */
+            background-color: #5a6268;
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 0 auto;
+            width: 95%;
+            
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
         }
 
         table {
-            width: 90%; /* menos ancho para no ocupar todo */
-            margin: 0 auto;
+            width: 100%;
             border-collapse: collapse;
             font-size: 15px;
             color: #444;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #f8f9fa;
         }
 
         table th, table td {
@@ -64,23 +73,34 @@
             background-color: #e9ecef;
             font-weight: 700;
             color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
 
         table tr:last-child td {
             border-bottom: none;
         }
 
-        /* Mensaje éxito */
+        .alert-success,
+        .alert-danger {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
         .alert-success {
-            max-width: 900px;
-            margin: 20px auto;
             background-color: #d4edda;
             color: #155724;
-            padding: 12px 20px;
-            border-radius: 6px;
-            box-shadow: 0 0 8px rgba(21, 87, 36, 0.2);
-            font-weight: 600;
-            font-size: 14px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
         /* Modal */
@@ -108,7 +128,6 @@
             max-width: 450px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             position: relative;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .close {
@@ -146,14 +165,8 @@
             margin-bottom: 8px;
             color: #555;
         }
-        .form-group select{
-             padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-            transition: border-color 0.3s ease;
-        }
 
+        .form-group select,
         .form-group input {
             padding: 10px 14px;
             border-radius: 8px;
@@ -162,7 +175,8 @@
             transition: border-color 0.3s ease;
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #6c757d;
             box-shadow: 0 0 5px rgba(108, 117, 125, 0.5);
@@ -186,9 +200,16 @@
         }
     </style>
 
-    @if(session('success'))
-        <div class="alert-success">
+    {{-- Mensajes de sesión --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+            {{ session('error') }}
         </div>
     @endif
 
@@ -200,32 +221,34 @@
         </button>
 
         <!-- Tabla de Competencias -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Duración (horas)</th>
-                    <th>Fecha de Registro</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($competencies as $competence)
+        <div class="table-container">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $competence->id }}</td>
-                        <td>{{ $competence->name }}</td>
-                        <td>{{ $competence->duration_hours }} hr </td>
-                        <td>{{ $competence->created_at->format('d/m/Y') }}</td>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Duración (horas)</th>
+                        <th>Fecha de Registro</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
-                            No hay competencias registradas.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($competencies as $competence)
+                        <tr>
+                            <td>{{ $competence->id }}</td>
+                            <td>{{ $competence->name }}</td>
+                            <td>{{ $competence->duration_hours }} hr</td>
+                            <td>{{ $competence->created_at->format('d/m/Y') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
+                                No hay competencias registradas.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal para Registrar Competencia -->
@@ -237,17 +260,17 @@
             <form method="POST" action="{{ route('programing.competencies_store') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="">Especialidad</label>
-                    <select name="speciality_id" id="">
-                        <option value="">selecione especialidad</option>
-                        @forelse ($especialidad as $espe )
-                            <option value="{{ $espe->id }}">{{$espe->name}} </option>
+                    <label for="speciality_id">Especialidad</label>
+                    <select name="speciality_id" id="speciality_id" required>
+                        <option value="">Seleccione especialidad</option>
+                        @forelse ($especialidad as $espe)
+                            <option value="{{ $espe->id }}">{{ $espe->name }}</option>
                         @empty
-
+                            <option value="">No hay especialidades</option>
                         @endforelse
                     </select>
-
                 </div>
+
                 <div class="form-group">
                     <label for="name">Nombre de la competencia</label>
                     <input type="text" id="name" name="name" required>
@@ -274,6 +297,4 @@
             }
         }
     </script>
-
 </x-layout>
-

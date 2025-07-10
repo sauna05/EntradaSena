@@ -180,12 +180,19 @@ Route::get('programming/admin/instructor_programming_index', [ProgramanControlle
 Route::get('programming/admin/programmig_programming_index', [ProgramanController::class, 'programming_index'])
     ->middleware('can:programing.programming_index_states')->name('programming.programming_index_states');
 
-//ruta para registrar programacion
+//ruta para registrar programacion nueva
 
 Route::post('programming/admin/programmig_programming_store', [ProgramanController::class, 'register_programmig']) //register_programming
     ->middleware('can:programing.register_programming_instructor_store')->name('programming.register_programming_instructor_store');
 
-
+    //ruta para programar competencia disponible
+Route::get('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'programming_index_edit'])
+    ->middleware('can:programaciones_index')
+    ->name('programmig.reprogramming_index');
+//ruta para listar programaciones normales
+Route::get('programming/admin/programming_index', [ProgramanController::class, 'programaciones_index'])
+    ->middleware('can:programmig.programming_update_store')
+    ->name('programmig.programaciones_index');
 
 //ruta para retornar la vista de programaciones y sus estado ok o sin registrar
 Route::get('programming/admin/programmig_update_index', [ProgramanController::class, 'programming_update_index'])
@@ -215,13 +222,7 @@ Route::get('programming/admin/Ambientes_classrom_index', [ProgramanController::c
 // Permission::create(['name' => 'programmig.programming_update_store'])->syncRoles([$role10, $role5]);
 
 
-Route::get('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'programming_index_edit'])
-    ->middleware('can:programmig.programming_update_index')
-    ->name('programmig.programming_update_index');
 
-Route::put('programming/admin/programming_instructor_update/{id}', [ProgramanController::class, 'updateProgramming'])
-    ->middleware('can:programmig.programming_update_store')
-    ->name('programmig.programming_update_store');
 
 //ruta para actualizar a competencia evaluda
 Route::put('programming/admin/evaluate/{id}', [ProgramanController::class, 'evaluateProgramming'])
@@ -253,7 +254,7 @@ Route::delete('programming/admin/days_not_programming_delete/{id}', [ProgramanCo
 Route::delete('programming/admin/classroom_delete/{id}', [ProgramanController::class, 'deleteClassroom'])
     ->middleware('can:programing.ambiente_delete')
     ->name('programing.ambiente_delete');
-    
+
 //ruta para editar ambiente
 Route::put('programming/admin/classroom_update/{id}', [ProgramanController::class, 'classroom_update'])
     ->middleware('can:programing.ambiente_update')

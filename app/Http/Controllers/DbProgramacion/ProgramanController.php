@@ -307,7 +307,7 @@ class ProgramanController extends Controller
         foreach ($instructores as $instructor) {
             // Sumar las horas programadas en estados activos
             $horasProgramadas = $instructor->programming
-                ->whereIn('status', ['pendiente', 'en_ejecucion'])
+                ->whereIn('status', ['pendiente', 'en_ejecucion','finalizada_evaluada'])
                 ->sum('hours_duration'); // Se deben contar las horas reales (no las diarias)
 
             // Calcular horas restantes
@@ -319,20 +319,68 @@ class ProgramanController extends Controller
     }
 
 
-    public function registerProgramming_index()
+
+    //metodo que lista solo programaciones en estado pendiente y en ejecucion y finalizada no evaluda
+
+    public function programaciones_index()
     {
-        return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
-            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
-            'cohorts' => Cohort::with('program')->get(),
-            'ambientes' => Classroom::with('towns')->get(),
-            'competencias' => Competencies::all(), // Pasa todas las competencias
-        ]);
+        try {
+            $programaciones = Programming::with([
+                'instructor.person',
+                'cohort.program',
+                'competencie',
+                'classroom',
+                'days'
+            ])->get();
+
+            $now = Carbon::now();
+
+            foreach ($programaciones as $prog) {
+                $startDate = Carbon::parse($prog->start_date);
+                $endDate = Carbon::parse($prog->end_date);
+
+                if ($now->lt($startDate)) {
+                    $prog->status = 'pendiente';
+                } elseif ($now->between($startDate, $endDate)) {
+                    $prog->status = 'en_ejecucion';
+                } else {
+                    $prog->status = $prog->evaluated
+                        ? 'finalizada_evaluada'
+                        : 'finalizada_no_evaluada';
+                }
+
+                if ($prog->isDirty('status')) {
+                    $prog->save();
+                }
+            }
+
+            // 🔥 Obtener las últimas programaciones por competencia
+            $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
+                ->groupBy('id_competencie')
+                ->pluck('id')
+                ->toArray();
+
+            // ❗Filtrar solo programaciones en los estados deseados
+            $programaciones = $programaciones->filter(function ($prog) {
+                return in_array($prog->status, ['pendiente', 'en_ejecucion', 'finalizada_no_evaluada']);
+            });
+
+            return view(
+                'pages.programming.Admin.programming_instructor.programming_index',
+                compact('programaciones', 'ultimasProgramaciones')
+            );
+        } catch (Exception $ex) {
+            return redirect()->back()
+                ->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
+        }
     }
 
 
 
 
-    //metodo de agregar filtro de programaciones
+
+
+    //metodo de agregar filtro de programaciones estado por competencia
 
     public function programming_index()
     {
@@ -367,15 +415,22 @@ class ProgramanController extends Controller
                 }
             }
 
+            // 🔥 Obtener las últimas programaciones por competencia
+            $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
+                ->groupBy('id_competencie')
+                ->pluck('id')
+                ->toArray();
+
             return view(
                 'pages.programming.Admin.programming_instructor.programming_programming_index',
-                compact('programaciones')
+                compact('programaciones', 'ultimasProgramaciones')
             );
         } catch (Exception $ex) {
             return redirect()->back()
                 ->with('error', 'Error al listar las programaciones: ' . $ex->getMessage());
         }
     }
+
 
 
     //metodo para la vista de retornar la vista de programaciones con su estado deregistro
@@ -445,8 +500,12 @@ class ProgramanController extends Controller
                                 ->where('end_date', '>=', $validated['fecha_fin']);
                         });
                 })
+                ->when($request->has('id_programacion_anterior'), function ($query) use ($request) {
+                    $query->where('id', '!=', $request->id_programacion_anterior);
+                })
                 ->with('days')
                 ->get();
+
 
             foreach ($programacionesAmbiente as $programacion) {
                 $diasProgramados = $programacion->days->pluck('name')->toArray();
@@ -573,32 +632,40 @@ class ProgramanController extends Controller
         }
     }
 
+    // Vista para registrar nuevo
+    public function registerProgramming_index()
+    {
+        return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
+            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
+            'cohorts' => Cohort::with('program')->get(),
+            'ambientes' => Classroom::with('towns')->get(),
+            'competencias' => Competencies::all(),
+            'modo' => 'nuevo'
+        ]);
+    }
+
+    // Vista para reprogramar
     public function programming_index_edit($id)
     {
         $programacion = Programming::with([
-            'instructor.person', // Si Instructor tiene una relación con Person
-            'cohort.program',    // Si Cohort tiene una relación con Program
-            'classroom.towns',   // Si Classroom tiene una relación con Towns
-            'competencie',       // Si Competencie es la relación directa
-            'days'               // Para los días asociados a esta programación
+            'instructor.person',
+            'cohort.program',
+            'classroom.towns',
+            'competencie',
+            'days'
         ])->findOrFail($id);
 
-        // Datos para los dropdowns/selects del formulario
-        $instructors = Instructor::with(['person', 'competencies', 'speciality'])->get();
-        $cohorts = Cohort::with('program')->get();
-        $ambientes = Classroom::with('towns')->get();
-        $competencias = Competencies::all();
-        $allDays = Day::all(); // Si tienes una tabla de todos los días de la semana
-
-        return view('pages.programming.Admin.programming_instructor.programming_instructor_update', [
-            'programacion' => $programacion, // Pasa la programación encontrada a la vista
-            'instructors' => $instructors,
-            'cohorts' => $cohorts,
-            'ambientes' => $ambientes,
-            'competencias' => $competencias,
-            'allDays' => $allDays, // Pasa todos los días para el checkbox/selector
+        return view('pages.programming.Admin.programming_instructor.instructor_reprogramming', [
+            'programacion' => $programacion,
+            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
+            'cohorts' => Cohort::with('program')->get(),
+            'ambientes' => Classroom::with('towns')->get(),
+            'competencias' => Competencies::all(),
+            'allDays' => Day::all(),
+            'modo' => 'reprogramar'
         ]);
     }
+
 
 
 
@@ -734,7 +801,7 @@ class ProgramanController extends Controller
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
             'scheduled_hours' => $horasPorDia,
-            'hours_duration' => $totalHoras,
+            'hours_duration' => $horasAnteriores + $totalHoras,
             'status' => 'pendiente',
             'statu_programming' => 'sin_registrar',
             'evaluated' => false,

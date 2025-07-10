@@ -212,7 +212,7 @@
     </style>
 
     <div class="container">
-        <h1 class="h1">Competencias Programadas</h1>
+        <h1 class="h1">Programaciones</h1>
 
         @if(session('error'))
             <div class="alert alert-danger">
@@ -238,9 +238,9 @@
                     <option value="">Todos los estados</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="en_ejecucion">En ejecución</option>
-                    <option value="finalizada_evaluada">Finalizada (Evaluada)</option>
+                    
                     <option value="finalizada_no_evaluada">Finalizada (Pendiente evaluación)</option>
-                  
+
                 </select>
             </div>
 
@@ -288,7 +288,7 @@
                             <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
                             <td>
                                 {{ $programacion->competencie->name ?? 'N/A' }}
-                                @if($programacion->status === 'finalizada_evaluada' && in_array($programacion->id, $ultimasProgramaciones))
+                                @if($programacion->status === 'finalizada_evaluada')
                                     <span class="disponible-badge" title="Esta competencia está disponible para reprogramación">
                                         (Disponible)
                                     </span>
@@ -355,7 +355,7 @@
                                 @elseif ($programacion->status === 'finalizada_evaluada')
                                     @if (in_array($programacion->id, $ultimasProgramaciones))
                                         {{-- ✅ Solo la última programación de la competencia puede reprogramarse --}}
-                                        <form action="{{ route('programmig.reprogramming_index', $programacion->id) }}" method="GET" onsubmit="return confirm('¿Está seguro que desea reprogramar?')">
+                                        <form action="{{ route('programmig.programming_update_index', $programacion->id) }}" method="GET" onsubmit="return confirm('¿Está seguro que desea reprogramar?')">
                                             @csrf
                                             <button type="submit" class="btn-reprogramar" style="cursor: pointer">
                                                 <i class="fas fa-calendar-alt"></i> Reprogramar
