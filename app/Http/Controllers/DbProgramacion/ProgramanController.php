@@ -467,6 +467,17 @@ class ProgramanController extends Controller
 
 
 
+    // Vista para registrar nuevo
+    public function registerProgramming_index()
+    {
+        return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
+            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
+            'cohorts' => Cohort::with('program')->get(),
+            'ambientes' => Classroom::with('towns')->get(),
+            'competencias' => Competencies::all(),
+            'modo' => 'nuevo'
+        ]);
+    }
 
     //metodo para registrar programacion
 
@@ -632,19 +643,8 @@ class ProgramanController extends Controller
         }
     }
 
-    // Vista para registrar nuevo
-    public function registerProgramming_index()
-    {
-        return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
-            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
-            'cohorts' => Cohort::with('program')->get(),
-            'ambientes' => Classroom::with('towns')->get(),
-            'competencias' => Competencies::all(),
-            'modo' => 'nuevo'
-        ]);
-    }
 
-    // Vista para reprogramar
+
     public function programming_index_edit($id)
     {
         $programacion = Programming::with([
@@ -660,11 +660,15 @@ class ProgramanController extends Controller
             'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
             'cohorts' => Cohort::with('program')->get(),
             'ambientes' => Classroom::with('towns')->get(),
-            'competencias' => Competencies::all(),
+
+            // 👇 Solo pasa la competencia vinculada, envuelta en una colección
+            'competencias' => collect([$programacion->competencie]),
+
             'allDays' => Day::all(),
             'modo' => 'reprogramar'
         ]);
     }
+
 
 
 

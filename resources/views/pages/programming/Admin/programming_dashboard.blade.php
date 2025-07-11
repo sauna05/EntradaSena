@@ -7,7 +7,7 @@
             font-family: 'Segoe UI', sans-serif;
             background-color: #f4f4f4;
         }
-  
+
         .container {
             width: 100%;
             margin: 0 auto;
@@ -16,35 +16,35 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-  
+
         .h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #333;
         }
-  
+
         .table-responsive {
             overflow-x: auto;
         }
-  
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-  
+
         th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-  
+
         th {
             background-color: #f8f9fa;
             color: #495057;
             font-weight: 600;
         }
-  
+
         tr:hover {
             background-color: #f8f9fa;
         }
@@ -231,7 +231,7 @@
             <a href="#" onclick="openModal()" class="submit-btn">Registrar Programa</a>
 
             <!-- Tabla de programas -->
-            <div class="table-responsive">
+            <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
                 <h4>Programas Disponibles</h4>
                 <table class="table table-bordered">
                     <thead>
@@ -241,7 +241,7 @@
                             <th>Versión</th>
                             <th>Nivel</th>
                             <th>Instructor A cargo</th>
-                        
+
                         </tr>
                     </thead>
                     <tbody>
@@ -321,7 +321,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <button type="submit" class="submit-btn">Registrar Programa</button>
                         </div>

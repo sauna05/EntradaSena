@@ -83,8 +83,8 @@ class EntranceAdminController extends Controller
     }
         public function peopleStore(Request $request)
         {
-            // Validación personalizada
-            $request->validate([
+        // Validación personalizada required|exists:db_programacion.instructors,id
+        $request->validate([
                 'id_position' => 'required',
                 'id_town' => 'required',
                 'document_number' => 'required',
@@ -110,11 +110,12 @@ class EntranceAdminController extends Controller
                 'address.required' => 'La dirección es obligatoria.',
             ]);
 
-            // Buscar cargo
-            $position = Position::where('name', $request->id_position)->first();
+        // Buscar cargo
+        $position = Position::find($request->id_position);
 
-            // Validación de persona ya registrada
-            if (Person::where('document_number', $request->document_number)->exists()) {
+
+        // Validación de persona ya registrada
+        if (Person::where('document_number', $request->document_number)->exists()) {
                 return redirect()->route('entrance.people.index')->with('message', 'Ya existe una persona en el centro con este número de documento');
             }
 

@@ -215,12 +215,12 @@
             <div>
                 <label for="fecha_inicio">Fecha Inicio:</label>
                 <input type="date" id="fecha_inicio" name="fecha_inicio"
-                    value="{{ old('fecha_inicio', isset($programacion) ? $programacion->start_date : '') }}" required />
+                    value="{{ old('fecha_inicio') }}" required />
             </div>
             <div>
                 <label for="fecha_fin">Fecha Fin:</label>
                 <input type="date" id="fecha_fin" name="fecha_fin"
-                    value="{{ old('fecha_fin', isset($programacion) ? $programacion->end_date : '') }}" required />
+                    value="{{ old('fecha_fin') }}" required />
             </div>
         </div>
 

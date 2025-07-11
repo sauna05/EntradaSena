@@ -240,7 +240,7 @@
                     <option value="en_ejecucion">En ejecución</option>
                     <option value="finalizada_evaluada">Finalizada (Evaluada)</option>
                     <option value="finalizada_no_evaluada">Finalizada (Pendiente evaluación)</option>
-                  
+
                 </select>
             </div>
 
@@ -256,7 +256,8 @@
             <i class="fas fa-file-excel"></i> Descargar Excel
         </button>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
+
             <table id="programming-table">
                 <thead>
                     <tr>

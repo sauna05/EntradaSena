@@ -48,6 +48,7 @@
             background-color: #f8f9fa;
         }
 
+
         /* Estilos para los estados */
         .status-badge {
             font-weight: bold;
@@ -238,7 +239,7 @@
                     <option value="">Todos los estados</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="en_ejecucion">En ejecución</option>
-                    
+
                     <option value="finalizada_no_evaluada">Finalizada (Pendiente evaluación)</option>
 
                 </select>
@@ -256,7 +257,8 @@
             <i class="fas fa-file-excel"></i> Descargar Excel
         </button>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
+
             <table id="programming-table">
                 <thead>
                     <tr>

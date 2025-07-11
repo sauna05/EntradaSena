@@ -147,7 +147,7 @@
                     <select name="id_position" id="id_position" onchange="ShowForm()">
                         <option value="">Seleccione un Cargo</option>
                         @foreach ($positions as $id => $position)
-                            <option value="{{ $id }}">{{ $position }}</option>
+                           <option value="{{ $id }}" data-nombre="{{ $position }}">{{ $position }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -162,7 +162,7 @@
                     </div>
                 @endif
 
-                <div><label for="document_number">Número de Documento</label><input type="text" name="document_number" id="document_number"></div>
+                <div><label for="document_number">Número de Documento</label><input type="number" name="document_number" id="document_number"></div>
                 <div><label for="name">Nombre Completo</label><input type="text" name="name" id="name"></div>
                 <div><label for="email">Correo Electrónico</label><input type="email" name="email" id="email"></div>
                 <div><label for="phone_number">Número de Teléfono</label><input type="text" name="phone_number" id="phone_number"></div>
@@ -222,71 +222,88 @@
     </div>
 
     <script>
+        // Función para mostrar u ocultar el formulario de Instructor
+        function ShowForm() {
+            const select = document.getElementById("id_position");
+            const selectedOption = select.options[select.selectedIndex];
+            const nombreCargo = selectedOption.getAttribute("data-nombre");
+
+            const formInstructor = document.getElementById("form_Instructor");
+
+            if (nombreCargo && nombreCargo.toLowerCase().includes("instructor")) {
+                formInstructor.classList.remove("ocult");
+            } else {
+                formInstructor.classList.add("ocult");
+            }
+        }
+
+        // Mostrar el formulario si ya está seleccionado al cargar la página
+        document.addEventListener("DOMContentLoaded", ShowForm);
+
+        // Manejador para el archivo Excel
         document.getElementById("fileInput").addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+            const file = event.target.files[0];
+            if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            let jsonData = XLSX.utils.sheet_to_json(sheet, { raw: false });
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                let jsonData = XLSX.utils.sheet_to_json(sheet, { raw: false });
 
-            jsonData = jsonData.map(row => {
-                row.FECHA_INICIO = row.FECHA_INICIO ? new Date(row.FECHA_INICIO).toISOString().split("T")[0] : null;
-                row.FECHA_FINALIZACION = row.FECHA_FINALIZACION ? new Date(row.FECHA_FINALIZACION).toISOString().split("T")[0] : null;
-                return row;
-            });
+                jsonData = jsonData.map(row => {
+                    row.FECHA_INICIO = row.FECHA_INICIO ? new Date(row.FECHA_INICIO).toISOString().split("T")[0] : null;
+                    row.FECHA_FINALIZACION = row.FECHA_FINALIZACION ? new Date(row.FECHA_FINALIZACION).toISOString().split("T")[0] : null;
+                    return row;
+                });
 
-            // Mostrar el overlay de carga
-            document.getElementById("overlay").style.display = "flex";
+                // Mostrar overlay
+                document.getElementById("overlay").style.display = "flex";
+                document.getElementById("progressContainer").style.display = "block";
+                document.getElementById("progressBar").style.width = "0%";
+                document.getElementById("progressText").innerText = "0%";
 
-            document.getElementById("progressContainer").style.display = "block";
-            document.getElementById("progressBar").style.width = "0%";
-            document.getElementById("progressText").innerText = "0%";
+                // Simulación de barra de progreso
+                let progress = 0;
+                const interval = setInterval(() => {
+                    if (progress < 90) {
+                        progress += 1;
+                        document.getElementById("progressBar").style.width = `${progress}%`;
+                        document.getElementById("progressText").innerText = `${progress}%`;
+                    }
+                }, 100);
 
-            // Simula la carga con animación de barra mientras espera respuesta del backend
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress < 90) {
-                    progress += 1;
-                    document.getElementById("progressBar").style.width = `${progress}%`;
-                    document.getElementById("progressText").innerText = `${progress}%`;
-                }
-            }, 100);
+                // Enviar datos al backend
+                fetch("{{ route('entrance.excel.upload') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ people: jsonData })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(interval);
+                    document.getElementById("progressBar").style.width = "100%";
+                    document.getElementById("progressText").innerText = "100%";
 
-            fetch("{{ route('entrance.excel.upload') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({ people: jsonData })
-            })
-            .then(response => response.json())
-            .then(data => {
-                clearInterval(interval);
-                document.getElementById("progressBar").style.width = "100%";
-                document.getElementById("progressText").innerText = "100%";
+                    document.getElementById("overlay").style.display = "none";
+                    alert("✅ Importación completada correctamente");
+                    console.log("Respuesta:", data);
+                })
+                .catch(error => {
+                    clearInterval(interval);
+                    document.getElementById("progressText").innerText = "❌ Error";
+                    document.getElementById("overlay").style.display = "none";
+                    console.error("Error:", error);
+                    alert("❌ Error durante la importación");
+                });
+            };
 
-                // Ocultar overlay
-                document.getElementById("overlay").style.display = "none";
-
-                alert("✅ Importación completada correctamente");
-                console.log("Respuesta:", data);
-            })
-            .catch(error => {
-                clearInterval(interval);
-                document.getElementById("progressText").innerText = "❌ Error";
-                document.getElementById("overlay").style.display = "none";
-                console.error("Error:", error);
-                alert("❌ Error durante la importación");
-            });
-        };
-
-        reader.readAsArrayBuffer(file);
-    });
-
+            reader.readAsArrayBuffer(file);
+        });
     </script>
+
 </x-layout_asistencia>

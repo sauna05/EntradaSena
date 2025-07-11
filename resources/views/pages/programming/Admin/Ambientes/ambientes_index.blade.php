@@ -142,10 +142,28 @@
             <label for="filtroMes"><strong>Filtrar por mes:</strong></label>
             <select id="filtroMes" onchange="filtrarVista()">
                 <option value="todos">Todos</option>
-                @for ($m = 1; $m <= 12; $m++)
-                    <option value="{{ sprintf('%02d', $m) }}">{{ \Carbon\Carbon::create()->month($m)->format('F') }}</option>
-                @endfor
-            </select>
+                @php
+                    $meses = [
+                        '01' => 'Enero',
+                        '02' => 'Febrero',
+                        '03' => 'Marzo',
+                        '04' => 'Abril',
+                        '05' => 'Mayo',
+                        '06' => 'Junio',
+                        '07' => 'Julio',
+                        '08' => 'Agosto',
+                        '09' => 'Septiembre',
+                        '10' => 'Octubre',
+                        '11' => 'Noviembre',
+                        '12' => 'Diciembre',
+                    ];
+                @endphp
+
+                @foreach ($meses as $numero => $nombre)
+                    <option value="{{ $numero }}">{{ $nombre }}</option>
+                @endforeach
+    </select>
+
             <button onclick="openModal('create')" style="margin-bottom: 20px; padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer;">
                 <i class="fas fa-plus"></i> Registrar
             </button>
