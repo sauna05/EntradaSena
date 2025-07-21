@@ -112,7 +112,7 @@
                 @endforeach
             </select>
 
-            <!-- Lista de aprendices -->
+                <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
@@ -125,7 +125,7 @@
                 <tbody>
                     @forelse($aprentices as $aprendiz)
                         <tr>
-                            <td><input type="checkbox" name="aprendices[]" value="{{ $aprendiz->id }}"></td>
+                            <td><input style="cursor: pointer" type="checkbox" name="aprendices[]" value="{{ $aprendiz->id }}"></td>
                             <td>{{ $aprendiz->person->name }}</td>
                             <td>{{ $aprendiz->person->document_number }}</td>
                             <td>{{ $aprendiz->person->email }}</td>
@@ -141,9 +141,11 @@
             </table>
 
             <!-- Botón -->
-            <div class="form-buttons">
-                <button type="submit" class="btn">Asignar Aprendices</button>
-            </div>
+
         </form>
+
+    </div>
+    <div class="form-buttons">
+                <button type="submit" class="btn">Asignar Aprendices</button>
     </div>
 </x-layout>

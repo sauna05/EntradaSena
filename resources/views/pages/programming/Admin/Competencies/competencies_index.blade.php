@@ -50,7 +50,7 @@
             overflow-y: auto;
             margin: 0 auto;
             width: 95%;
-            
+
             border: 1px solid #dee2e6;
             border-radius: 8px;
             background-color: #f8f9fa;

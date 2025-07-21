@@ -274,7 +274,7 @@ class ProgramanController extends Controller
 
     public function Listcompetencies()
     {
-        $competencies = Competencies::all(); // Cambia all() por paginate(10)
+        $competencies = Competencies::orderBy('created_at','desc')->get(); // Cambia all() por paginate(10)
         $especialidad = Speciality::all();
         return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies', 'especialidad'));
     }
