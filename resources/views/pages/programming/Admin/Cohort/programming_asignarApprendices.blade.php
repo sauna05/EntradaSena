@@ -94,6 +94,18 @@
             margin-right: auto;
         }
     </style>
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-2" style="margin-bottom: 20px; padding: 12px 16px; background-color: #d4edda; color: #155724; border-radius: 6px; border: 1px solid #c3e6cb;">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-2" style="margin-bottom: 20px; padding: 12px 16px; background-color: #f8d7da; color: #721c24; border-radius: 6px; border: 1px solid #f5c6cb;">
+            {{ session('error') }}
+        </div>
+    @endif
+
 
     <div class="container">
         <h2>Asignar Aprendices a Fichas</h2>
@@ -141,11 +153,12 @@
             </table>
 
             <!-- Botón -->
+             <div class="form-buttons">
+                <button type="submit" class="btn">Asignar Aprendices</button>
+              </div>
 
         </form>
 
     </div>
-    <div class="form-buttons">
-                <button type="submit" class="btn">Asignar Aprendices</button>
-    </div>
+
 </x-layout>

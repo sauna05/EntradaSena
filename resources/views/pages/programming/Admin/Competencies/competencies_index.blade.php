@@ -3,6 +3,7 @@
     <x-slot:title>Listado de Competencias</x-slot:title>
 
     <style>
+        /* Estilos generales */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
@@ -50,7 +51,6 @@
             overflow-y: auto;
             margin: 0 auto;
             width: 95%;
-
             border: 1px solid #dee2e6;
             border-radius: 8px;
             background-color: #f8f9fa;
@@ -114,7 +114,7 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.45);
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 15px;
@@ -200,7 +200,6 @@
         }
     </style>
 
-    {{-- Mensajes de sesión --}}
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
             {{ session('success') }}
@@ -220,7 +219,6 @@
             Registrar Competencia
         </button>
 
-        <!-- Tabla de Competencias -->
         <div class="table-container">
             <table>
                 <thead>
@@ -229,6 +227,7 @@
                         <th>Nombre</th>
                         <th>Duración (horas)</th>
                         <th>Fecha de Registro</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -238,10 +237,16 @@
                             <td>{{ $competence->name }}</td>
                             <td>{{ $competence->duration_hours }} hr</td>
                             <td>{{ $competence->created_at->format('d/m/Y') }}</td>
+                            <td>
+                                <button class="btn-primary" style="width:auto; padding:8px 16px;"
+                                    onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
+                                    Editar
+                                </button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
+                            <td colspan="5" style="text-align:center; font-style: italic; color: #888;">
                                 No hay competencias registradas.
                             </td>
                         </tr>
@@ -251,7 +256,7 @@
         </div>
     </div>
 
-    <!-- Modal para Registrar Competencia -->
+    <!-- Modal Registrar -->
     <div id="competenceModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('competenceModal').style.display='none'">&times;</span>
@@ -288,13 +293,67 @@
         </div>
     </div>
 
-    <!-- Script para cerrar modal al hacer clic fuera del contenido -->
+    <!-- Modal Editar -->
+    <div id="editCompetenceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('editCompetenceModal').style.display='none'">&times;</span>
+            <h3>Editar Competencia</h3>
+
+            <form id="editCompetenceForm" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="form-group">
+                    <label for="edit_speciality_id">Especialidad</label>
+                    <select name="speciality_id" id="edit_speciality_id" required>
+                        <option value="">Seleccione especialidad</option>
+                        @foreach ($especialidad as $espe)
+                            <option value="{{ $espe->id }}">{{ $espe->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_name">Nombre de la competencia</label>
+                    <input type="text" id="edit_name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_duration_hours">Duración (horas)</label>
+                    <input type="number" id="edit_duration_hours" name="duration_hours" required min="1">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit">Actualizar Competencia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script -->
     <script>
+        function openEditModal(id, name, duration, specialityId) {
+            const modal = document.getElementById('editCompetenceModal');
+            document.getElementById('edit_name').value = name;
+            document.getElementById('edit_duration_hours').value = duration;
+            document.getElementById('edit_speciality_id').value = specialityId;
+
+            const form = document.getElementById('editCompetenceForm');
+            form.action = `/programming/admin/competencie_update/${id}`;
+
+            modal.style.display = 'flex';
+        }
+
         window.onclick = function(event) {
-            const modal = document.getElementById('competenceModal');
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
+            const modals = [
+                document.getElementById('competenceModal'),
+                document.getElementById('editCompetenceModal')
+            ];
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
         }
     </script>
 </x-layout>

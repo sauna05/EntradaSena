@@ -95,6 +95,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'programing.competencies_index'])->assignRole($role10, $role2);
 
         Permission::create(['name' => 'programing.competencies_store'])->assignRole($role10, $role2);
+        Permission::create(['name' => 'programing.competencies_update'])->assignRole($role10, $role2);
 
         //permisos para agregar competencias a un programa
 

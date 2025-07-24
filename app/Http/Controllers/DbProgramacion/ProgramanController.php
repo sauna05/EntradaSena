@@ -279,6 +279,20 @@ class ProgramanController extends Controller
         return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies', 'especialidad'));
     }
 
+    public function competencies_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'speciality_id'=> 'required|exists:db_programacion.specialities,id',
+            'name' => 'required|string|max:255',
+            'duration_hours' => 'required|integer|min:1',
+        ]);
+
+        $competence = Competencies::findOrFail($id);
+        $competence->update($validated);
+
+        return redirect()->back()->with('success', 'Competencia actualizada correctamente.');
+    }
+
     // Guardar nueva competencia
     public function competencies_store(Request $request)
     {
