@@ -242,15 +242,17 @@
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
-        @auth
-        <form action="{{ route('logout') }}" method="POST" class="logout-form">
-            @csrf
-            <button type="submit" class="logout-button" title="Cerrar sesión">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Cerrar sesión</span>
-            </button>
-        </form>
+       @auth
+            <form action="{{ route('logout') }}" method="POST" class="logout-form">
+                @csrf
+                <button type="submit" class="logout-button" title="Cerrar sesión"
+                        onclick="return confirm('¿Está seguro que quiere cerrar Sesión?')">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
         @endauth
+
     </header>
 
     <!-- Layout -->
@@ -285,10 +287,10 @@
                     </a>
                     <ul>
                         <li><a href="{{route('entrance.absence.index')}}"><i class="fas fa-user-slash"></i> Inasistencias</a></li>
-                        <li><a href="#"><i class="fas fa-calendar-plus"></i> Programar Competencia</a></li>
+                        
                     </ul>
                 </li>
-                
+
             </ul>
         </nav>
 

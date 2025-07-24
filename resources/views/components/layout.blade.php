@@ -302,15 +302,17 @@
                 <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
             </div>
 
-            @auth
+          @auth
             <form action="{{ route('logout') }}" method="POST" class="logout-form">
                 @csrf
-                <button type="submit" class="logout-button" title="Cerrar sesión">
+                <button type="submit" class="logout-button" title="Cerrar sesión"
+                        onclick="return confirm('¿Está seguro que quiere cerrar Sesión?')">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Cerrar sesión</span>
                 </button>
             </form>
             @endauth
+
         </div>
     </header>
 
