@@ -240,6 +240,10 @@
                                         <div class="profile-label">Horas asignadas:</div>
                                         <div class="profile-value">{{ $instructor->assigned_hours }} horas</div>
                                     </div>
+                                         <div class="profile-row">
+                                        <div class="profile-label">Horas Cumplidas:</div>
+                                        <div class="profile-value">{{ $instructor->horas_programadas }} horas</div>
+                                    </div>
                                     <div class="profile-row">
                                         <div class="profile-label">Horas restantes:</div>
                                         <div class="profile-value">{{ $instructor->horas_restantes }} horas</div>

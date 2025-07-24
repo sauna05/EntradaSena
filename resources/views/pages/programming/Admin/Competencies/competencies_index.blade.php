@@ -238,9 +238,9 @@
                             <td>{{ $competence->duration_hours }} hr</td>
                             <td>{{ $competence->created_at->format('d/m/Y') }}</td>
                             <td>
-                                <button class="btn-primary" style="width:auto; padding:8px 16px;"
+                                 <button class="btn-primary" style="width:auto; padding:8px 16px;"
                                     onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
-                                    Editar
+                                    <i class="fa fa-pen-to-square" style="margin-right:6px;"></i>Editar
                                 </button>
                             </td>
                         </tr>

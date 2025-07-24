@@ -14,42 +14,37 @@ class AssistanceController extends Controller
 {
     public function assistanceIndex(Request $request)
     {
-        // Obtener filtros y parámetros
+        // Obtener filtros
         $searchTerm = $request->input('search');
         $positionId = $request->input('position_id');
-        $weekRange = $request->input('week');
-        $filterDate = $request->input('filter_date', now()->toDateString());
-        $month = $request->input('month'); // Nuevo filtro por mes
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $month = $request->input('month');
 
-
-        $startOfWeek = null;
-        $endOfWeek = null;
-
-        if ($weekRange) {
-            [$startOfWeek, $endOfWeek] = explode('|', $weekRange);
-        }
+        // Si no hay filtro, usar fecha actual
+        $defaultDate = now()->toDateString();
 
         // Obtener todos los puestos
         $positions = Position::all();
 
-        $personsQuery = Person::with(['position', 'entrances_exits' => function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek, $month) {
+        $personsQuery = Person::with(['position', 'entrances_exits' => function ($query) use ($startDate, $endDate, $month, $defaultDate) {
             if ($month) {
                 $query->whereMonth('date_time', '=', Carbon::parse($month)->month)
                     ->whereYear('date_time', '=', Carbon::parse($month)->year);
-            } elseif ($weekRange && $startOfWeek && $endOfWeek) {
-                $query->whereBetween('date_time', [$startOfWeek . ' 00:00:00', $endOfWeek . ' 23:59:59']);
+            } elseif ($startDate && $endDate) {
+                $query->whereBetween('date_time', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
             } else {
-                $query->whereDate('date_time', '=', $filterDate);
+                $query->whereDate('date_time', '=', $defaultDate);
             }
             $query->orderBy('date_time', 'asc');
-        }])->whereHas('entrances_exits', function ($query) use ($weekRange, $filterDate, $startOfWeek, $endOfWeek, $month) {
+        }])->whereHas('entrances_exits', function ($query) use ($startDate, $endDate, $month, $defaultDate) {
             if ($month) {
                 $query->whereMonth('date_time', '=', Carbon::parse($month)->month)
                     ->whereYear('date_time', '=', Carbon::parse($month)->year);
-            } elseif ($weekRange && $startOfWeek && $endOfWeek) {
-                $query->whereBetween('date_time', [$startOfWeek . ' 00:00:00', $endOfWeek . ' 23:59:59']);
+            } elseif ($startDate && $endDate) {
+                $query->whereBetween('date_time', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
             } else {
-                $query->whereDate('date_time', '=', $filterDate);
+                $query->whereDate('date_time', '=', $defaultDate);
             }
         });
 
@@ -78,12 +73,7 @@ class AssistanceController extends Controller
             ]);
         }
 
-        // Formatear asistencias
         $formattedPersons = [];
-        // Aquí obtienes los datos formateados, como ya lo haces en tu código
-
-        // Almacenar los datos en la sesión
-        session(['formattedPersons' => $formattedPersons]);
 
         foreach ($persons as $person) {
             $groupedByDate = $person->entrances_exits->groupBy(function ($item) {
@@ -101,8 +91,8 @@ class AssistanceController extends Controller
                     ? $entrada->diff($salida)->format('%H:%I:%S')
                     : null;
 
-                // Si es filtro por fecha única, solo agregamos una fila por persona
-                if (!$weekRange && !$month) {
+                // Si es solo una fecha (por defecto)
+                if (!$startDate && !$endDate && !$month) {
                     if (isset($formattedPersons[$person->id])) {
                         continue;
                     }
@@ -112,19 +102,16 @@ class AssistanceController extends Controller
                         'name' => $person->name,
                         'document_number' => $person->document_number,
                         'position' => $person->position->name ?? 'Sin puesto',
-                        'raw_date'        => $date, // Fecha sin formato para ordenar
-                        'daily_data'      => [[
-                            'date'          => Carbon::parse($date)
-                                ->locale('es')
-                                ->isoFormat('dddd D [de] MMMM [de] YYYY'),
-                            'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
-                            'salida'        => $salida  ? $salida->format('H:i:s a')  : 'No ha escaneado salida',
+                        'raw_date' => $date,
+                        'daily_data' => [[
+                            'date' => Carbon::parse($date)->locale('es')->isoFormat('dddd D [de] MMMM [de] YYYY'),
+                            'entrada' => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
+                            'salida' => $salida ? $salida->format('H:i:s a') : 'No ha escaneado salida',
                             'tiempo_centro' => $tiempoCentro,
                         ]],
                         'total_time' => $tiempoCentro ?? '00:00:00',
                     ];
                 } else {
-                    // Por semana: múltiples registros para cada día del usuario
                     $totalSeconds = 0;
                     if ($tiempoCentro) {
                         list($h, $m, $s) = explode(':', $tiempoCentro);
@@ -136,13 +123,11 @@ class AssistanceController extends Controller
                         'name' => $person->name,
                         'document_number' => $person->document_number,
                         'position' => $person->position->name ?? 'Sin puesto',
-                        'raw_date'        => $date, // Fecha sin formato para ordenar
-                        'daily_data'      => [[
-                            'date'          => Carbon::parse($date)
-                                ->locale('es')
-                                ->isoFormat('dddd D [de] MMMM [de] YYYY'),
-                            'entrada'       => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
-                            'salida'        => $salida  ? $salida->format('H:i:s a')  : 'No ha escaneado salida',
+                        'raw_date' => $date,
+                        'daily_data' => [[
+                            'date' => Carbon::parse($date)->locale('es')->isoFormat('dddd D [de] MMMM [de] YYYY'),
+                            'entrada' => $entrada ? $entrada->format('H:i:s a') : 'Sin registro',
+                            'salida' => $salida ? $salida->format('H:i:s a') : 'No ha escaneado salida',
                             'tiempo_centro' => $tiempoCentro,
                         ]],
                         'total_time' => gmdate('H:i:s', $totalSeconds),
@@ -151,12 +136,10 @@ class AssistanceController extends Controller
             }
         }
 
-        // Ordenar cronológicamente por fecha (de menor a mayor)
         usort($formattedPersons, fn($a, $b) => strtotime($a['raw_date']) <=> strtotime($b['raw_date']));
-        
 
-        // Si es por día, convertir a array indexado
-        if (!$weekRange) {
+        // Si solo es un día, pasar de array asociativo a indexado
+        if (!$startDate && !$endDate && !$month) {
             $formattedPersons = array_values($formattedPersons);
         }
 
@@ -166,8 +149,6 @@ class AssistanceController extends Controller
             'totalPersons' => count($formattedPersons),
         ]);
     }
-
-
 
     public function allAssistances(Request $request)
     {

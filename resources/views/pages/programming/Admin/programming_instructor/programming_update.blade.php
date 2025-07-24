@@ -1,12 +1,12 @@
 <x-layout>
     <x-slot:title>Listado de programaciones</x-slot:title>
-    
+
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f4f4f4;
         }
-        
+
         .btn-register {
             background-color: #28a745;
             color: white;
@@ -24,7 +24,7 @@
             color: #28a745;
             font-weight: bold;
         }
-  
+
         .container {
             width: 100%;
             margin: 0 auto;
@@ -33,39 +33,39 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-  
+
         .h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #333;
         }
-  
+
         .table-responsive {
             overflow-x: auto;
         }
-  
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-  
+
         th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-  
+
         th {
             background-color: #f8f9fa;
             color: #495057;
             font-weight: 600;
         }
-  
+
         tr:hover {
             background-color: #f8f9fa;
         }
-  
+
         .status {
             font-weight: bold;
             border-radius: 20px;
@@ -75,27 +75,27 @@
             text-align: center;
             min-width: 100px;
         }
-  
+
         .status-active {
             background-color: #d4edda;
             color: #155724;
         }
-  
+
         .status-pending {
             background-color: #fff3cd;
             color: #856404;
         }
-  
+
         .status-cancelled {
             background-color: #f8d7da;
             color: #721c24;
         }
-  
+
         .status-completed {
             background-color: #cce5ff;
             color: #004085;
         }
-        
+
         .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
@@ -104,7 +104,6 @@
             margin-bottom: 20px;
         }
 
-        /* Estilos para los filtros */
         .filters-container {
             display: flex;
             gap: 15px;
@@ -154,10 +153,10 @@
             display: none;
         }
     </style>
-  
+
     <div class="container">
-        <h1 class="h1">Listado de Registro de  Programaciones</h1>
-        
+        <h1 class="h1">Listado de Registro de Programaciones</h1>
+
         @if(session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
@@ -177,6 +176,16 @@
             </div>
 
             <div class="filter-group">
+                <label for="instructor-filter">Filtrar por instructor:</label>
+                <select id="instructor-filter">
+                    <option value="">Todos los instructores</option>
+                    @foreach($programaciones->pluck('instructor.person.name')->unique()->filter() as $instructorName)
+                        <option value="{{ $instructorName }}">{{ $instructorName }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filter-group">
                 <label for="status-filter">Filtrar por estado:</label>
                 <select id="status-filter">
                     <option value="">Todos los estados</option>
@@ -191,7 +200,7 @@
         <div class="no-results" id="no-results">
             No se encontraron programaciones con los filtros aplicados.
         </div>
-  
+
         <div class="table-responsive">
             <table id="programming-table">
                 <thead>
@@ -211,8 +220,9 @@
                 </thead>
                 <tbody>
                     @forelse ($programaciones as $programacion)
-                        <tr data-program="{{ $programacion->cohort->program->name ?? '' }}" 
-                            data-status="{{ $programacion->statu_programming === 'ok' ? 'ok' : '!ok' }}">
+                        <tr data-program="{{ $programacion->cohort->program->name ?? '' }}"
+                            data-status="{{ $programacion->statu_programming === 'ok' ? 'ok' : '!ok' }}"
+                            data-instructor="{{ $programacion->instructor->person->name ?? '' }}">
                             <td>{{ $programacion->id }}</td>
                             <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
                             <td>{{ $programacion->cohort->program->name ?? 'N/A' }}</td>
@@ -249,6 +259,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const programFilter = document.getElementById('program-filter');
             const statusFilter = document.getElementById('status-filter');
+            const instructorFilter = document.getElementById('instructor-filter');
             const resetBtn = document.getElementById('reset-filters');
             const rows = document.querySelectorAll('#programming-table tbody tr');
             const noResults = document.getElementById('no-results');
@@ -256,18 +267,21 @@
             function applyFilters() {
                 const selectedProgram = programFilter.value.toLowerCase();
                 const selectedStatus = statusFilter.value.toLowerCase();
+                const selectedInstructor = instructorFilter.value.toLowerCase();
                 let visibleRows = 0;
 
                 rows.forEach(row => {
                     const program = row.getAttribute('data-program').toLowerCase();
                     const status = row.getAttribute('data-status').toLowerCase();
+                    const instructor = row.getAttribute('data-instructor').toLowerCase();
 
                     const programMatch = selectedProgram === '' || program.includes(selectedProgram);
-                    const statusMatch = selectedStatus === '' || 
-                                       (selectedStatus === 'ok' && status === 'ok') ||
-                                       (selectedStatus === '!ok' && status === '!ok');
+                    const statusMatch = selectedStatus === '' ||
+                                        (selectedStatus === 'ok' && status === 'ok') ||
+                                        (selectedStatus === '!ok' && status === '!ok');
+                    const instructorMatch = selectedInstructor === '' || instructor.includes(selectedInstructor);
 
-                    if (programMatch && statusMatch) {
+                    if (programMatch && statusMatch && instructorMatch) {
                         row.style.display = '';
                         visibleRows++;
                     } else {
@@ -275,39 +289,23 @@
                     }
                 });
 
-                // Mostrar mensaje si no hay resultados
-                if (visibleRows === 0) {
-                    noResults.style.display = 'block';
-                } else {
-                    noResults.style.display = 'none';
-                }
+                noResults.style.display = visibleRows === 0 ? 'block' : 'none';
             }
 
-            // Event listeners
             programFilter.addEventListener('change', applyFilters);
             statusFilter.addEventListener('change', applyFilters);
+            instructorFilter.addEventListener('change', applyFilters);
 
             resetBtn.addEventListener('click', function() {
                 programFilter.value = '';
                 statusFilter.value = '';
+                instructorFilter.value = '';
                 applyFilters();
             });
 
-            // Aplicar filtros iniciales si hay valores en la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialProgram = urlParams.get('program');
-            const initialStatus = urlParams.get('status');
-
-            if (initialProgram) {
-                programFilter.value = initialProgram;
-            }
-            if (initialStatus) {
-                statusFilter.value = initialStatus;
-            }
-
-            if (initialProgram || initialStatus) {
-                applyFilters();
-            }
+            // Aplicar filtro por defecto a "No registrada"
+            statusFilter.value = '!ok';
+            applyFilters();
         });
     </script>
 </x-layout>

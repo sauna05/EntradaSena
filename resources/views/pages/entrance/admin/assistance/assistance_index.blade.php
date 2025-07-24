@@ -3,72 +3,147 @@
     <x-slot:page_style></x-slot:page_style>
     {{-- Título --}}
     <x-slot:title>CAA</x-slot:title>
-  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
     {{-- Navbar --}}
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <style>
+  <style>
     body {
         background-color: #f4f6f5;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: #333;
+        margin: 0;
+        padding: 0;
     }
 
     .container {
         max-width: 100%;
-        padding: 20px;
+        padding: 30px;
         background-color: #fff;
         border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         margin-top: 20px;
     }
 
     h3 {
-        margin-top: 20px;
+        margin-top: 15px;
+        margin-bottom: 20px;
         color: #2c3e50;
+        font-size: 1.4rem;
     }
 
     .badge.bg-primary {
-        background-color: #2e7d32;
+        background-color: #2e7d32 !important;
         color: white;
-        padding: 5px 10px;
+        padding: 6px 12px;
         border-radius: 12px;
-        font-size: 16px;
+        font-size: 15px;
     }
 
-    .form-select, .form-control, .input-group input, .input-group button {
+    .filter-box {
+        background: #f9fafb;
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+
+    .filter-group {
+        flex: 1 1 220px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .form-select,
+    .form-control {
         border-radius: 8px;
         border: 1px solid #ccc;
         padding: 8px;
         font-size: 14px;
     }
 
-    .form-select:focus, .form-control:focus {
-        outline: none;
-        border-color: #27ae60;
-        box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+    .input-group {
+        display: flex;
     }
 
-    .form-check-input:checked {
-        background-color: #2e7d32;
-        border-color: #2ecc71;
+    .input-group input {
+        flex: 1;
+        border-radius: 8px 0 0 8px;
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-size: 14px;
     }
 
     .input-group button {
+        border-radius: 0 8px 8px 0;
         background-color: #2e7d32;
-        color: white;
         border: none;
-        transition: background 0.3s;
+        color: white;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
     }
 
     .input-group button:hover {
-        background-color: #2e7d32;
+        background-color: #1b5e20;
     }
 
-    .table-container {
+    .btn {
+        display: inline-block;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-success {
+        background-color: #2e7d32;
+        color: white;
+    }
+
+    .btn-danger {
+        background-color: #c0392b;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-outline-primary {
+        border: 1px solid #007bff;
+        color: #007bff;
+        background-color: transparent;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table-responsive {
+        max-height: 500px;
+        overflow-y: auto;
         overflow-x: auto;
-        margin-top: 20px;
         border-radius: 12px;
     }
 
@@ -80,6 +155,9 @@
 
     thead {
         background-color: #ecf0f1;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
 
     thead th {
@@ -87,11 +165,13 @@
         text-align: left;
         color: #2c3e50;
         font-weight: bold;
+        border-bottom: 1px solid #ddd;
     }
 
     tbody td {
         padding: 10px;
         border-bottom: 1px solid #eee;
+        vertical-align: top;
     }
 
     tr:nth-child(even) {
@@ -101,28 +181,13 @@
     .entrada-salida {
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 4px;
     }
 
     hr {
-        margin: 5px 0;
+        margin: 6px 0;
         border: none;
         border-top: 1px solid #ccc;
-    }
-
-    .btn {
-        background-color: #007bff;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 8px;
-        text-decoration: none;
-      
-        display: inline-block;
-    
-    }
-
-    .btn:hover {
-        background-color: #1c271c;
     }
 
     .alert {
@@ -132,58 +197,71 @@
         background-color: #fdf6e3;
         color: #7a5a00;
         font-weight: 500;
+        text-align: center;
     }
 
-    a {
-        margin-right: 10px;
-        color: #2ecc71;
-        font-weight: bold;
-        text-decoration: none;
-    }
+    @media (max-width: 768px) {
+        .filter-box {
+            flex-direction: column;
+        }
 
-    a:hover {
-        text-decoration: underline;
-    }
+        .input-group {
+            flex-direction: column;
+        }
 
-    button {
-        background-color: #2e7d32;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+        .input-group input,
+        .input-group button {
             border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 15px;
+        }
     }
+    .excel-btn {
+    background-color: #217346; /* Verde estilo Excel */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    button:hover {
-        background-color: #082916;
-    }
+.excel-btn:hover {
+    background-color: #14532d;
+}
+
 </style>
 
+
+
 <div class="container">
-    {{-- Filtros dinámicos de fechas --}}
+    {{-- Encabezado dinámico --}}
     @if (request('month'))
         Mes de {{ \Carbon\Carbon::parse(request('month'))->locale('es')->isoFormat('MMMM [de] YYYY') }}
-    @elseif (!empty($filterAllAssist))
-        Todas las asistencias
-    @elseif (request('week'))
-        @php [$start, $end] = explode('|', request('week')); @endphp
-        Semana del {{ \Carbon\Carbon::parse($start)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($end)->format('d/m/Y') }}
-    @elseif (request('filter_date'))
-        {{ \Carbon\Carbon::parse(request('filter_date'))->locale('es')->isoFormat('dddd D [de] MMMM [de] YYYY') }}
+    @elseif (request('start_date') && request('end_date'))
+        Desde el {{ \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') }} hasta el {{ \Carbon\Carbon::parse(request('end_date'))->format('d/m/Y') }}
     @else
         <span id="fechaActual"></span>
     @endif
 
-    <button onclick="exportCleanedTableToExcel()">Exportar a Excel</button>
+ <button class="excel-btn" onclick="exportCleanedTableToExcel()">
+    📥 Exportar a Excel
+</button>
 
-    <h3>Cantidad de Asistencias: 
+
+    <h3>Cantidad de Asistencias:
         <span class="badge bg-primary">{{ count($formattedPersons) }}</span>
     </h3>
 
-    <form method="GET" action="{{ route('entrance.assistance.index') }}" class="d-flex align-items-center flex-wrap gap-2 mt-3">
+   {{-- Filtros --}}
+<form method="GET" action="{{ route('entrance.assistance.index') }}" class="filter-box d-flex flex-wrap gap-3 mt-4 align-items-end justify-content-start">
+
+    {{-- Cargo --}}
+    <div class="filter-group">
+        <label for="position_id"><i class="fas fa-user-tie me-1"></i> Cargo</label>
         <select name="position_id" class="form-select" onchange="this.form.submit()">
             <option value="">Todos los Cargos</option>
             @foreach ($positions as $position)
@@ -192,16 +270,11 @@
                 </option>
             @endforeach
         </select>
+    </div>
 
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="toggleWeekFilter" {{ request('week') ? 'checked' : '' }}>
-            <label class="form-check-label" for="toggleWeekFilter">Filtrar por semana</label>
-        </div>
-
-        <select id="weekSelect" name="week" class="form-select" onchange="this.form.submit()">
-            <option value="">Filtrar por semana</option>
-        </select>
-
+    {{-- Mes --}}
+    <div class="filter-group">
+        <label for="month"><i class="fas fa-calendar-alt me-1"></i> Mes</label>
         <select name="month" class="form-select" onchange="this.form.submit()">
             <option value="">Filtrar por mes</option>
             @foreach (range(1, 12) as $m)
@@ -214,38 +287,54 @@
                 </option>
             @endforeach
         </select>
+    </div>
 
-        {{-- <a href="{{ route('entrance.assistance.all') }}">Todas las asistencias</a> --}}
+    {{-- Rango de Fechas --}}
+    <div class="filter-group">
+        <label for="start_date"><i class="fas fa-calendar-day me-1"></i> Fecha inicio</label>
+        <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+    </div>
 
-      
-        <label for="">Filtrar Por dia</label>
-        <input type="date" name="filter_date" class="form-control"
-            max="{{ now()->toDateString() }}" value="{{ request('filter_date', now()->toDateString()) }}"
-            onchange="this.form.submit()">
+    <div class="filter-group">
+        <label for="end_date"><i class="fas fa-calendar-day me-1"></i> Fecha fin</label>
+        <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+    </div>
 
+    {{-- Búsqueda --}}
+    <div class="filter-group flex-grow-1">
+        <label for="search"><i class="fas fa-search me-1"></i> Buscar</label>
         <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o documento"
-                value="{{ request('search') }}">
-            <button type="submit">Buscar</button>
+            <input type="text" name="search" class="form-control" placeholder="Nombre o documento" value="{{ request('search') }}">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
         </div>
-    </form>
+    </div>
 
-    {{-- Tabla de Asistencias --}}
+    {{-- Botones --}}
+    <div class="filter-group">
+        <label class="d-block">&nbsp;</label>
+        <button type="submit" class="btn btn-success w-100"><i class="fas fa-filter"></i> Filtrar</button>
+    </div>
+    <div class="filter-group">
+        <label class="d-block">&nbsp;</label>
+        <a href="{{ route('entrance.assistance.index') }}" class="btn btn-danger w-100"><i class="fas fa-times-circle"></i> Restablecer</a>
+    </div>
+
+</form>
+
+
+    {{-- Tabla --}}
     @if (count($formattedPersons) === 0)
         <div class="alert text-center mt-4">
             @if (request('month'))
                 No hay asistencias registradas para el mes de {{ \Carbon\Carbon::parse(request('month'))->locale('es')->isoFormat('MMMM [de] YYYY') }}.
-            @elseif (request('week'))
-                @php [$start, $end] = explode('|', request('week')); @endphp
-                No hay asistencias registradas para la semana del {{ \Carbon\Carbon::parse($start)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($end)->format('d/m/Y') }}.
-            @elseif (request('filter_date'))
-                No hay asistencias registradas para el día {{ \Carbon\Carbon::parse(request('filter_date'))->locale('es')->isoFormat('dddd D [de] MMMM [de] YYYY') }}.
+            @elseif (request('start_date') && request('end_date'))
+                No hay asistencias entre el {{ \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') }} y {{ \Carbon\Carbon::parse(request('end_date'))->format('d/m/Y') }}.
             @else
                 Hoy no se han registrado asistencias.
             @endif
         </div>
     @else
-        <div class="table-container">
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
@@ -275,7 +364,11 @@
                             </td>
                             <td>{{ $person['total_time'] }}</td>
                             <td>{{ $data['date'] }}</td>
-                            <td><a href="{{ route('entrance.assistance.show', $person['id']) }}" class="btn">Ver más</a></td>
+                            <td>
+                                <a href="{{ route('entrance.assistance.show', $person['id']) }}" class="btn btn-outline-primary btn-sm" title="Ver detalles">
+                                    <i class="fas fa-eye"></i> Ver más
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -284,15 +377,23 @@
     @endif
 </div>
 
-        
+
+
+
     {{-- Scripts --}}
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             const fechaActualSpan = document.getElementById('fechaActual');
             const toggleWeekFilter = document.getElementById('toggleWeekFilter');
             const weekSelect = document.getElementById('weekSelect');
             const filterDate = document.querySelector('input[name="filter_date"]');
             const selectedWeek = @json(request('week'));
+                const fecha = new Date();
+                const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
+                document.getElementById('fechaActual').textContent = `Asistencias del día de hoy: ${fechaFormateada}`;
+
 
             function actualizarFechaHora() {
                 const fechaHora = new Date();

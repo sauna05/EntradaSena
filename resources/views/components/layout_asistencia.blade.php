@@ -205,6 +205,24 @@
         .logout-button:hover {
             background-color: var(--verde-boton-hover);
         }
+         .usuario-info,
+        .notificaciones,
+        .programaciones-info {
+            display: inline-flex;
+            align-items: center;
+            font-size: 18px;
+            color: var(--verde-header-hover);
+            margin-right: 20px;
+            position: relative;
+        }
+
+        .usuario-info i,
+        .notificaciones i,
+        .programaciones-info i {
+            font-size: 24px;
+            margin-right: 6px;
+            color: var(--verde-header);
+        }
 
         /* Cursor pointer para todos los enlaces del menú */
         .sidebar-menu a,
@@ -242,6 +260,10 @@
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
         </div>
+        <div class="usuario-info" title="{{ Auth::user()->user_name ?? 'Invitado' }}">
+                <i class="fa-solid fa-user-circle"></i>
+                <span>{{ Auth::user()->user_name ?? 'Invitado' }}</span>
+            </div>
        @auth
             <form action="{{ route('logout') }}" method="POST" class="logout-form">
                 @csrf
@@ -287,7 +309,7 @@
                     </a>
                     <ul>
                         <li><a href="{{route('entrance.absence.index')}}"><i class="fas fa-user-slash"></i> Inasistencias</a></li>
-                        
+
                     </ul>
                 </li>
 

@@ -297,9 +297,12 @@
             </div>
 
             <!-- Programaciones sin registrar -->
-            <div class="programaciones-info" title="Programaciones pendientes">
+            <div class="programaciones-info" style="cursor: pointer" title="Programaciones pendientes por registrar">
+            <a href="{{ route('programming.programming_update_index') }}" class="programaciones-info" title="Programaciones pendientes por registrar" style="cursor: pointer; text-decoration: none; color: inherit;">
                 <i class="fa-solid fa-calendar-xmark"></i>
                 <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
+            </a>
+
             </div>
 
           @auth
@@ -360,7 +363,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('programing.unrecorded_days_index') }}">
-                                    <i class="fa-solid fa-calendar-days"></i> Ver Calendario
+                                    <i class="fa-solid fa-calendar-days"></i> Gestionar Calendario
                                 </a>
                             </li>
                         </ul>
@@ -453,3 +456,4 @@
 
 </body>
 </html>
+

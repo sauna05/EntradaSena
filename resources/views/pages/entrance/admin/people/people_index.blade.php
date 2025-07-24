@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        h1 {
+        h-1 {
             font-size: 28px;
             margin-bottom: 20px;
             color: #343a40;
@@ -152,7 +152,7 @@
     </style>
 
     <div class="container">
-        <h1>PERSONAS EN EL CENTRO DE FORMACIÓN</h1>
+        <h1 class="h-1">PERSONAS EN EL CENTRO DE FORMACIÓN</h1>
 
         @if (session('message'))
             <div id="session-message" class="session-message">
