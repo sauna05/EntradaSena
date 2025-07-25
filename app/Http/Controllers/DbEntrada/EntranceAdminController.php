@@ -81,7 +81,7 @@ class EntranceAdminController extends Controller
          'instructor_status' => $instructor_status
         ]);
     }
-    public function peopleStore(Request $request)
+   public function peopleStore(Request $request)
     {
         DB::beginTransaction(); // Transacción para db_entrada
 
@@ -128,7 +128,7 @@ class EntranceAdminController extends Controller
             try {
                 // Validar si ya existe en db_programacion
                 if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
-                    return redirect()->route('entrance.people.index')->with('message', 'Esta persona ya está registrada en la programación.');
+                    return redirect()->route('entrance.people.index')->with('succes', 'Esta persona ya está registrada en la programación.');
                 }
 
                 // Crear persona en db_programacion

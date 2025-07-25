@@ -97,6 +97,7 @@
             margin-top: 20px;
         }
 
+
         .excel-upload-section {
             background-color: #fff;
             max-width: 800px;
@@ -152,15 +153,36 @@
                     </select>
                 </div>
 
-                @if ($errors->any())
-                    <div style="color: red;">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+               {{-- Mensajes de error --}}
+            @if($errors->any())
+            <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+                <h4 style="margin-top: 0; margin-bottom: 10px;">¡Hay errores en el formulario!</h4>
+                <ul style="margin-bottom: 0;">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                </div>
+            @endif
+
+                {{-- Mensajes de éxito --}}
+                @if(session('succes'))
+                <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+                    {{ session('succes') }}
+                </div>
                 @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+                    {{ session('error') }}
+                </div>
+                @endif
+
+                @if(session('succes'))
+                <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+                    {{ session('succes') }}
+                </div>
+            @endif
 
                 <div><label for="document_number">Número de Documento</label><input type="number" name="document_number" id="document_number"></div>
                 <div><label for="name">Nombre Completo</label><input type="text" name="name" id="name"></div>
@@ -181,12 +203,53 @@
             </section>
 
             <section id="form_Instructor" class="ocult form">
-                <div><label for="id_link_type">Tipo de Vinculación</label><select name="id_link_type" id="id_link_type">@foreach ($link_types as $id => $link_type)<option value="{{ $link_type->id }}">{{ $link_type->name }}</option>@endforeach</select></div>
-                <div><label for="id_speciality">Especialidad</label><select name="id_speciality" id="id_speciality">@foreach ($specialities as $id => $speciality)<option value="{{ $id }}">{{ $speciality->name }}</option>@endforeach</select></div>
-                <div><label for="id_instructor_status">Estado</label><select name="id_instructor_status" id="id_instructor_status">@foreach ($instructor_status as $id => $status)<option value="{{ $status->id }}">{{ $status->name }}</option>@endforeach</select></div>
-                <div><label for="assigned_hours">Horas Asignadas</label><input type="number" name="assigned_hours" id="assigned_hours"></div>
-                <div><label for="months_contract">Meses de Contrato</label><input type="number" name="months_contract" id="months_contract"></div>
-                <div><label for="hours_day">Horas por Día</label><input type="number" name="hours_day" id="hours_day"></div>
+                <div><label for="id_link_type">Tipo de Vinculación</label>
+                    <select name="id_link_type" id="id_link_type">
+                        @foreach ($link_types as $id => $link_type)
+                            <option value="{{ $link_type->id }}" {{ old('id_link_type') == $link_type->id ? 'selected' : '' }}>
+                                {{ $link_type->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('id_link_type')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+
+                <div><label for="id_speciality">Especialidad</label>
+                    <select name="id_speciality" id="id_speciality">
+                        @foreach ($specialities as $id => $speciality)
+                            <option value="{{ $id }}" {{ old('id_speciality') == $id ? 'selected' : '' }}>
+                                {{ $speciality->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('id_speciality')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+
+                <div><label for="id_instructor_status">Estado</label>
+                    <select name="id_instructor_status" id="id_instructor_status">
+                        @foreach ($instructor_status as $id => $status)
+                            <option value="{{ $status->id }}" {{ old('id_instructor_status') == $status->id ? 'selected' : '' }}>
+                                {{ $status->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('id_instructor_status')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+
+                <div><label for="assigned_hours">Horas Asignadas</label>
+                    <input type="number" name="assigned_hours" id="assigned_hours" value="{{ old('assigned_hours') }}">
+                    @error('assigned_hours')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+
+                <div><label for="months_contract">Meses de Contrato</label>
+                    <input type="number" name="months_contract" id="months_contract" value="{{ old('months_contract') }}">
+                    @error('months_contract')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+
+                <div><label for="hours_day">Horas por Día</label>
+                    <input type="number" name="hours_day" id="hours_day" value="{{ old('hours_day') }}">
+                    @error('hours_day')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
             </section>
 
             <x-button class="btn-register" type="submit">Enviar</x-button>
@@ -236,6 +299,16 @@
                 formInstructor.classList.add("ocult");
             }
         }
+        // Mostrar campos de instructor si hay errores en esos campos
+        document.addEventListener("DOMContentLoaded", function() {
+            const errors = @json($errors->keys());
+            const instructorFields = ['id_link_type', 'id_speciality', 'id_instructor_status',
+                                    'assigned_hours', 'months_contract', 'hours_day'];
+
+            if (errors.some(error => instructorFields.includes(error))) {
+                document.getElementById("form_Instructor").classList.remove("ocult");
+            }
+        });
 
         // Mostrar el formulario si ya está seleccionado al cargar la página
         document.addEventListener("DOMContentLoaded", ShowForm);
