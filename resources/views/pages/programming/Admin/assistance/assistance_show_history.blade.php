@@ -1,6 +1,6 @@
-<x-layout_asistencia>
+<x-layout>
     {{-- Archivo CSS de la página --}}
- 
+
     {{-- Título de la página --}}
     <x-slot:title>Historial de Asistencias</x-slot:title>
 
@@ -201,4 +201,4 @@ tbody tr:hover {
             <div class="alert alert-info text-center">Este usuario no tiene registros de asistencia.</div>
         @endif
     </div>
-</x-layout_asistencia>
+</x-layout>

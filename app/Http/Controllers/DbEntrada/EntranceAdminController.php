@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\DbEntrada;
 
 use App\Http\Controllers\Controller;
-use App\Models\DbEntrada\DayAvailable;
-use App\Models\DbEntrada\Person;//este es de db_entrada
-use App\Models\DbEntrada\Position;
-use App\Models\DbEntrada\User;
+use App\Models\DbProgramacion\DayAvailable;
+use App\Models\DbProgramacion\Person;//este es de db_entrada
+use App\Models\DbProgramacion\Position;
+use App\Models\DbProgramacion\User;
 use App\Models\DbProgramacion\Apprentice;
 use App\Models\DbProgramacion\ApprenticeStatus;
 use App\Models\DbProgramacion\Instructor;
@@ -46,13 +46,13 @@ class EntranceAdminController extends Controller
             $personQuery->where('id_position', $selectedPosition);
         }
 
-        // Paginación con los resultados filtrados
-        $person = $personQuery->paginate(20)->appends(['search' => $search, 'position' => $selectedPosition]);
+        // Obtener todos los resultados (sin paginación)
+        $person = $personQuery->get();
 
-        return view('pages.entrance.admin.people.people_index', [
+        return view('pages.programming.Admin.people.people_index', [
             'person' => $person,
-            'positions' => $positions,  // Pasar los cargos disponibles a la vista
-            'selectedPosition' => $selectedPosition  // Pasar el cargo seleccionado
+            'positions' => $positions,
+            'selectedPosition' => $selectedPosition
         ]);
     }
 
@@ -62,7 +62,7 @@ class EntranceAdminController extends Controller
         $person = Person::with('days_available')->findOrFail($id);
 
         // $email = DbProgramacionPerson::where('document_number',$person->document_number)->pluck('email');
-        return view('pages.entrance.admin.people.people_show',['person'=>$person]);
+        return view('pages.programming.Admin.people.people_show',['person'=>$person]);
     }
 
     public function peopleCreate(){
@@ -72,7 +72,7 @@ class EntranceAdminController extends Controller
         $specialities = Speciality::all();
         $link_types = LinkType::all();
         $instructor_status = InstructorStatus::all();
-        return view('pages.entrance.admin.people.people_create',
+        return view('pages.programming.Admin.people.people_create',
         ['positions'=> $positions,
          'days_available'=>$days_available,
          'towns'=>$towns,
@@ -81,123 +81,87 @@ class EntranceAdminController extends Controller
          'instructor_status' => $instructor_status
         ]);
     }
-   public function peopleStore(Request $request)
+
+    public function peopleStore(Request $request)
     {
-        DB::beginTransaction(); // Transacción para db_entrada
+        DB::beginTransaction(); // Solo una transacción para db_programacion
 
         try {
             // Validación general
             $request->validate([
-                'id_position' => 'required',
-                'id_town' => 'required',
-                'document_number' => 'required',
-                'name' => 'required',
-                'phone_number' => 'required',
+                'id_position' => 'required|exists:positions,id',
+                'id_town' => 'required|exists:towns,id',
+                'document_number' => 'required|unique:people,document_number',
+                'name' => 'required|string|max:255',
+                'phone_number' => 'required|string|max:20',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date|after_or_equal:start_date',
                 'email' => 'required|email',
-                'address' => 'required',
+                'address' => 'required|string|max:255',
             ]);
 
-            // Buscar cargo
             $position = Position::find($request->id_position);
 
             if (!$position) {
                 return back()->with('error', 'El cargo seleccionado no existe.');
             }
 
-            // Verificar si ya existe persona en db_entrada
-            if (Person::where('document_number', $request->document_number)->exists()) {
-                return redirect()->route('entrance.people.index')->with('message', 'Ya existe una persona en el centro con este número de documento');
-            }
-
-            // Crear persona en db_entrada
+            // Crear persona
             $person = Person::create([
-                'id_position' => $position->id,
-                'name' => $request->name,
+                'id_position'     => $position->id,
                 'document_number' => $request->document_number,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date
+                'name'            => $request->name,
+                'id_town'         => $request->id_town,
+                'email'           => $request->email,
+                'address'         => $request->address,
+                'phone_number'    => $request->phone_number,
+                'start_date'      => $request->start_date,
+                'end_date'        => $request->end_date,
             ]);
 
             $person->days_available()->sync($request->days ?? []);
 
-            // Transacción para db_programacion
-            DB::connection('db_programacion')->beginTransaction();
+            // Según el tipo de cargo, guardar datos adicionales
+            switch ($position->name) {
+                case 'Aprendiz':
+                    $status = ApprenticeStatus::where('name', 'En Formación')->first();
+                    Apprentice::create([
+                        'id_person' => $person->id,
+                        'id_status' => $status ? $status->id : 1
+                    ]);
+                    break;
 
-            try {
-                // Validar si ya existe en db_programacion
-                if (DbProgramacionPerson::where('document_number', $request->document_number)->exists()) {
-                    return redirect()->route('entrance.people.index')->with('succes', 'Esta persona ya está registrada en la programación.');
-                }
+                case 'Instructor':
+                    $instructorData = $request->validate([
+                        'id_link_type' => 'required|exists:link_types,id',
+                        'id_speciality' => 'required|exists:specialities,id',
+                        'id_instructor_status' => 'required|exists:instructor_statuses,id',
+                        'assigned_hours' => 'required|integer|min:1',
+                        'months_contract' => 'required|integer|min:1',
+                        'hours_day' => 'required|numeric|min:1'
+                    ], [
+                        'required' => 'El campo :attribute es obligatorio.',
+                    ]);
 
-                // Crear persona en db_programacion
-                $personProg = DbProgramacionPerson::create([
-                    'id_position' => $position->id,
-                    'document_number' => $request->document_number,
-                    'name' => $request->name,
-                    'id_town' => $request->id_town,
-                    'email' => $request->email,
-                    'address' => $request->address,
-                    'phone_number' => $request->phone_number
-                ]);
+                    Instructor::create([
+                        'id_person'         => $person->id,
+                        'id_status'         => $instructorData['id_instructor_status'],
+                        'id_link_type'      => $instructorData['id_link_type'],
+                        'id_speciality'     => $instructorData['id_speciality'],
+                        'assigned_hours'    => $instructorData['assigned_hours'],
+                        'months_contract'   => $instructorData['months_contract'],
+                        'hours_day'         => $instructorData['hours_day'],
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
+                    break;
 
-                // Lógica según cargo
-                switch ($position->name) {
-                    case 'Aprendiz':
-                        $apprenticeStatus = ApprenticeStatus::where('name', 'En Formación')->first();
-
-                        Apprentice::create([
-                            'id_person' => $personProg->id,
-                            'id_status' => $apprenticeStatus ? $apprenticeStatus->id : 1,
-                        ]);
-                        break;
-
-                    case 'Instructor':
-                        // Validaciones específicas
-                        $instructorData = $request->validate([
-                            'id_link_type' => 'required',
-                            'id_speciality' => 'required',
-                            'id_instructor_status' => 'required',
-                            'assigned_hours' => 'required',
-                            'months_contract' => 'required',
-                            'hours_day' => 'required'
-                        ], [
-                            'id_link_type.required' => 'El tipo de vinculación es obligatorio.',
-                            'id_speciality.required' => 'La especialidad es obligatoria.',
-                            'id_instructor_status.required' => 'El estado del instructor es obligatorio.',
-                            'assigned_hours.required' => 'Las horas asignadas son obligatorias.',
-                            'months_contract.required' => 'Los meses de contrato son obligatorios.',
-                            'hours_day.required' => 'Las horas por día son obligatorias.',
-                        ]);
-
-                        Instructor::create([
-                            'id_person' => $personProg->id,
-                            'id_status' => $instructorData['id_instructor_status'],
-                            'id_link_type' => $instructorData['id_link_type'],
-                            'id_speciality' => $instructorData['id_speciality'],
-                            'assigned_hours' => $instructorData['assigned_hours'],
-                            'months_contract' => $instructorData['months_contract'],
-                            'hours_day' => $instructorData['hours_day'],
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
-                        break;
-
-                    default:
-                        DB::rollBack();
-                        DB::connection('db_programacion')->rollBack();
-                        return back()->with('error', 'Cargo no válido.');
-                }
-
-                DB::connection('db_programacion')->commit();
-            } catch (\Exception $e) {
-                DB::connection('db_programacion')->rollBack();
-                Log::error('Error al registrar en db_programacion: ' . $e->getMessage());
-                return back()->with('error', 'Error al registrar datos en la programación.');
+                default:
+                    DB::rollBack();
+                    return back()->with('error', 'El tipo de cargo no es válido.');
             }
 
-            // Crear usuario (en db_entrada)
+            // Crear usuario con rol
             $user = User::create([
                 'id_person' => $person->id,
                 'user_name' => $person->document_number,
@@ -205,23 +169,21 @@ class EntranceAdminController extends Controller
             ]);
             $user->assignRole($position->name);
 
-            DB::commit(); // Finalizar transacción principal
-
+            DB::commit();
             return redirect()->route('entrance.people.index')->with('message', 'Persona registrada correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error general al registrar persona: ' . $e->getMessage());
+            Log::error('Error al registrar persona: ' . $e->getMessage());
             return back()->with('error', 'Ocurrió un error al registrar la persona.');
         }
     }
-
 
 
     public function peopleEdit($id){
         $person = Person::findOrFail($id);
         $positions = Position::all();
         $days_available =  DayAvailable::all();
-        return view('pages.entrance.admin.people.people_edit',['person'=>$person,'positions'=>$positions,'days_available'=>$days_available]);
+        return view('pages.programming.Admin.people.people_edit',['person'=>$person,'positions'=>$positions,'days_available'=>$days_available]);
     }
 
     public function peopleUpdate(Request $request, $id){
@@ -273,11 +235,10 @@ class EntranceAdminController extends Controller
         set_time_limit(600);
         ini_set('memory_limit', '2048M');
 
-        $id_position_apprentice_entrance = Position::where('name', 'Aprendiz')->first();
-        $id_position_apprentice_programming = DbProgramacionPosition::where('name', 'Aprendiz')->first();
-        $id_status_apprentice = ApprenticeStatus::where('name', 'En Formacion')->first();
+        $position_apprentice = Position::where('name', 'Aprendiz')->first();
+        $status_apprentice = ApprenticeStatus::where('name', 'En Formacion')->first();
 
-        if (!$id_position_apprentice_entrance || !$id_position_apprentice_programming || !$id_status_apprentice) {
+        if (!$position_apprentice || !$status_apprentice) {
             return response()->json(['success' => false, 'message' => 'Datos de configuración faltantes'], 400);
         }
 
@@ -317,7 +278,6 @@ class EntranceAdminController extends Controller
 
                     if (isset($documentosExistentes[$document])) continue;
 
-                    // Validar fecha final >= fecha inicio
                     $fecha_inicio = !empty($row['FECHA_INICIO']) ? new \DateTime($row['FECHA_INICIO']) : null;
                     $fecha_fin = !empty($row['FECHA_FINALIZACION']) ? new \DateTime($row['FECHA_FINALIZACION']) : null;
 
@@ -326,48 +286,26 @@ class EntranceAdminController extends Controller
                     }
 
                     $nombre_completo = trim(($row['NOMBRES'] ?? '') . ' ' . ($row['APELLIDOS'] ?? ''));
+                    $town_name = strtolower(trim($row['MUNICIPIO'] ?? ''));
+                    $town_id = $towns_dictionary[$town_name] ?? null;
 
                     $person = Person::create([
                         'document_number' => $document,
-                        'id_position' => $id_position_apprentice_entrance->id,
+                        'id_position' => $position_apprentice->id,
                         'name' => $nombre_completo,
+                        'address' => trim($row['DIRECCION'] ?? ''),
+                        'phone_number' => trim($row['NUMERO_CELULAR'] ?? ''),
+                        'id_town' => $town_id,
+                        'email' => trim($row['CORREO'] ?? ''),
                         'start_date' => $fecha_inicio ? $fecha_inicio->format('Y-m-d') : null,
                         'end_date' => $fecha_fin ? $fecha_fin->format('Y-m-d') : null,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
 
-                    $person->days_available()->sync([1, 2, 3, 4, 5]);
-
-                    // Crear usuario solo si no existe
-                    if (!User::where('user_name', $document)->exists()) {
-                        User::create([
-                            'id_person' => $person->id,
-                            'user_name' => $document,
-                            'password' => bcrypt($document),
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
-                    }
-
-                    $town_name = strtolower(trim($row['MUNICIPIO'] ?? ''));
-                    $town_id = $towns_dictionary[$town_name] ?? null;
-
-                    $personProg = DbProgramacionPerson::create([
-                        'document_number' => $document,
-                        'id_position' => $id_position_apprentice_programming->id,
-                        'name' => $nombre_completo,
-                        'address' => trim($row['DIRECCION'] ?? ''),
-                        'phone_number' => trim($row['NUMERO_CELULAR'] ?? ''),
-                        'id_town' => $town_id,
-                        'email' => trim($row['CORREO'] ?? ''),
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-
                     Apprentice::create([
-                        'id_person' => $personProg->id,
-                        'id_status' => $id_status_apprentice->id,
+                        'id_person' => $person->id,
+                        'id_status' => $status_apprentice->id,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);

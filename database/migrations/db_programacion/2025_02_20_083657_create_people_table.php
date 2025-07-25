@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('email');
             $table->string('address');
             $table->string('phone_number');
+            //CAMPOS DE FECHA DE INICIO Y FIN
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

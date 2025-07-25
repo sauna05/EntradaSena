@@ -1,7 +1,7 @@
-<x-layout_asistencia>
+<x-layout>
     {{-- Titulo de la pagina --}}
     <x-slot:title>Detalle de Asistencia</x-slot:title>
- 
+
     {{-- Header - Navbar --}}
     <style>
         /* General Body & Container */
@@ -222,7 +222,7 @@ body {
 }
 
     </style>
- 
+
     <div class="container-custom">
         <h1 class="page-title">
             Detalle de Asistencia de: <span class="text-primary-custom">{{ $person->name }}</span>
@@ -283,4 +283,4 @@ body {
         @endif
     </div>
 
-</x-layout_asistencia>
+</x-layout>

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_entrada')->create('users', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('entrances_exits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_person')->constrained('people')->onUpdate('cascade')->onDelete('cascade'); 
-            $table->string('user_name')->unique();
-            $table->string('password');
-            $table->rememberToken();
+            $table->foreignId('id_person')->constrained('people')->onUpdate('cascade')->onDelete('cascade');
+            $table->dateTime('date_time');
+            $table->enum('action',['entrada','salida'])->default('entrada');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('entrances_exits');
     }
 };

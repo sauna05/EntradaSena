@@ -321,103 +321,113 @@
 
     <!-- Layout -->
     <div class="main-layout">
-
         <!-- Sidebar -->
         <nav class="sidebar" aria-label="Menú lateral">
             <ul class="sidebar-menu">
+
+                <!-- Inicio -->
                 <li>
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-home"></i> Inicio
-                        </a>
+                    <a class="menu-toggle">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('programming.admin') }}"><i class="fas fa-clipboard-list"></i> Gestión de Programas</a></li>
+                        <li><a href="{{ route('programing.competencies_program_index') }}"><i class="fas fa-link"></i> Competencias Vinculadas</a></li>
+                    </ul>
+                </li>
 
-                        <ul>
-                            <li><a href="{{ route('programming.admin') }}"><i class="fa-solid fa-clipboard-list"></i> Gestión Programas</a></li>
-                            <li><a href="{{ route('programing.competencies_program_index') }}"><i class="fa-solid fa-link"></i> Competencias Vinculadas</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-calendar-alt"></i> Programación
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('programming.programming_index_states') }}">
-                                    <i class="fa-solid fa-chart-line"></i> Estado Competencias
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('programmig.programaciones_index') }}">
-                                    <i class="fa-solid fa-table-list"></i> Programaciones
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('programming.register_programming_instructor_index') }}">
-                                    <i class="fa-solid fa-calendar-plus"></i> Programar Curso
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('programming.programming_update_index') }}">
-                                    <i class="fa-solid fa-pen-to-square"></i> Registrar Programación
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('programing.unrecorded_days_index') }}">
-                                    <i class="fa-solid fa-calendar-days"></i> Gestionar Calendario
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                <!-- Programación Académica -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-calendar-alt"></i> Programación Académica
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('programming.programming_index_states') }}"><i class="fas fa-tasks"></i> Estado de Competencias</a></li>
+                        <li><a href="{{ route('programmig.programaciones_index') }}"><i class="fas fa-list-ul"></i> Ver Programaciones</a></li>
+                        <li><a href="{{ route('programming.register_programming_instructor_index') }}"><i class="fas fa-calendar-plus"></i> Programar Curso</a></li>
+                        <li><a href="{{ route('programming.programming_update_index') }}"><i class="fas fa-edit"></i> Registrar Programación</a></li>
+                        <li><a href="{{ route('programing.unrecorded_days_index') }}"><i class="fas fa-calendar-times"></i> Días No Programados</a></li>
+                    </ul>
+                </li>
 
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-cubes"></i> Competencias
-                        </a>
-                        <ul>
-                            <li><a href="{{ route('programing.competencies_index') }}"><i class="fa-solid fa-list-check"></i> Gestión de Competencias</a></li>
-                            <li><a href="{{ route('programing.competencies_index_program') }}"><i class="fa-solid fa-share-nodes"></i> Vincular a Programas y Fichas</a></li>
+                <!-- Competencias -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-cubes"></i> Competencias
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('programing.competencies_index') }}"><i class="fas fa-check-square"></i> Gestión de Competencias</a></li>
+                        <li><a href="{{ route('programing.competencies_index_program') }}"><i class="fas fa-random"></i> Vincular a Programas y Fichas</a></li>
+                    </ul>
+                </li>
 
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-chalkboard-user"></i> Instructores
-                        </a>
-                        <ul>
-                            <li><a href="{{ route('programing.instructor_programan_index') }}"><i class="fa-solid fa-users-gear"></i> Gestión de Instructores</a></li>
-                            <li><a href="{{ route('programming.programming_instructors_profiles') }}"><i class="fa-solid fa-user-plus"></i> Vincular Competencias Al Perfil</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-user-graduate"></i> Aprendizes
-                        </a>
-                        <ul>
-                            <li><a href="{{ route('programing.list_apprentices') }}"><i class="fa-solid fa-address-card"></i> Gestión de Aprendiz</a></li>
-                            <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Vincular Aprendiz a Ficha</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-folder-open"></i> Fichas
-                        </a>
-                        <ul>
-                            <li><a href="{{ route('programing.cohort_index') }}"><i class="fa-solid fa-file-lines"></i> Gestión de Fichas</a></li>
-                            <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fa-solid fa-user-plus"></i> Agregar Aprendiz a Ficha</a></li>
+                <!-- Instructores -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-chalkboard-teacher"></i> Instructores
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('programing.instructor_programan_index') }}"><i class="fas fa-user-cog"></i> Gestión de Instructores</a></li>
+                        <li><a href="{{ route('programming.programming_instructors_profiles') }}"><i class="fas fa-user-tag"></i> Vincular al Perfil</a></li>
+                    </ul>
+                </li>
 
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="menu-toggle">
-                            <i class="fa-solid fa-building-user"></i> Ambientes
-                        </a>
-                        <ul>
-                            <li><a href="{{ route('ambientes_index') }}"><i class="fa-solid fa-warehouse"></i> Gestión de Ambientes</a></li>
+                <!-- Aprendices -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-user-graduate"></i> Aprendices
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('programing.list_apprentices') }}"><i class="fas fa-address-card"></i> Gestión de Aprendices</a></li>
+                        <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fas fa-user-plus"></i> Asignar a Fichas</a></li>
+                    </ul>
+                </li>
 
-                        </ul>
-                    </li>
+                <!-- Fichas -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-folder-open"></i> Fichas
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('programing.cohort_index') }}"><i class="fas fa-file-alt"></i> Gestión de Fichas</a></li>
+                        <li><a href="{{ route('programing.add_apprentices_cohorts') }}"><i class="fas fa-user-check"></i> Agregar Aprendiz</a></li>
+                    </ul>
+                </li>
+
+                <!-- Ambientes -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-door-open"></i> Ambientes
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('ambientes_index') }}"><i class="fas fa-warehouse"></i> Gestión de Ambientes</a></li>
+                    </ul>
+                </li>
+
+                <!-- Gestión de Personas -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-users"></i> Gestión de Personas
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('entrance.people.index') }}"><i class="fas fa-id-card"></i> Personas</a></li>
+                        <li><a href="{{ route('entrance.people.create') }}"><i class="fas fa-user-plus"></i> Registro de Personas</a></li>
+                    </ul>
+                </li>
+
+                <!-- Asistencia -->
+                <li>
+                    <a class="menu-toggle">
+                        <i class="fas fa-calendar-check"></i> Asistencia
+                    </a>
+                    <ul>
+                        <li><a href="{{ route('entrance.assistance.index') }}"><i class="fas fa-check-circle"></i> Control de Asistencia</a></li>
+                    </ul>
+                </li>
+
             </ul>
         </nav>
+
 
         <!-- Contenido principal -->
         <main class="content">

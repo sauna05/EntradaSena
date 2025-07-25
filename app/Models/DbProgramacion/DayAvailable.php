@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\DbEntrada;
+namespace App\Models\DbProgramacion;
 
 use Illuminate\Database\Eloquent\Model;
 
 class DayAvailable extends Model
 {
-    protected $connection = 'db_entrada';
+    protected $connection = 'db_programacion';
 
     protected $table = 'days_available';
 

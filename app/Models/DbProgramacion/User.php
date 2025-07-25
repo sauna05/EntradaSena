@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Models\DbEntrada;
+namespace App\Models\DbProgramacion;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User  extends Authenticatable
 {
     //HasRoles para identificar que usará roles de la manera en que se usan en la dependencia spatie-permissions
-    use HasRoles, HasFactory; 
-   
+    use HasRoles, HasFactory;
+
 
     protected $guard_name = 'web';
-    
+
     #Nombre de la base de datos
-    protected $connection = 'db_entrada';
+    protected $connection = 'db_programacion';
 
     #Nombre de la tabla - los modelos se crean en singular y las tablas en plural
     protected $table =  'users';
@@ -40,7 +40,7 @@ class User  extends Authenticatable
 
     public function person()
     {
-        return $this->hasOne(Person::class, 'document_number', 'name'); 
+        return $this->hasOne(Person::class, 'document_number', 'name');
     }
 
 

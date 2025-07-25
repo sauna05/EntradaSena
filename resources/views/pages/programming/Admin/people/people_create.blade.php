@@ -1,5 +1,5 @@
 
-<x-layout_asistencia>
+<x-layout>
     {{-- Librerías y meta --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -379,4 +379,4 @@
         });
     </script>
 
-</x-layout_asistencia>
+</x-layout>

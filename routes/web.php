@@ -60,15 +60,15 @@ Route::get('/assistance/export', [AssistanceController::class, 'exportExcel'])->
 //Modulo Entrada - Aprendiz
 Route::get('entrance/apprentice/{id}', [ApprenticeController::class, 'show'])->name('apprentice.show');
 
-//Modulo Entrada - Inasistencias
-Route::get('entrance/admin/absences', [AbsenceController::class, 'absenceIndex'])->middleware('can:entrance.absence.index')->name('entrance.absence.index');
-Route::get('entrance/admin/absences/{id}', [AbsenceController::class, 'absenceShow'])->middleware('can:entrance.absence.show')->name('entrance.absence.show');
+// //Modulo Entrada - Inasistencias
+// Route::get('entrance/admin/absences', [AbsenceController::class, 'absenceIndex'])->middleware('can:entrance.absence.index')->name('entrance.absence.index');
+// Route::get('entrance/admin/absences/{id}', [AbsenceController::class, 'absenceShow'])->middleware('can:entrance.absence.show')->name('entrance.absence.show');
 
-Route::get('entrance/justify-absence/{id}', [AbsenceController::class, 'absenceAnswer'])->name('entrance.absence.answer'); //Formulario que se le abre al arendiz para poner el motivo de su inasistencia
+// Route::get('entrance/justify-absence/{id}', [AbsenceController::class, 'absenceAnswer'])->name('entrance.absence.answer'); //Formulario que se le abre al arendiz para poner el motivo de su inasistencia
 
-Route::put('entrance/justify-absence/answer/{id}', [AbsenceController::class, 'AbsenceUpdateAnswered'])->name('entrance.absence.update.answer'); //Se guarda  en base a lo responddido por el aprendiz en el formulario de inasistencia
+// Route::put('entrance/justify-absence/answer/{id}', [AbsenceController::class, 'AbsenceUpdateAnswered'])->name('entrance.absence.update.answer'); //Se guarda  en base a lo responddido por el aprendiz en el formulario de inasistencia
 
-Route::put('entrance/justify-absence/{id}', [AbsenceController::class, 'AbsenceUpdateReaded'])->name('entrance.absence.update.readed'); //Se guarda si el administrador de la entrada ya leyó la excusa de inasistencia de alguien
+// Route::put('entrance/justify-absence/{id}', [AbsenceController::class, 'AbsenceUpdateReaded'])->name('entrance.absence.update.readed'); //Se guarda si el administrador de la entrada ya leyó la excusa de inasistencia de alguien
 
 
 //  Route::get('entrance/justify-absence/{id}',[AbsenceController::class,''])

@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders\DbEntrada;
+namespace Database\Seeders\DbProgramacion;
 
 use Illuminate\Database\Seeder;
-use App\Models\DbEntrada\People_days_available;
-use App\Models\DbEntrada\EntranceExit;
+use App\Models\DbProgramacion\People_days_available;
+use App\Models\DbProgramacion\EntranceExit;
 use Illuminate\Support\Carbon;
 
 class PersonSeederExit extends Seeder

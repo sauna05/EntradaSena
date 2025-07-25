@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\DbEntrada;
 
 use App\Http\Controllers\Controller;
-use App\Models\DbEntrada\Person;
-use App\Models\DbEntrada\Position;
+use App\Models\DbProgramacion\Person;
+use App\Models\DbProgramacion\Position;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -65,7 +65,7 @@ class AssistanceController extends Controller
         $totalPersons = $persons->count();
 
         if ($totalPersons === 0) {
-            return view('pages.entrance.admin.assistance.assistance_index', [
+            return view('pages.programming.Admin.assistance.assistance_index', [
                 'formattedPersons' => [],
                 'positions' => $positions,
                 'totalPersons' => 0,
@@ -143,7 +143,7 @@ class AssistanceController extends Controller
             $formattedPersons = array_values($formattedPersons);
         }
 
-        return view('pages.entrance.admin.assistance.assistance_index', [
+        return view('pages.programming.Admin.assistance.assistance_index', [
             'formattedPersons' => $formattedPersons,
             'positions' => $positions,
             'totalPersons' => count($formattedPersons),

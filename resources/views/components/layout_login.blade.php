@@ -41,12 +41,12 @@
             margin-left: 5px;
             cursor: help;
         }
-        
+
         .module-info-icon {
             color: var(--verde-sena);
             font-size: 0.9em;
         }
-        
+
         .module-tooltip {
             visibility: hidden;
             width: 300px;
@@ -66,12 +66,12 @@
             font-weight: normal;
             line-height: 1.4;
         }
-        
+
         .module-info:hover .module-tooltip {
             visibility: visible;
             opacity: 1;
         }
-        
+
         .module-tooltip::after {
             content: "";
             position: absolute;
@@ -82,7 +82,7 @@
             border-style: solid;
             border-color: #333 transparent transparent transparent;
         }
-        
+
         .form-description {
             text-align: center;
             margin-bottom: 1.5rem;
@@ -299,21 +299,21 @@
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .header-container {
                 margin-bottom: 10px;
             }
-            
+
             .texto-header {
                 font-size: 20px;
             }
-            
+
             .login-form {
                 width: 100%;
                 max-width: 360px;
                 padding: 1.5rem;
             }
-            
+
             .form-container {
                 gap: 1.5rem;
             }
@@ -323,11 +323,11 @@
             .logo-header, .logo-footer {
                 height: 50px;
             }
-            
+
             .texto-header {
                 font-size: 18px;
             }
-            
+
             .login-form {
                 padding: 1.2rem;
             }
@@ -337,7 +337,7 @@
 
 
 <body>
-    
+
     <!-- Header -->
     <header class="header">
         <div class="header-container">
@@ -348,12 +348,12 @@
             <i class="fas fa-door-open"></i> Gestión de Entrada
         </a>
     </header>
-    
+
 
     <!-- Main Content -->
     <main class="main-content">
         <div class="form-container">
-           
+
             <!-- FORMULARIO PROGRAMACIÓN -->
             <form class="login-form" action="{{ route('programming-login') }}" method="POST">
                 @csrf
@@ -373,41 +373,41 @@
                 </div>
                 <div class="input-group" style="position: relative;">
                     <label for="password_program">Contraseña</label>
-                
+
                     <input type="password" id="password_program" name="password" placeholder="Tu contraseña">
-                    
+
                     <!-- Ojito dentro del input -->
-                    <i class="fas fa-eye-slash" id="eyeIcon" 
+                    <i class="fas fa-eye-slash" id="eyeIcon"
                        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #7f8c8d;"></i>
-                
+
                     <!-- Checkbox debajo a la derecha -->
                     <div style="position: absolute; right: 10px; bottom: -25px; display: flex; align-items: center; gap: 4px;">
                         <input type="checkbox" id="togglePassword" style="cursor: pointer;">
                         <label for="togglePassword" style="cursor: pointer; font-size: 0.85rem; color: #7f8c8d;">Mostrar</label>
                     </div>
                 </div>
-                
-                
-                
-                
+
+
+
+
 
                 <div class="input-group">
                     <label for="module">Ingresar a:</label>
                     <i class="fas fa-list"></i>
                     <select id="module" name="module">
                         <option value="Administrador_programacion">Gestión de Programación</option>
-                        <option value="Administrador_asistencia">Gestión de Asistencia</option>
+                        {{-- <option value="Administrador_asistencia">Gestión de Asistencia</option> --}}
                     </select>
                 </div>
 
                 <button type="submit" class="submit-btn">Ingresar</button>
-                
+
             </form>
-            
+
         </div>
     </main>
-    
-    
+
+
 
     <!-- Footer -->
     <footer class="footer">
@@ -418,7 +418,7 @@
         const toggle = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password_program');
         const eyeIcon = document.getElementById('eyeIcon');
-    
+
         toggle.addEventListener('change', function () {
             if (this.checked) {
                 passwordInput.type = 'text';
@@ -431,6 +431,6 @@
             }
         });
     </script>
-    
+
 </body>
 </html>

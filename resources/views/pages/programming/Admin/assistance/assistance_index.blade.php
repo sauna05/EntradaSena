@@ -1,4 +1,4 @@
-<x-layout_asistencia>
+<x-layout>
     {{-- CSS --}}
     <x-slot:page_style></x-slot:page_style>
     {{-- Título --}}
@@ -506,4 +506,4 @@
 
 </script>
 
-</x-layout_asistencia>
+</x-layout>

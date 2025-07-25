@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_entrada')->create('entrances_exits', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('days_available', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_person')->constrained('people')->onUpdate('cascade')->onDelete('cascade');
-            $table->dateTime('date_time');
-            $table->enum('action',['entrada','salida'])->default('entrada');
+            $table->string('name');
+            $table->string('name_english');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('entrances_exits');
+        Schema::dropIfExists('days_available');
     }
 };

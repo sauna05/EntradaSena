@@ -17,6 +17,35 @@ class Person extends Model
         'end_date' => 'date'
     ];
 
+
+    public function People_days_available()
+    {
+        return $this->hasMany(People_days_available::class, 'id_person');
+    }
+    public function entrances_exits()
+    {
+        return $this->hasMany(EntranceExit::class, 'id_person');
+    }
+
+    //Los días que puede venir una persona al centro de formación
+    public function days_available()
+    {
+        return $this->belongsToMany(DayAvailable::class, 'people_days_available', 'id_person', 'id_day_available');
+    }
+    //Una persona PUEDE tener varias notificaciones de inasistencia
+    // public function notifications_absences()
+    // {
+    //     return $this->hasMany(NotificationAbsence::class);
+    // }
+
+    //El correo está en otra base de datos, con esto de obtendrá el correo automaticamnete
+    // public function routeNotificationForMail()
+    // {
+    //     return DbProgramacionPerson::where('document_number', $this->document_number)
+    //         ->value('email');
+    // }
+
+
     //Una persona tiene un cargo
     public function position()
     {

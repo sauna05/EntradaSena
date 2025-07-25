@@ -37,40 +37,40 @@ class Person extends Model
     }
 
     //Una persona tiene muchas entradas y salidas
-    public function entrances_exits()
-    {
-        return $this->hasMany(EntranceExit::class, 'id_person');
-    }
+    // public function entrances_exits()
+    // {
+    //     return $this->hasMany(EntranceExit::class, 'id_person');
+    // }
 
-    public function People_days_available()
-    {
-        return $this->hasMany(People_days_available::class, 'id_person');
-    }
+    // public function People_days_available()
+    // {
+    //     return $this->hasMany(People_days_available::class, 'id_person');
+    // }
 
 
 
     //Una persona puede tener varios usuarios
     //(osea, personas con roles diferentes de aprendiz e instructor)
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
+    // public function users()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
 
-    //Los días que puede venir una persona al centro de formación
-    public function days_available()
-    {
-        return $this->belongsToMany(DayAvailable::class, 'people_days_available', 'id_person', 'id_day_available');
-    }
-    //Una persona PUEDE tener varias notificaciones de inasistencia
-    public function notifications_absences()
-    {
-        return $this->hasMany(NotificationAbsence::class);
-    }
+    // //Los días que puede venir una persona al centro de formación
+    // // public function days_available()
+    // // {
+    // //     return $this->belongsToMany(DayAvailable::class, 'people_days_available', 'id_person', 'id_day_available');
+    // // }
+    // //Una persona PUEDE tener varias notificaciones de inasistencia
+    // public function notifications_absences()
+    // {
+    //     return $this->hasMany(NotificationAbsence::class);
+    // }
 
-    //El correo está en otra base de datos, con esto de obtendrá el correo automaticamnete
-    public function routeNotificationForMail()
-    {
-        return DbProgramacionPerson::where('document_number', $this->document_number)
-            ->value('email');
-    }
+    // //El correo está en otra base de datos, con esto de obtendrá el correo automaticamnete
+    // public function routeNotificationForMail()
+    // {
+    //     return DbProgramacionPerson::where('document_number', $this->document_number)
+    //         ->value('email');
+    // }
 }

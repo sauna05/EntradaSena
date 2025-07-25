@@ -17,7 +17,7 @@ class AuthController extends Controller
             $request->validate([
                 'user_name' => 'required',
                 'password' => 'required',
-                'module' => 'required|in:Administrador_programacion,Administrador_asistencia',
+                'module' => 'required|in:Administrador_programacion',
             ]);
 
             // Solo se pasan las credenciales válidas al Auth
@@ -28,12 +28,13 @@ class AuthController extends Controller
                 $selectedRole = $request->input('module');
 
                 if ($user->hasRole($selectedRole)) {
-                    // Redirección según el módulo seleccionado
-                    if ($selectedRole === 'Administrador_programacion') {
-                        return redirect()->route('programming.admin');
-                    } elseif ($selectedRole === 'Administrador_asistencia') {
-                        return redirect()->route('entrance.people.index');
-                    }
+                // Redirección según el módulo seleccionado
+                // if ($selectedRole === 'Administrador_programacion') {
+                //     return redirect()->route('programming.admin');
+                // } elseif ($selectedRole === 'Administrador_asistencia') {
+                //     return redirect()->route('entrance.people.index');
+                // }
+                   return redirect()->route('programming.admin');
                 } else {
                     Auth::logout();
                     $request->session()->invalidate();

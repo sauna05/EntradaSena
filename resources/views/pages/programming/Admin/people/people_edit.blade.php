@@ -1,4 +1,4 @@
-<x-layout_asistencia>
+<x-layout>
     <x-slot:title>Editar Registro</x-slot:title>
 
     <style>
@@ -220,7 +220,7 @@
 
             {{-- Botón Guardar --}}
             <button type="submit" class="btn-register">Guardar Cambios</button>
-            
+
         </form>
         <div class="delete-section">
             <form action="{{ route('entrance.people.delete', $person->id) }}" method="POST" onsubmit="return eliminarReturn()">
@@ -231,7 +231,7 @@
         </div>
 
         {{-- Eliminar --}}
-        
+
     </div>
 
     {{-- Confirmación para eliminar --}}
@@ -240,4 +240,4 @@
             return confirm("¿Está seguro que desea eliminar este registro?");
         }
     </script>
-</x-layout_asistencia>
+</x-layout>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\DbEntrada;
+namespace Database\Seeders\DbProgramacion;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -14,11 +14,12 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // 🔁 Forzar conexión al modelo en tiempo de ejecución
-        app(Role::class)->setConnection('db_entrada');
-        app(Permission::class)->setConnection('db_entrada');
+        app(Role::class)->setConnection('db_programacion');
+        app(Permission::class)->setConnection('db_programacion');
 
-        // Crear roles de gestion de asistencia y programacion
-        $role1 = Role::create(['name' => 'Administrador_asistencia']);
+        // Crear roles de gestion de asistencia y programacion para los diferentes usuarios en este caso por ahora solo esta Administrador programacion ADMIN PRINCIPAL
+        // $role1 = Role::create(['name' => 'Administrador_asistencia']);
+        //rolo administrador programacion ahora tambien sera de asitencias
         $role10 = Role::create(['name' => 'Administrador_programacion']);
 
         $role2 = Role::create(['name' => 'Admin-Entrada']);
@@ -36,28 +37,28 @@ class RoleSeeder extends Seeder
         // Permission::create(['name' => 'entrance.store'])->syncRoles([$role3]);
 
         // Permisos del módulo de administración de la entrada
-        Permission::create(['name' => 'entrance.admin'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.index'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.create'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.store'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.update'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.delete'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.show'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.excel.upload'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.people.edit'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.admin'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.index'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.create'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.store'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.update'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.delete'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.show'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.excel.upload'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.people.edit'])->syncRoles([$role10, $role2]);
 
         // Permisos para inasistencias
-        Permission::create(['name' => 'entrance.absence.index'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.absence.show'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.absence.index'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.absence.show'])->syncRoles([$role10, $role2]);
 
         // Permisos para asistencia
-        Permission::create(['name' => 'entrance.assistance.index'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.assistance.show'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.assistance.show_history'])->syncRoles([$role1, $role2]);
-        Permission::create(['name' => 'entrance.assistance.all'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.assistance.index'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.assistance.show'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.assistance.show_history'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.assistance.all'])->syncRoles([$role10, $role2]);
 
         // Permiso para exportar en Excel
-        Permission::create(['name' => 'entrance.assistance.export'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'entrance.assistance.export'])->syncRoles([$role10, $role2]);
 
 
         //---------------------- Permisos del módulo de Programación -------------------------------
@@ -72,7 +73,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role10, $role5]);
         Permission::create(['name' => 'programmig.programming_cohort_Register'])->syncRoles([$role10, $role5]);
         // Permiso para entrada de los aprendices
-        Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
+        Permission::create(['name' => 'apprentice.show'])->assignRole($role10);
 
         //permisos para la vista y de reprogramacion
         Permission::create(['name' => 'programmig.programming_update_index'])->syncRoles([$role10, $role5]);

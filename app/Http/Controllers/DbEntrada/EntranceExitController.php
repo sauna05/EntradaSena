@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\DbEntrada;
 
 use App\Http\Controllers\Controller;
-use App\Models\DbEntrada\EntranceExit;
-use App\Models\DbEntrada\Person;
+use App\Models\DbProgramacion\EntranceExit;
+use App\Models\DbProgramacion\Person;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;

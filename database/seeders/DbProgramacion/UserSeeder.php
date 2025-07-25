@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Seeders\DbEntrada;
+namespace Database\Seeders\DbProgramacion;
 
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\DbEntrada\User;
+use App\Models\DbProgramacion\User;
 
 use Illuminate\Support\Facades\Hash;
 use Str;
@@ -24,13 +24,14 @@ class UserSeeder extends Seeder
 
         // ]);
 
-        User::create([
-            'id_person' => 1,
-            'user_name' => 'MarlonSaenz',
-            'password' => bcrypt("123123")
-        ])->assignRole('Administrador_asistencia');
+        // User::create([
+        //     'id_person' => 1,
+        //     'user_name' => 'MarlonSaenz',
+        //     'password' => bcrypt("123123")
+        // ])->assignRole('Administrador_asistencia');
 
 
+        //usuario general ahora 
         User::create([
             'id_person' => 1,
             'user_name' => 'loperena',

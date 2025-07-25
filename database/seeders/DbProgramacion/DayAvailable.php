@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\DbEntrada;
+namespace Database\Seeders\DbProgramacion;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,7 +13,7 @@ class DayAvailable extends Seeder
      */
     public function run(): void
     {
-       DB::connection('db_entrada')->table('days_available')->insert([
+       DB::connection('db_programacion')->table('days_available')->insert([
         ['name' => 'Lunes', 'name_english' => 'Monday', 'created_at' => now(), 'updated_at' => now()],
         ['name' => 'Martes', 'name_english' => 'Tuesday', 'created_at' => now(), 'updated_at' => now()],
         ['name' => 'Miércoles', 'name_english' => 'Wednesday', 'created_at' => now(), 'updated_at' => now()],

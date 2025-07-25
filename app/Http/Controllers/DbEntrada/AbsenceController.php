@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\DbEntrada;
+namespace App\Http\Controllers\DbProgramacion;
 
 use App\Http\Controllers\Controller;
 use App\Models\DbEntrada\NotificationAbsence;
@@ -74,13 +74,13 @@ class AbsenceController extends Controller
         ]);
 
         $absence = NotificationAbsence::first()->where('id_person',$id);
-        
+
         //Si se envió una imagen
         if($data['image']){
             $image = $request->file('excuse_image');
             $name_image = uniqid() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('excuse_images', $name_image, 'public');
-         
+
         $absence->update([
             'state' => 'respondida',
             'excuse_image' => $name_image,
@@ -93,7 +93,7 @@ class AbsenceController extends Controller
                 'motive' => $data["motive"]
             ]);
         }
-        
+
         return redirect()->route('login')->with("message", "Respondido Exitosamente");
 
     }
@@ -101,7 +101,7 @@ class AbsenceController extends Controller
     public function AbsenceUpdateReaded(Request $request, $id)
     {
         $absence = NotificationAbsence::first()->where('id_person',$id);
-        
+
         $absence->update([
             'readed' => '1'
         ]);

@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\DbEntrada\User::class),
+            'model' => env('AUTH_MODEL', App\Models\DbProgramacion\User::class),
             //Yo añadí el dbEntrada, cualquier cosa quitarlo
         ],
 
@@ -75,7 +75,7 @@ return [
         'providers' => [
             'users' => [
                 'driver' => 'eloquent',
-                'model' => App\Models\DbEntrada\User::class,
+                'model' => App\Models\DbProgramacion\User::class,
                 //Yo añadí el dbEntrada, cualquier cosa quitarlo
             ],
 

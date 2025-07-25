@@ -1,4 +1,4 @@
-<x-layout_asistencia>
+<x-layout>
     <x-slot:title>CAA</x-slot:title>
 
     <style>
@@ -89,7 +89,7 @@
                 <p><strong>Fecha de inicio:</strong> {{$person->start_date->format('Y/m/d')}}</p>
                 <p><strong>Fecha de finalización:</strong> {{$person->end_date->format('Y/m/d')}}</p>
             </div>
-    
+
             <div class="card">
                 <h2>Días que puede ir la persona al centro</h2>
                 <div class="days-available">
@@ -108,7 +108,7 @@
                     @endforeach
                 </div>
             </div>
-    
+
             <form action="{{ route('entrance.people.edit', $person->id) }}" method="GET">
                 @csrf
                 <button type="submit">Actualizar Datos</button>
@@ -117,4 +117,4 @@
 
     </div>
 
-</x-layout_asistencia>
+</x-layout>

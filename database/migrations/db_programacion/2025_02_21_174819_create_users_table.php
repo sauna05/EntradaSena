@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('db_entrada')->create('days_available', function (Blueprint $table) {
+        Schema::connection('db_programacion')->create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('name_english');
+            $table->foreignId('id_person')->constrained('people')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('user_name')->unique();
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('days_available');
+        Schema::dropIfExists('users');
     }
 };

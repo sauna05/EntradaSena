@@ -11,12 +11,11 @@ use Database\Seeders\DbProgramacion\CohortTimeSeeder;
 use Database\Seeders\DbProgramacion\PersonSeeder as Db_programacionPersonSeeder;
 use Database\Seeders\DbProgramacion\PositionSeeder as Db_programacionPositionSeeder;
 use Database\Seeders\DbProgramacion\TownSeeder;
-use Database\Seeders\DbEntrada\DayAvailable;
-use Database\Seeders\DbEntrada\PersonSeeder;
-use Database\Seeders\DbEntrada\PersonSeederExit;
-use Database\Seeders\DbEntrada\PositionSeeder;
-use Database\Seeders\DbEntrada\RoleSeeder;
-use Database\Seeders\DbEntrada\UserSeeder;
+use Database\Seeders\DbProgramacion\DayAvailable;
+use Database\Seeders\DbProgramacion\PersonSeeder;
+use Database\Seeders\DbProgramacion\PersonSeederExit;
+use Database\Seeders\DbProgramacion\RoleSeeder;
+use Database\Seeders\DbProgramacion\UserSeeder;
 use Database\Seeders\DbProgramacion\ApprenticeStatusSeeder;
 use Database\Seeders\DbProgramacion\BlokSeeder;
 use Database\Seeders\DbProgramacion\ClassRoomSeeder;
@@ -45,19 +44,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        //Seeders para la base de datos de la entrada
-        Config::set('database.default', 'db_entrada');
-        DB::connection('db_entrada')->beginTransaction();
+        // //Seeders para la base de datos de la entrada
+        // Config::set('database.default', 'db_entrada');
+        // DB::connection('db_entrada')->beginTransaction();
 
-        $this->call([
-            PositionSeeder::class,
-            RoleSeeder::class,
-            PersonSeeder::class,
-            UserSeeder::class,
-            DayAvailable::class,
-            PersonSeederExit::class
-        ]);
-        DB::connection('db_entrada')->commit();
+        // $this->call([
+        //     PositionSeeder::class,
+        //     // RoleSeeder::class,
+        //     // PersonSeeder::class,
+        //     // UserSeeder::class,
+        //     // DayAvailable::class,
+        //     // PersonSeederExit::class
+        // ]);
+        // DB::connection('db_entrada')->commit();
 
         //Seeders para la base de datos de programación
         Config::set('database.default', 'db_programacion');
@@ -65,9 +64,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             Db_programacionPositionSeeder::class,
+            RoleSeeder::class,
             TownSeeder::class,
+            PersonSeeder::class,
+            UserSeeder::class,
+            DayAvailable::class,
+            PersonSeederExit::class,
+
             CohortTimeSeeder::class,
-            Db_programacionPersonSeeder::class,
             LinkTypeSeeder::class,
             SpecialitySeeder::class,
             InstructorStatusSeeder::class,

@@ -1,4 +1,4 @@
-<x-layout_asistencia>
+<x-layout>
     <x-slot:page_style></x-slot:page_style>
     <x-slot:title>CAA</x-slot:title>
 
@@ -66,25 +66,43 @@
             padding-left: 35px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            background-color: white;
-            border-radius: 6px;
-            overflow: hidden;
-        }
+       .table-responsive {
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: auto;
+        border-radius: 12px;
+    }
 
-        th, td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #dee2e6;
-        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+    }
 
-        th {
-            background-color: #e9ecef;
-            text-align: left;
-            color: #495057;
-        }
+    thead {
+        background-color: #ecf0f1;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    thead th {
+        padding: 12px;
+        text-align: left;
+        color: #2c3e50;
+        font-weight: bold;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tbody td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
 
         tr:hover {
             background-color: #f8f9fa;
@@ -196,6 +214,7 @@
                     <i class="fas fa-info-circle"></i> No se encontraron resultados
                 </div>
             @else
+             <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
@@ -226,11 +245,10 @@
                         @endforeach
                     </tbody>
                 </table>
+             </div>
             @endif
         </section>
 
-        <div class="pagination">
-            {{ $person->links() }}
-        </div>
+      
     </div>
-</x-layout_asistencia>
+</x-layout>
