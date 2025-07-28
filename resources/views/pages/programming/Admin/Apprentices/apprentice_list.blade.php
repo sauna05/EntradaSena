@@ -1,7 +1,6 @@
 <x-layout>
     <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Listado de Aprendices por Ficha</x-slot:title>
-    
 
     <style>
         .container {
@@ -26,20 +25,47 @@
             margin-bottom: 20px;
         }
 
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filters label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .filters select {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-width: 200px;
+            background-color: #fff;
+            font-size: 14px;
+        }
+
         .table-container {
-            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        thead {
+        thead th {
             background-color: #ecf0f1;
             color: #2c3e50;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         th, td {
@@ -63,23 +89,33 @@
         <h2 class="title">Aprendices asignados a Fichas</h2>
 
         @if(session('success'))
-            <div class="success-message">
-                {{ session('success') }}
-            </div>
+            <div class="success-message">{{ session('success') }}</div>
         @endif
 
         <form method="GET" action="">
-        <label for="combo_ficha">Seleccionar ficha y programa:</label>
-        <select name="combo_ficha" id="combo_ficha" onchange="this.form.submit()">
-            <option value="">-- Todas --</option>
-            @foreach($fichas as $ficha)
-                <option value="{{ $ficha['id'] }}" {{ request('combo_ficha') == $ficha['id'] ? 'selected' : '' }}>
-                    {{ $ficha['ficha'] }} - {{ $ficha['programa'] }}
-                </option>
-            @endforeach
-        </select>
-    </form>
+            <div class="filters">
+                <div>
+                    <label for="combo_ficha">Ficha y Programa:</label>
+                    <select name="combo_ficha" id="combo_ficha" onchange="this.form.submit()">
+                        <option value="">-- Todas --</option>
+                        @foreach($fichas as $ficha)
+                            <option value="{{ $ficha['id'] }}" {{ request('combo_ficha') == $ficha['id'] ? 'selected' : '' }}>
+                                {{ $ficha['ficha'] }} - {{ $ficha['programa'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
+                <div>
+                    <label for="etapa">Filtrar por Etapa:</label>
+                    <select name="etapa" id="etapa" onchange="this.form.submit()">
+                        <option value="">-- Todas --</option>
+                        <option value="lectiva" {{ request('etapa') == 'lectiva' ? 'selected' : '' }}>Lectiva</option>
+                        <option value="practica" {{ request('etapa') == 'practica' ? 'selected' : '' }}>Práctica</option>
+                    </select>
+                </div>
+            </div>
+        </form>
 
         <div class="table-container">
             <table>
@@ -91,10 +127,10 @@
                         <th>Correo</th>
                         <th>Ficha</th>
                         <th>Programa</th>
-                        <th>Fecha inicio lectiva</th>
-                        <th>Fecha fin lectiva</th>
-                        <th>Fecha inicio práctica</th>
-                        <th>Fecha fin práctica</th>
+                        <th>Inicio Lectiva</th>
+                        <th>Fin Lectiva</th>
+                        <th>Inicio Práctica</th>
+                        <th>Fin Práctica</th>
                     </tr>
                 </thead>
                 <tbody>

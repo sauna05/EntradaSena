@@ -205,6 +205,7 @@
             <section id="form_Instructor" class="ocult form">
                 <div><label for="id_link_type">Tipo de Vinculación</label>
                     <select name="id_link_type" id="id_link_type">
+                        <option value="">Selecione Tipo vinculacion</option>
                         @foreach ($link_types as $id => $link_type)
                             <option value="{{ $link_type->id }}" {{ old('id_link_type') == $link_type->id ? 'selected' : '' }}>
                                 {{ $link_type->name }}
@@ -216,6 +217,7 @@
 
                 <div><label for="id_speciality">Especialidad</label>
                     <select name="id_speciality" id="id_speciality">
+                        <option value="">Selecione Especialidad</option>
                         @foreach ($specialities as $id => $speciality)
                             <option value="{{ $id }}" {{ old('id_speciality') == $id ? 'selected' : '' }}>
                                 {{ $speciality->name }}

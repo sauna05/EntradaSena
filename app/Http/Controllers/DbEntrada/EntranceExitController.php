@@ -16,48 +16,41 @@ class EntranceExitController extends Controller
     public function create(){
         return view('pages.entrance.entrance');
     }
-
-    public function store(Request $request){
-        //Registrar la entrada
-        // Obtener el número de documento  de la persona para buscar a la persona
-
-        //si la persona no existe en la db, mostrar que no existe
-        //Si la persona si existe, agregar el registro en la tabla entrances_exits
-
-        //Si es el primer registro de la persona en el día, se le guarda entrada,
-        //si ya tiene registro en ese mismo día, se le guarda salida y se repite el ciclo
-
-        //Si la fecha acutual no está entre el
-        //rango de fechas de entrada-salida en la db, saldrá la entrada prohibida
-
-        //luego tomar los datos de esa persona para luego mostrarlos en el front-end de la pagina de la entrada
-
-       $data= $request->validate([
+    public function store(Request $request)
+    {
+        $data = $request->validate([
             'document_number' => 'required|string|max:12|min:9'
         ]);
 
         $person = Person::where('document_number', $data['document_number'])->first();
 
-        //Se toma la posición de la persona
-        $position = $person->position->position;
-
-        //Si la fecha actual no está dentro del rango de fechas de inicio y final de la persona en el centro de formación
-        //No se le dará permiso
-        if (($person->start_date > now() || $person->end_date < now()) || false) {
+        // Si no se encuentra ninguna persona con ese documento
+        if (!$person) {
             return response()->json([
-                'action' => "ACCESO RESTRINGIDO",
-                'position' => "No forma parte del centro actualmente",
+                'action' => "DOCUMENTO NO REGISTRADO",
+                'position' => "N/A",
+                'name' => "Desconocido"
+            ]);
+        }
+
+        // Se toma la posición de la persona
+        $position = $person->position->position ?? 'No definida';
+
+        // Validar fechas de entrada y salida del centro
+        if (($person->start_date > now() || $person->end_date < now())) {
+            return response()->json([
+                'action' => "ACCESO RESTRINGIDO USTED YA NO HACE PARTE DEL CENTRO DE FORMACION",
+                'position' => $position,
                 'name' => $person->name
             ]);
         }
 
-
-        //Se obtiene el día de hoy en ingles EJ Martes = Tuesday
+        // Día actual
         $currentDay = Carbon::now()->format('l');
 
         $isAvailable = $person->days_available()->where('name_english', $currentDay)->exists();
 
-        if(!$isAvailable){
+        if (!$isAvailable) {
             return response()->json([
                 'action' => "NO PUEDE ACCEDER HOY AL CENTRO DE FORMACIÓN",
                 'position' => $position,
@@ -65,39 +58,37 @@ class EntranceExitController extends Controller
             ]);
         }
 
-        //ultima asistencia de la persona
-        $last_assistance = EntranceExit::where('id_person',$person->id)
-        ->orderBy('date_time', 'desc')
-        ->first();
+        // Última asistencia
+        $last_assistance = EntranceExit::where('id_person', $person->id)
+            ->orderBy('date_time', 'desc')
+            ->first();
 
-        //La acción es 'entrada' por defecto(se registra primero entrada todos los días)
         $action = "entrada";
 
-        //Si es la primera vez que la persona registra asistencia
         if (is_null($last_assistance)) {
-           EntranceExit::create([
-                'id_person' => $person->id,
-                'date_time' => now(),
-                'action' => $action
-            ]);
-        //si se está tomando asistencia un día diferente de la ultima asistencia, se registra entrada
-        }elseif ($last_assistance->date_time->day != now()->day){
+            // Primer registro
             EntranceExit::create([
                 'id_person' => $person->id,
                 'date_time' => now(),
                 'action' => $action
             ]);
-            //si se está tomando el mismo día y el ultimo registro fue entrada, se registrará salida
-        }elseif($last_assistance->action == "entrada"){
+        } elseif ($last_assistance->date_time->day != now()->day) {
+            // Día diferente → entrada
+            EntranceExit::create([
+                'id_person' => $person->id,
+                'date_time' => now(),
+                'action' => $action
+            ]);
+        } elseif ($last_assistance->action == "entrada") {
+            // Ya marcó entrada hoy → salida
             $action = "salida";
             EntranceExit::create([
                 'id_person' => $person->id,
                 'date_time' => now(),
                 'action' => $action
             ]);
-            //Si no cae en ninguno de los casos anteriores
-            //Es entrada normal
-        }else{
+        } else {
+            // Entrada normal
             EntranceExit::create([
                 'id_person' => $person->id,
                 'date_time' => now(),
@@ -105,17 +96,12 @@ class EntranceExitController extends Controller
             ]);
         }
 
-        //Se toma la posición de la persona
-        $position = $person->position->name;
+        $position = $person->position->name ?? 'No definida';
 
-         return response()->json([
+        return response()->json([
             'action' => $action,
             'position' => $position,
             'name' => $person->name
         ]);
     }
 }
-
-//se toma la asistencia con la tabla personas
-
-//se mira los datos de uno como usuario

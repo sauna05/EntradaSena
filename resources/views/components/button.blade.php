@@ -2,4 +2,4 @@
 directamente es POR SI NO LLEGAN A ENVIAR dicha propiedad cuando llaman al componente --}}
 @props(['type'=>'button', 'id'=>'', 'class' => 'btn'])
 
-<button type="{{$type}}" id="" class="{{$class}}">{{$slot}}</button>
+<button style="cursor: pointer" type="{{$type}}" id="" class="{{$class}}">{{$slot}}</button>

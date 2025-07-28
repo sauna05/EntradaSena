@@ -192,7 +192,7 @@
         <section class="search-container">
             <form method="GET" action="{{ route('entrance.people.index') }}" class="search-form">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre o documento">
-                <x-button type="submit">
+                <x-button  type="submit">
                     <i class="fas fa-search"></i> Buscar
                 </x-button>
 
@@ -249,6 +249,6 @@
             @endif
         </section>
 
-      
+
     </div>
 </x-layout>

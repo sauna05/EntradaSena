@@ -252,8 +252,12 @@ class ProgramanController extends Controller
         }
 
         // Obtener listado de fichas + programa para el filtro
+        // Extraer solo los IDs de cohortes usados en el resultado
+        $idsCohortesUsadas = collect($resultado)->pluck('cohort_id')->unique();
+
+        // Solo incluir esas fichas en el filtro
         $fichas = Cohort::with('program')
-            ->select('id', 'number_cohort', 'id_program')
+            ->whereIn('id', $idsCohortesUsadas)
             ->get()
             ->map(function ($cohort) {
                 return [
@@ -262,6 +266,7 @@ class ProgramanController extends Controller
                     'programa' => $cohort->program->name ?? 'Sin programa',
                 ];
             });
+
 
         return view('pages.programming.Admin.Apprentices.apprentice_list', [
             'apprentices' => $resultado,
