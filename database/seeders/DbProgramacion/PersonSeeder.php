@@ -19,7 +19,7 @@ class PersonSeeder extends Seeder
             [4, 4, '8888888888', 'Sara Juliana Lopez', 'sara.lopez@example.com', 'Calle 16#30-40', '3048889999'],
             [4, 2, '9999999999', 'David Esteban Castro', 'david.castro@example.com', 'Carrera 25#15-60', '3059990000'],
             [4, 1, '1010101010', 'Valentina Rios', 'valentina.rios@example.com', 'Calle 3#9-87', '3061010101'],
-            [4, 5, '1212121212', 'Sebastian Gomez', 'sebastian.gomez@example.com', 'Avenida 12#34-56', '3071212121'],
+            [4, 5, '1212121212', 'Alexander Loperena', 'alexandersauna05@gmail.com', 'Avenida 12#34-56', '3071212121'],
         ];
 
         foreach ($people as $person) {

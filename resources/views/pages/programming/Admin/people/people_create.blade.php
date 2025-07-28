@@ -273,7 +273,7 @@
         <div class="excel-upload-section">
             <form id="excelForm" method="POST" enctype="multipart/form-data">
                 @csrf
-                <h3 class="excel-title">📥 Importar aprendices desde archivo Excel</h3>
+                <h3 class="excel-title">📥 Importar Aprendices desde archivo Excel</h3>
                 <label for="fileInput" class="excel-button">📁 Seleccionar archivo Excel</label>
                 <input type="file" accept=".xlsx, .xls" name="excel_file" id="fileInput" style="display: none">
                 <div id="progressContainer">

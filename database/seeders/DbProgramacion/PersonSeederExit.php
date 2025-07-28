@@ -56,7 +56,7 @@ class PersonSeederExit extends Seeder
         $asistencias = [];
 
         for ($mes = $mesInicio; $mes <= $mesFin; $mes++) {
-            $cantidad = rand(10, 30); // entre 10 y 30 asistencias por mes
+            $cantidad = rand(20, 40); // entre 10 y 30 asistencias por mes
 
             for ($i = 0; $i < $cantidad; $i++) {
                 $dia = rand(1, 28); // para evitar problemas con días inexistentes

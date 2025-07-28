@@ -36,6 +36,8 @@ class ProgramacionCompetenciaMail extends Mailable
             <p>Se le ha programado la competencia <strong>{$this->programming->competencie->name}</strong> desde <strong>{$fechaInicio}</strong> hasta <strong>{$fechaFin}</strong></p>
             <p>en el programa <strong>{$this->programming->cohort->program->name}</strong> con la ficha <strong>{$this->programming->cohort->number_cohort}</strong>.</p>
 
+            <p><strong>Ambiente:</strong> {{ $this->programming->classroom->name }}</p>
+
             <p><strong>Horario:</strong></p>
             <ul>";
 
@@ -48,7 +50,7 @@ class ProgramacionCompetenciaMail extends Mailable
             <p>Por favor verifique que la información sea correcta, de lo contrario acérquese a la coordinación académica.</p>
 
             <p>Cordialmente,<br>
-          <strong> Marlon Sanchenz </strong> <br> 
+          <strong> Marlon Sanchenz </strong> <br>
             Coordinación Académica</p>
         ";
 
