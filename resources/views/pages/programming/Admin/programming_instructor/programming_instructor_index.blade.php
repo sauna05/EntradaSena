@@ -2,7 +2,6 @@
     <x-slot:title>Listado de Instructores</x-slot:title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,18 +25,31 @@
             text-align: center;
         }
 
-        #filtroDocumento {
-            width: 100%;
+        .search-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             max-width: 400px;
-            padding: 10px 14px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 40px 10px 14px;
             font-size: 15px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            margin-bottom: 20px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            right: 14px;
+            color: #888;
         }
 
         .table-container {
-            max-height: 420px;
+            max-height: 450px;
             overflow-y: auto;
             border: 1px solid #e0e0e0;
             border-radius: 6px;
@@ -46,19 +58,19 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 14.5px;
             background-color: white;
-            font-size: 15px;
         }
 
         thead {
-            background-color: #ecf0f1;
+            background-color: #f5f7fa;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 1;
         }
 
         th, td {
-            padding: 14px;
+            padding: 12px 14px;
             border-bottom: 1px solid #ddd;
             text-align: left;
         }
@@ -68,31 +80,23 @@
         }
 
         .btn-ver-perfil {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background-color: #2980b9;
+            background-color: #3498db;
             color: white;
+            padding: 6px 14px;
             border: none;
             border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s ease;
         }
 
         .btn-ver-perfil:hover {
-            background-color: #1c598c;
+            background-color: #2270ad;
         }
 
-        .btn-ver-perfil svg {
-            width: 18px;
-            height: 18px;
-            fill: white;
-        }
-
-        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -102,7 +106,7 @@
             width: 100%;
             height: 100%;
             overflow-y: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.5);
             padding: 20px;
         }
 
@@ -110,18 +114,16 @@
             background-color: #fff;
             margin: 60px auto;
             padding: 20px 30px;
-            border: 1px solid #ccc;
-            width: 70%;
             border-radius: 8px;
-            max-width: 800px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            max-width: 750px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
         .close {
             float: right;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
-            color: #aaa;
+            color: #888;
             cursor: pointer;
         }
 
@@ -158,9 +160,9 @@
     </style>
 
     <div class="container">
-        <div style="margin-bottom: 20px;">
-            <label for="filtroDocumento"><strong>Buscar por documento:</strong></label>
-            <input type="text" id="filtroDocumento" placeholder="Escribe el documento...">
+        <div class="search-wrapper">
+            <input type="text" id="filtroDocumento" placeholder="Buscar por documento...">
+            <i class="fas fa-search"></i>
         </div>
 
         <h2 class="title">Listado de Instructores</h2>
@@ -174,9 +176,9 @@
                         <th>Nombre</th>
                         <th>Email</th>
                         <th>Especialidad</th>
-                        <th>Horas A Ejecutar</th>
+                        <th>Horas a Ejecutar</th>
                         <th>Meses de Contrato</th>
-                        <th>Horas por día</th>
+                        <th>Horas por Día</th>
                         <th>Zona</th>
                         <th>Perfil</th>
                     </tr>
@@ -194,13 +196,13 @@
                             <td>{{ $instructor->hours_day }} hr</td>
                             <td>{{ $instructor->zona ?? 'Sin zona' }}</td>
                             <td>
-                                <button class="btn-ver-perfil" onclick="openModal('{{ $instructor->id }}')" title="Ver perfil">
-                                    <i class="fas fa-user-circle"></i> Ver Perfil
+                                <button class="btn-ver-perfil" onclick="openModal('{{ $instructor->id }}')">
+                                    <i class="fas fa-user-circle"></i> Ver
                                 </button>
                             </td>
                         </tr>
 
-                        <!-- Modal -->
+                        <!-- Modal de perfil -->
                         <div id="modal-{{ $instructor->id }}" class="modal">
                             <div class="modal-content">
                                 <span class="close" onclick="closeModal('{{ $instructor->id }}')">&times;</span>
@@ -208,63 +210,30 @@
 
                                 <div class="profile-section">
                                     <h3>Información Personal</h3>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Nombre completo:</div>
-                                        <div class="profile-value">{{ $instructor->person->name }}</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Documento:</div>
-                                        <div class="profile-value">{{ $instructor->person->document_number }}</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Email:</div>
-                                        <div class="profile-value">{{ $instructor->person->email }}</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Teléfono:</div>
-                                        <div class="profile-value">{{ $instructor->person->phone ?? 'No registrado' }}</div>
-                                    </div>
+                                    <div class="profile-row"><div class="profile-label">Nombre:</div><div class="profile-value">{{ $instructor->person->name }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Documento:</div><div class="profile-value">{{ $instructor->person->document_number }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Email:</div><div class="profile-value">{{ $instructor->person->email }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Teléfono:</div><div class="profile-value">{{ $instructor->person->phone ?? 'No registrado' }}</div></div>
                                 </div>
 
                                 <div class="profile-section">
                                     <h3>Información Profesional</h3>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Tipo vinculación:</div>
-                                        <div class="profile-value">{{ $instructor->link_types->name }}</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Especialidad:</div>
-                                        <div class="profile-value">{{ $instructor->speciality->name }}</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Horas asignadas:</div>
-                                        <div class="profile-value">{{ $instructor->assigned_hours }} horas</div>
-                                    </div>
-                                         <div class="profile-row">
-                                        <div class="profile-label">Horas Cumplidas:</div>
-                                        <div class="profile-value">{{ $instructor->horas_programadas }} horas</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Horas restantes:</div>
-                                        <div class="profile-value">{{ $instructor->horas_restantes }} horas</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Meses de contrato:</div>
-                                        <div class="profile-value">{{ $instructor->months_contract ?? 'No especificado' }}</div>
-                                    </div>
-                                    <div class="profile-row">
-                                        <div class="profile-label">Zona:</div>
-                                        <div class="profile-value">{{ $instructor->zona ?? 'No especificada' }}</div>
-                                    </div>
+                                    <div class="profile-row"><div class="profile-label">Vinculación:</div><div class="profile-value">{{ $instructor->link_types->name }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Especialidad:</div><div class="profile-value">{{ $instructor->speciality->name }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Horas asignadas:</div><div class="profile-value">{{ $instructor->assigned_hours }} horas</div></div>
+                                    <div class="profile-row"><div class="profile-label">Horas cumplidas:</div><div class="profile-value">{{ $instructor->horas_programadas }} horas</div></div>
+                                    <div class="profile-row"><div class="profile-label">Horas restantes:</div><div class="profile-value">{{ $instructor->horas_restantes }} horas</div></div>
+                                    <div class="profile-row"><div class="profile-label">Meses contrato:</div><div class="profile-value">{{ $instructor->months_contract ?? 'No especificado' }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Zona:</div><div class="profile-value">{{ $instructor->zona ?? 'No especificada' }}</div></div>
                                 </div>
 
                                 <div class="profile-section">
-                                    <h3>Otra Información</h3>
+                                    <h3>Estado</h3>
                                     <div class="profile-row">
-                                        <div class="profile-label">Estado:</div>
+                                        <div class="profile-label">Estado actual:</div>
                                         <div class="profile-value">
                                             <span style="color: {{ $instructor->instructor_status->name ? 'green' : 'red' }}">
-                                                {{ $instructor->instructor_status->name ? 'Activo' : 'Inactivo' }}
+                                                {{ $instructor->instructor_status->name ?? 'Desconocido' }}
                                             </span>
                                         </div>
                                     </div>

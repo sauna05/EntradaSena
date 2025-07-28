@@ -63,11 +63,12 @@
             color: #444;
         }
 
-        table th, table td {
-            padding: 14px 18px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
+      table th, table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
 
         table th {
             background-color: #e9ecef;
@@ -221,37 +222,36 @@
 
         <div class="table-container">
             <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Duración (horas)</th>
-                        <th>Fecha de Registro</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($competencies as $competence)
-                        <tr>
-                            <td>{{ $competence->id }}</td>
-                            <td>{{ $competence->name }}</td>
-                            <td>{{ $competence->duration_hours }} hr</td>
-                            <td>{{ $competence->created_at->format('d/m/Y') }}</td>
-                            <td>
-                                 <button class="btn-primary" style="width:auto; padding:8px 16px;"
-                                    onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
-                                    <i class="fa fa-pen-to-square" style="margin-right:6px;"></i>Editar
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" style="text-align:center; font-style: italic; color: #888;">
-                                No hay competencias registradas.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
+               <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Duración (horas)</th>
+        <th>Acciones</th>
+    </tr>
+        </thead>
+        <tbody>
+            @forelse($competencies as $competence)
+                <tr>
+                    <td>{{ $competence->id }}</td>
+                    <td>{{ $competence->name }}</td>
+                    <td>{{ $competence->duration_hours }} hr</td>
+                    <td>
+                        <button class="btn-primary" style="width:auto; padding:8px 16px;"
+                            onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
+                            <i class="fa fa-pen-to-square" style="margin-right:6px;"></i>Editar
+                        </button>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
+                        No hay competencias registradas.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+
             </table>
         </div>
     </div>

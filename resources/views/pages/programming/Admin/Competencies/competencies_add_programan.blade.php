@@ -56,6 +56,7 @@
             border: 1px solid #dee2e6;
             border-radius: 8px;
             margin-top: 10px;
+            position: relative;
         }
 
         table {
@@ -66,6 +67,13 @@
             background-color: #f8f9fa;
         }
 
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+
         table th, table td {
             padding: 14px 16px;
             border-bottom: 1px solid #ddd;
@@ -73,7 +81,6 @@
         }
 
         table th {
-            background-color: #e9ecef;
             font-weight: 700;
             color: #495057;
         }
@@ -94,7 +101,7 @@
         }
 
         .btn {
-            background-color: #6c757d;
+            background-color: #28a745;
             color: white;
             padding: 14px 35px;
             border: none;
@@ -109,7 +116,18 @@
         }
 
         .btn:hover {
-            background-color: #5a6268;
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                width: 100%;
+            }
+
+            table th, table td {
+                padding: 10px;
+                font-size: 14px;
+            }
         }
     </style>
 
@@ -160,7 +178,7 @@
 
             <div class="form-buttons">
                 <button type="submit" class="btn">
-                    <i class="fas fa-check-circle"></i> Asignar Competencias
+                    <i class="fas fa-check-circle"></i> Vincular
                 </button>
             </div>
         </form>

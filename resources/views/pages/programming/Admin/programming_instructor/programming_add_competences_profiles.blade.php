@@ -1,8 +1,5 @@
 <x-layout>
-
     <x-slot:title>Asignar Competencias</x-slot:title>
-
-    {{-- FontAwesome CDN para íconos --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <style>
@@ -27,31 +24,35 @@
             margin-bottom: 30px;
         }
 
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group > div {
+            flex: 1;
+            min-width: 260px;
+        }
+
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: #555;
+            color: #444;
         }
 
         select {
             width: 100%;
             padding: 12px;
             font-size: 16px;
-            margin-bottom: 25px;
-            border: 1px solid #ccc;
+            border: 1px solid #ced4da;
             border-radius: 6px;
-            transition: border-color 0.3s;
-        }
-
-        select:focus {
-            border-color: #6c757d;
-            outline: none;
-            box-shadow: 0 0 4px rgba(108, 117, 125, 0.3);
         }
 
         .table-container {
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #dee2e6;
             border-radius: 8px;
@@ -62,118 +63,119 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 15px;
-            color: #444;
-            background-color: #f8f9fa;
+            background-color: #fff;
         }
 
-        table th, table td {
-            padding: 14px 16px;
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+
+        th, td {
+            padding: 12px 14px;
             border-bottom: 1px solid #ddd;
             text-align: left;
         }
 
-        table th {
-            background-color: #e9ecef;
-            font-weight: 700;
-            color: #495057;
-        }
-
-        table tr:last-child td {
-            border-bottom: none;
+        tr:hover {
+            background-color: #f8f9fa;
         }
 
         input[type="checkbox"] {
-            cursor: pointer;
             transform: scale(1.2);
+            cursor: pointer;
         }
 
-        .alert-success, .alert-danger {
-            width: 100%;
+        .form-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background-color: #198754;
+            color: white;
+            padding: 14px 35px;
+            width: max-content;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background-color: #146c43;
+        }
+
+        .alert {
             padding: 12px;
-            border-radius: 5px;
+            border-radius: 6px;
             font-weight: 500;
             margin-bottom: 20px;
         }
 
         .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #d1e7dd;
+            color: #0f5132;
         }
 
         .alert-danger {
             background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .form-buttons {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .btn {
-            background-color: #6c757d;
-            color: white;
-            padding: 14px 35px;
-            border: none;
-            border-radius: 8px;
-            font-size: 17px;
-            width: 20%;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn:hover {
-            background-color: #5a6268;
+            color: #842029;
         }
     </style>
-
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
 
     <div class="container">
         <h2>Vincular Competencias al perfil del Instructor</h2>
 
-        <form action="{{ route('programming.instructors_competencies_profile_store') }}" method="POST" id="asignarForm">
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        <form action="{{ route('programming.instructors_competencies_profile_store') }}" method="POST">
             @csrf
 
-            <label for="especialidadSelect">Filtrar por Especialidad:</label>
-            <select id="especialidadSelect">
-                <option value="">Todas las especialidades</option>
-                @foreach ($especialidad as $esp)
-                    <option value="{{ $esp->id }}">{{ $esp->name }}</option>
-                @endforeach
-            </select>
+            <div class="form-group">
+                <div>
+                    <label for="especialidadSelect">Filtrar por Especialidad:</label>
+                    <select id="especialidadSelect">
+                        <option value="">Todas las especialidades</option>
+                        @foreach ($especialidad as $esp)
+                            <option value="{{ $esp->id }}">{{ $esp->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <label for="programa">Selecciona un instructor según su especialidad:</label>
-            <select id="programa" name="instructor_id" required>
-                <option value="">Selecciona un instructor</option>
-                @forelse ($instructors as $perfil)
-                    <option value="{{ $perfil->id }}">
-                        {{ $perfil->person->document_number }} - {{ $perfil->person->name }} - {{ $perfil->speciality->name }}
-                    </option>
-                @empty
-                    <option disabled>No hay instructores disponibles</option>
-                @endforelse
-            </select>
+                <div>
+                    <label for="programa">Selecciona un Instructor:</label>
+                    <select id="programa" name="instructor_id" required>
+                        <option value="">Selecciona un instructor</option>
+                        @foreach ($instructors as $perfil)
+                            <option value="{{ $perfil->id }}">
+                                {{ $perfil->person->document_number }} - {{ $perfil->person->name }} - {{ $perfil->speciality->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
 
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Nombre Competencia</th>
+                            <th>Nombre de la Competencia</th>
                             <th>Duración</th>
                         </tr>
                     </thead>
@@ -181,9 +183,7 @@
                         @foreach($especialidad as $esp)
                             @foreach($esp->competencies as $competencia)
                                 <tr data-especialidad="{{ $esp->id }}">
-                                    <td>
-                                        <input type="checkbox" name="competencias[]" value="{{ $competencia->id }}">
-                                    </td>
+                                    <td><input type="checkbox" name="competencias[]" value="{{ $competencia->id }}"></td>
                                     <td>{{ $competencia->name }}</td>
                                     <td>{{ $competencia->duration_hours }} hr</td>
                                 </tr>
@@ -195,7 +195,7 @@
 
             <div class="form-buttons">
                 <button type="submit" class="btn">
-                    <i class="fas fa-check-circle"></i>Vincular
+                    <i class="fas fa-link"></i> Vincular Competencias
                 </button>
             </div>
         </form>
@@ -212,5 +212,4 @@
             });
         });
     </script>
-
 </x-layout>

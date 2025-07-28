@@ -3,118 +3,186 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-            .alert-success{
-            width: 100%;
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-danger {
-            width: 100%;
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #f5c6cb;
-        }
-            .error-message {
-            color: #dc3545;
-            font-size: 0.875em;
-            margin-top: 5px;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-         table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        thead {
-            background-color: #ecf0f1;
-        }
+    .alert-success, .alert-danger {
+        width: 100%;
+        padding: 10px 14px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
 
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-        }
-        .badge {
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            display: inline-block;
-            margin: 2px;
-        }
-        .bg-danger { background: #e74c3c; color: white; }
-        .bg-success { background: #2ecc71; color: white; }
-        .bg-light { background: #ecf0f1; color: #2c3e50; padding: 3px 5px; border-radius: 5px; display: inline-block; }
-        select {
-            padding: 6px 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            margin-right: 10px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background: #fff;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            position: relative;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .btn-edit {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .table-wrapper {
-            max-height: 450px;
-            overflow-y: auto;
-            margin-top: 25px;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-        }
+    .alert-success {
+        background-color: #e6f4ea;
+        color: #276749;
+        border: 1px solid #c6e6c7;
+    }
+
+    .alert-danger {
+        background-color: #fdecea;
+        color: #9b2c2c;
+        border: 1px solid #f5c6cb;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+.table-wrapper {
+    max-height: 450px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    position: relative;
+}
+.align-middle {
+    vertical-align: middle !important;
+}
+
+/* Cabecera fija */
+table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f9fafb;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
 
 
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+    }
 
-    </style>
+    thead {
+        background-color: #f9fafb;
+    }
+
+    th, td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        font-size: 0.95rem;
+        vertical-align: top;
+    }
+
+    th {
+        font-weight: 600;
+        color: #374151;
+    }
+
+    td strong {
+        color: #111827;
+    }
+
+    .badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.78rem;
+        display: inline-block;
+        margin: 2px 2px 4px 0;
+    }
+
+    .bg-danger {
+        background: #f87171;
+        color: white;
+    }
+
+    .bg-success {
+        background: #4ade80;
+        color: #1e3a1e;
+    }
+
+    .bg-light {
+        background: #f3f4f6;
+        color: #111827;
+        padding: 4px 6px;
+        border-radius: 4px;
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-edit, .btn-delete {
+        padding: 6px 12px;
+        border-radius: 5px;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-edit {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .btn-edit:hover {
+        background-color: #bae6fd;
+    }
+
+    .btn-delete {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .btn-delete:hover {
+        background-color: #fecaca;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        position: relative;
+    }
+
+    .error-message {
+        color: #dc2626;
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+
+    select {
+        padding: 6px 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+</style>
+
 
     <div class="container">
     @if (session('success'))
@@ -255,15 +323,16 @@
                 <tbody>
                     @foreach($ambientes as $ambiente)
                     <tr class="row-ambiente ambiente-{{ $ambiente->id }}">
-                        <td><strong>{{ $ambiente->name }}</strong></td>
-                        <td>
-                            @if($ambiente->rango_fechas)
+                        <td class="align-middle"><strong>{{ $ambiente->name }}</strong></td>
+                        <td class="align-middle">
+                        @if($ambiente->rango_fechas)
                                 {{ \Carbon\Carbon::parse($ambiente->rango_fechas['inicio'])->format('d/m/Y') }} -
                                 {{ \Carbon\Carbon::parse($ambiente->rango_fechas['fin'])->format('d/m/Y') }}
                             @else
                                 <span class="text-muted">Sin programación</span>
                             @endif
                         </td>
+
                         <td>
                             @php
                                 $programados = collect($ambiente->horas_programadas)->groupBy('fecha');
