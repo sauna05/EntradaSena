@@ -141,7 +141,7 @@ class EntranceAdminController extends Controller
                 'id_speciality' => 'required|exists:specialities,id',
                 'id_instructor_status' => 'required|exists:instructors_status,id',
                 'assigned_hours' => 'required|integer|min:1',
-                'months_contract' => 'required|integer|min:1',
+                // 'months_contract' => 'required|integer|min:1',
                 'hours_day' => 'required|numeric|min:1'
             ], [
                 'required' => 'El campo :attribute es obligatorio.',
@@ -153,7 +153,7 @@ class EntranceAdminController extends Controller
                 'id_link_type'      => $instructorData['id_link_type'],
                 'id_speciality'     => $instructorData['id_speciality'],
                 'assigned_hours'    => $instructorData['assigned_hours'],
-                'months_contract'   => $instructorData['months_contract'],
+                // 'months_contract'   => $instructorData['months_contract'],
                 'hours_day'         => $instructorData['hours_day'],
                 'created_at'        => now(),
                 'updated_at'        => now(),

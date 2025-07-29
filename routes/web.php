@@ -112,7 +112,7 @@ Route::post('programming/admin/cohort', [CohortController::class, 'registerCohor
 
 
 Route::get('programming/admin', [ProgrammingAuthController::class, 'dashboard'])->middleware('can:programming.admin')
-    ->name('programming.admin');
+    ->name('programing.admin_inicio');
 
 Route::post('programming/admin', [ProgramanController::class, 'register_programan'])
     ->middleware('can:programing.programan_store_add')->name('programing.programan_store_add');
@@ -212,7 +212,7 @@ Route::put('programming/admin/programmig_update/{id}', [ProgramanController::cla
 
 
 Route::get('programming/admin/programmig_instructors_profile', [ProgramanController::class, 'asignarCompetences_index_instructor'])
-    ->middleware('can:programing.instructors_competences_profile')->name('programming.programming_instructors_profiles');
+    ->middleware('can:programing.instructors_competences_profile')->name('programing.programming_instructors_profiles');
 
 
 Route::post('programming/admin/programmig_instructors_profile_store', [ProgramanController::class, 'competenciesAdd_store_profile_instructor'])

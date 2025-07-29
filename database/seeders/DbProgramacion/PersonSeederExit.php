@@ -59,7 +59,7 @@ class PersonSeederExit extends Seeder
             $cantidad = rand(20, 40); // entre 10 y 30 asistencias por mes
 
             for ($i = 0; $i < $cantidad; $i++) {
-                $dia = rand(1, 28); // para evitar problemas con días inexistentes
+                $dia = rand(1, 31); // para evitar problemas con días inexistentes
                 $fecha = Carbon::create($año, $mes, $dia)->format('Y-m-d');
 
                 $horaEntrada = Carbon::createFromTime(rand(5, 9), rand(0, 59), 0);

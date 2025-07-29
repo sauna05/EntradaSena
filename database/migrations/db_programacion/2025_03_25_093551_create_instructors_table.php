@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('id_link_type')->constrained('link_types')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('id_speciality')->constrained('specialities')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('assigned_hours');
-            $table->integer('months_contract');
+            // $table->integer('months_contract');
             $table->integer('hours_day');
             $table->timestamps();
         });

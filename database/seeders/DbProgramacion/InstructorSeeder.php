@@ -20,7 +20,7 @@ class InstructorSeeder extends Seeder
                 "id_link_type" => rand(1, 2),
                 "id_speciality" => rand(1, 10), // Asegúrate de tener especialidades con estos IDs
                 "assigned_hours" => rand(800, 1200),
-                "months_contract" => rand(6, 12),
+                // "months_contract" => rand(6, 12),
                 "hours_day" => rand(4, 8),
                 'created_at' => now(),
                 'updated_at' => now()

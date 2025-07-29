@@ -31,10 +31,10 @@ class UserSeeder extends Seeder
         // ])->assignRole('Administrador_asistencia');
 
 
-        //usuario general ahora 
+        //usuario general ahora
         User::create([
             'id_person' => 1,
-            'user_name' => 'loperena',
+            'user_name' => 'Marlon',
             'password' => bcrypt("123123")
         ])->assignRole('Administrador_programacion');
 

@@ -34,7 +34,7 @@ class AuthController extends Controller
                 // } elseif ($selectedRole === 'Administrador_asistencia') {
                 //     return redirect()->route('entrance.people.index');
                 // }
-                   return redirect()->route('programming.admin');
+                   return redirect()->route('programing.admin_inicio');
                 } else {
                     Auth::logout();
                     $request->session()->invalidate();

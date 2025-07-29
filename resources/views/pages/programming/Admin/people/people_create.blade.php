@@ -243,10 +243,10 @@
                     @error('assigned_hours')<span class="error-message">{{ $message }}</span>@enderror
                 </div>
 
-                <div><label for="months_contract">Meses de Contrato</label>
+                {{-- <div><label for="months_contract">Meses de Contrato</label>
                     <input type="number" name="months_contract" id="months_contract" value="{{ old('months_contract') }}">
                     @error('months_contract')<span class="error-message">{{ $message }}</span>@enderror
-                </div>
+                </div> --}}
 
                 <div><label for="hours_day">Horas por Día</label>
                     <input type="number" name="hours_day" id="hours_day" value="{{ old('hours_day') }}">

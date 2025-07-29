@@ -36,7 +36,7 @@ class ProgramacionCompetenciaMail extends Mailable
             <p>Se le ha programado la competencia <strong>{$this->programming->competencie->name}</strong> desde <strong>{$fechaInicio}</strong> hasta <strong>{$fechaFin}</strong></p>
             <p>en el programa <strong>{$this->programming->cohort->program->name}</strong> con la ficha <strong>{$this->programming->cohort->number_cohort}</strong>.</p>
 
-            <p><strong>Ambiente:</strong> {{ $this->programming->classroom->name }}</p>
+            <p><strong>Ambiente:</strong> {$this->programming->classroom->name}</p>
 
             <p><strong>Horario:</strong></p>
             <ul>";

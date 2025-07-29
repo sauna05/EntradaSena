@@ -368,20 +368,22 @@ form.logout-form {
         <ul class="sidebar-menu">
 
             <!-- INICIO -->
-            <li class="{{ Route::is('programming.admin', 'programing.competencies_program_index') ? 'open' : '' }}">
+           <li class="{{ Route::is('programing.admin_inicio', 'programing.competencies_program_index') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('programming.admin', 'programing.competencies_program_index') ? 'active' : '' }}">
+
                     <i class="fas fa-home"></i> Inicio
                 </a>
-                <ul class="{{ Route::is('programming.admin', 'programing.competencies_program_index') ? 'show' : '' }}">
-                    <li><a href="{{ route('programming.admin') }}" class="{{ Route::is('programming.admin') ? 'active-link' : '' }}"><i class="fas fa-clipboard-list"></i> Gestión de Programas</a></li>
+                <ul class="{{ Route::is('programing.admin_inicio', 'programing.competencies_program_index') ? 'show' : '' }}">
+                    <li><a href="{{ route('programing.admin_inicio') }}" class="{{ Route::is('programing.admin_inicio') ? 'active-link' : '' }}"><i class="fas fa-clipboard-list"></i> Gestión de Programas</a></li>
                     <li><a href="{{ route('programing.competencies_program_index') }}" class="{{ Route::is('programing.competencies_program_index') ? 'active-link' : '' }}"><i class="fas fa-link"></i> Competencias Vinculadas</a></li>
                 </ul>
             </li>
 
             <!-- PROGRAMACIÓN ACADÉMICA -->
-            <li class="{{ Route::is('programming.*', 'programmig.*', 'programing.unrecorded_days_index') ? 'open' : '' }}">
-                <a class="menu-toggle {{ Route::is('programming.*', 'programmig.*', 'programing.unrecorded_days_index') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-alt"></i> Programación Académica
+          <li class="{{ Route::is('programming.programming_index_states', 'programmig.*', 'programming.register_programming_instructor_index', 'programming.programming_update_index', 'programing.unrecorded_days_index') ? 'open' : '' }}">
+                <a class="menu-toggle {{ Route::is('programming.programming_index_states', 'programmig.*', 'programming.register_programming_instructor_index', 'programming.programming_update_index', 'programing.unrecorded_days_index') ? 'active' : '' }}">
+
+                                <i class="fas fa-calendar-alt"></i> Programación Academica
                 </a>
                 <ul class="{{ Route::is('programming.*', 'programmig.*', 'programing.unrecorded_days_index') ? 'show' : '' }}">
                     <li><a href="{{ route('programming.programming_index_states') }}" class="{{ Route::is('programming.programming_index_states') ? 'active-link' : '' }}"><i class="fas fa-tasks"></i> Estado de Competencias</a></li>
@@ -410,7 +412,7 @@ form.logout-form {
                 </a>
                 <ul class="{{ Route::is('programing.instructor_programan_index', 'programming.programming_instructors_profiles') ? 'show' : '' }}">
                     <li><a href="{{ route('programing.instructor_programan_index') }}" class="{{ Route::is('programing.instructor_programan_index') ? 'active-link' : '' }}"><i class="fas fa-user-cog"></i> Gestión de Instructores</a></li>
-                    <li><a href="{{ route('programming.programming_instructors_profiles') }}" class="{{ Route::is('programming.programming_instructors_profiles') ? 'active-link' : '' }}"><i class="fas fa-user-tag"></i> Vincular al Perfil</a></li>
+                    <li><a href="{{ route('programing.programming_instructors_profiles') }}" class="{{ Route::is('programming.programing_instructors_profiles') ? 'active-link' : '' }}"><i class="fas fa-user-tag"></i> Vincular al Perfil</a></li>
                 </ul>
             </li>
 
@@ -503,6 +505,8 @@ form.logout-form {
                 this.classList.toggle('active');
             });
         });
+
+
     </script>
 
 </body>
