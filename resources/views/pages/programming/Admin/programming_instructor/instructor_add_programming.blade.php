@@ -221,7 +221,7 @@
       @endphp
       @foreach ($dias as $dia)
           <label>
-              <input type="checkbox" name="dias[]" value="{{ $dia }}"
+              <input style="cursor: pointer" type="checkbox" name="dias[]" value="{{ $dia }}"
                   {{ is_array(old('dias')) && in_array($dia, old('dias')) ? 'checked' : '' }}>
               {{ $dia }}
           </label>

@@ -314,7 +314,16 @@
              </form>
           </div>
        </div>
+       {{-- agregar filtro de fchas por activas y no activas
+       las activas son aquellas que la fecha final es menor ala fecha actual y las inactivas son aquellas
+       que la fecha final es mayor ala actual el cual se le agregaria color rojo  --}}
 
+       <div class="filtro-fichas">
+        <label for="">Activas</label>
+        <input type="checkbox" value="Activas">
+        <label for="">Antiguas</label>
+        <input type="checkbox" value="Antiguas">
+       </div>
        <!-- Tabla de fichas -->
        <div style="max-height: 400px; overflow-y: auto; border-radius: 10px; border: 1px solid #eee; margin-top: 30px;">
           <table>
@@ -327,6 +336,7 @@
                    <th>Hrs lectiva</th>
                    <th>Hrs programadas</th>
                    <th>Hrs cumplidas</th>
+                   <th>Matriculados</th>
                    <th>Avance</th>
                 </tr>
              </thead>
@@ -340,6 +350,7 @@
                    <td>{{ $cohort->hours_school_stage }} hrs</td>
                    <td>{{ $cohort->horas_programadas }} hrs</td>
                    <td>{{ $cohort->horas_cumplidas }} hrs</td>
+                   <td>{{ $cohort->enrolled_quantity}}</td>
                    <td>
                       @php
                          $color = match(true) {

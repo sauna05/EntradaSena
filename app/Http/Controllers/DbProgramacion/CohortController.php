@@ -49,6 +49,11 @@ class CohortController extends Controller
         $towns = Town::all();
         $classroom = Classroom::all();
         $cohortimes = CohorTime::all();
+        //verificar fichas activas y actiguas
+        foreach ($cohorts as $cohort) {
+            $cohort->end_date_formatted = optional($cohort->end_date_practical_stage)->format('Y-m-d');
+        }
+
 
         return view('pages.programming.Admin.Cohort.programming_cohort_index', compact(
             'cohorts',

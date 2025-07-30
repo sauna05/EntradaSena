@@ -254,6 +254,7 @@
         <!-- Botón de descarga Excel -->
         <button id="export-excel" class="btn-excel">
             <i class="fas fa-file-excel"></i> Descargar Excel
+            
         </button>
 
         <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
@@ -380,6 +381,7 @@
                     @endforelse
                 </tbody>
             </table>
+
         </div>
     </div>
 

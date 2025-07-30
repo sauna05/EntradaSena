@@ -157,6 +157,26 @@
             flex: 1;
             color: #333;
         }
+         .btn-register a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        background-color: #2c3e50; /* verde tipo Bootstrap */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-register a:hover {
+        background-color: #218838;
+    }
+
+    .btn-register i {
+        font-size: 16px;
+    }
     </style>
 
     <div class="container">
@@ -164,8 +184,15 @@
             <input type="text" id="filtroDocumento" placeholder="Buscar por documento...">
             <i class="fas fa-search"></i>
         </div>
+        <div class="btn-register">
+            <a href="{{ route('entrance.people.create') }}">
+                <i class="fas fa-user-plus"></i>
+                Registrar Instructor
+            </a>
+        </div>
 
         <h2 class="title">Listado de Instructores</h2>
+
 
         <div class="table-container">
             <table>

@@ -210,7 +210,7 @@
                 <div class="days-checkboxes">
                     @foreach ($days_available as $day)
                         <div>
-                            <input type="checkbox" name="days[]" value="{{ $day->id }}"
+                            <input style="cursor: pointer" type="checkbox" name="days[]" value="{{ $day->id }}"
                                 {{ $person->days_available->contains('id', $day->id) ? 'checked' : '' }} id="day_{{ $day->id }}">
                             <label for="day_{{ $day->id }}">{{ $day->name }}</label>
                         </div>

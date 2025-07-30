@@ -28,6 +28,7 @@
         }
 
         form.form-create-people {
+
             max-width: 800px;
             margin: 20px auto;
             padding: 30px;
@@ -53,9 +54,13 @@
             font-weight: 600;
             color: #333;
         }
+        select{
+              cursor: pointer;
+        }
 
         input,
         select {
+
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
