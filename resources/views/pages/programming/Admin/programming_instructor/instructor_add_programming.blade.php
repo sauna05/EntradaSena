@@ -208,10 +208,31 @@
 
     <label>Horario:</label>
     <div class="time-container">
-      <input type="time" id="hora_inicio" name="hora_inicio" value="{{ old('hora_inicio') }}" required min="08:00" step="1800" />
-      <span>a</span>
-      <input type="time" id="hora_fin" name="hora_fin" value="{{ old('hora_fin') }}" required min="08:00" step="1800" />
+    <input
+        style="cursor: pointer"
+        type="time"
+        id="hora_inicio"
+        name="hora_inicio"
+        value="{{ old('hora_inicio') }}"
+        required
+        min="06:00"
+        max="23:00"
+        step="1800"
+    />
+    <span>a</span>
+    <input
+        style="cursor: pointer"
+        type="time"
+        id="hora_fin"
+        name="hora_fin"
+        value="{{ old('hora_fin') }}"
+        required
+        min="06:00"
+        max="23:00"
+        step="1800"
+    />
     </div>
+
     <div id="horasCalculadas" class="error-message"></div>
 
     <label>Días de la semana:</label>

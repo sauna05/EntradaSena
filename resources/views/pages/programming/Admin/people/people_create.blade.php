@@ -197,7 +197,7 @@
                 <div><label for="start_date">Fecha de Inicio</label><input type="date" name="start_date" id="start_date"></div>
                 <div><label for="end_date">Fecha de Finalización</label><input type="date" name="end_date" id="end_date"></div>
                 <div>
-                    <label for="id_town">Municipio donde nació</label>
+                    <label for="id_town">Municipio Donde inpartira Formación</label>
                     <select name="id_town" id="id_town">
                         <option value="">Seleccione un Municipio</option>
                         @foreach ($towns as $id => $town)
@@ -224,7 +224,7 @@
                     <select name="id_speciality" id="id_speciality">
                         <option value="">Selecione Especialidad</option>
                         @foreach ($specialities as $id => $speciality)
-                            <option value="{{ $id }}" {{ old('id_speciality') == $id ? 'selected' : '' }}>
+                            <option value="{{ $speciality->id }}" {{ old('id_speciality') == $speciality->id ? 'selected' : '' }}>
                                 {{ $speciality->name }}
                             </option>
                         @endforeach

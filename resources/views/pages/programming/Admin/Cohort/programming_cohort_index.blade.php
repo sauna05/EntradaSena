@@ -130,11 +130,22 @@
           border-bottom: 1px solid #eee;
           font-size: 14px;
        }
+       .table-container{
+         max-height: 400px;
+            overflow-y: auto;
 
-       table thead {
+            border-radius: 8px;
+            margin-top: 20px;
+       }
+
+
+       thead th {
           background-color: #ecf0f1;
           font-weight: bold;
           color: #2c3e50;
+          position: sticky;
+          top: 0;
+        z-index: 1;
        }
 
        table tbody tr:hover {
@@ -232,7 +243,7 @@
     </script>
 
     <div class="container">
-       <h2>Registro de Fichas</h2>
+       <h2>Gestion de Fichas </h2>
 
        @if (session('success'))
        <div class="message success">{{ session('success') }}</div>
@@ -318,14 +329,9 @@
        las activas son aquellas que la fecha final es menor ala fecha actual y las inactivas son aquellas
        que la fecha final es mayor ala actual el cual se le agregaria color rojo  --}}
 
-       <div class="filtro-fichas">
-        <label for="">Activas</label>
-        <input type="checkbox" value="Activas">
-        <label for="">Antiguas</label>
-        <input type="checkbox" value="Antiguas">
-       </div>
+
        <!-- Tabla de fichas -->
-       <div style="max-height: 400px; overflow-y: auto; border-radius: 10px; border: 1px solid #eee; margin-top: 30px;">
+       <div class="table-container" >
           <table>
              <thead>
                 <tr>

@@ -1,80 +1,103 @@
 <x-layout>
-    <x-slot:page_style>css/pages/start_page.css</x-slot:page_style>
     <x-slot:title>Listado de Aprendices por Ficha</x-slot:title>
 
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         .container {
-            padding: 40px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
+        max-width: 100%;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.07);
         }
 
         h2.title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 30px;
             color: #2c3e50;
         }
 
         .success-message {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            background-color: #d1f5d3;
+            border: 1px solid #b2e2b6;
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 25px;
         }
 
         .filters {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filters div {
+            flex: 1;
+            min-width: 220px;
         }
 
         .filters label {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 6px;
             display: block;
+            color: #34495e;
         }
 
         .filters select {
-            padding: 8px 10px;
+            padding: 10px 12px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            min-width: 200px;
+            border-radius: 6px;
             background-color: #fff;
             font-size: 14px;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+
+        .filters select:focus {
+            border-color: #2980b9;
+            outline: none;
         }
 
         .table-container {
-            overflow-y: auto;
+            overflow-x: auto;
             max-height: 500px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.1);
+            background-color: white;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: white;
+            font-size: 14px;
         }
 
         thead th {
-            background-color: #ecf0f1;
-            color: #2c3e50;
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 600;
             position: sticky;
             top: 0;
             z-index: 1;
+            padding: 12px;
         }
 
         th, td {
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border-bottom: 1px solid #eee;
             text-align: left;
+            white-space: nowrap;
         }
 
-        tr:hover {
+        tbody tr:hover {
             background-color: #f2f2f2;
         }
 
@@ -82,6 +105,28 @@
             text-align: center;
             padding: 20px;
             color: #7f8c8d;
+        }
+
+        /* Custom scrollbar for Chrome/Edge/Safari */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #bbb;
+            border-radius: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
         }
     </style>
 

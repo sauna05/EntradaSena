@@ -240,7 +240,7 @@
                                     <div class="profile-row"><div class="profile-label">Nombre:</div><div class="profile-value">{{ $instructor->person->name }}</div></div>
                                     <div class="profile-row"><div class="profile-label">Documento:</div><div class="profile-value">{{ $instructor->person->document_number }}</div></div>
                                     <div class="profile-row"><div class="profile-label">Email:</div><div class="profile-value">{{ $instructor->person->email }}</div></div>
-                                    <div class="profile-row"><div class="profile-label">Teléfono:</div><div class="profile-value">{{ $instructor->person->phone ?? 'No registrado' }}</div></div>
+                                    <div class="profile-row"><div class="profile-label">Teléfono:</div><div class="profile-value">{{ $instructor->person->phone_number ?? 'No registrado' }}</div></div>
                                 </div>
 
                                 <div class="profile-section">

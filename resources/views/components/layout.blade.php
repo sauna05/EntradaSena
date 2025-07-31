@@ -378,17 +378,41 @@ form.logout-form {
                     <li><a href="{{ route('programing.competencies_program_index') }}" class="{{ Route::is('programing.competencies_program_index') ? 'active-link' : '' }}"><i class="fas fa-link"></i> Competencias Vinculadas</a></li>
                 </ul>
             </li>
+             <!-- FICHAS -->
+          <li class="{{ Route::is('programing.cohort_index','programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'open' : '' }}">
+            <a class="menu-toggle {{ Route::is('programing.cohort_index','programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'active' : '' }}">
+                <i class="fas fa-folder-open"></i> Fichas
+            </a>
+            <ul class="{{ Route::is('programing.cohort_index','programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'show' : '' }}">
+                <li>
+                    <a href="{{ route('programing.cohort_index') }}" class="{{ Route::is('programing.cohort_index') ? 'active-link' : '' }}">
+                        <i class="fas fa-file-alt"></i> Gestión de Fichas
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('programing.list_apprentices') }}" class="{{ Route::is('programing.list_apprentices') ? 'active-link' : '' }}">
+                        <i class="fas fa-address-card"></i> Gestión de Aprendices
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('programing.add_apprentices_cohorts') }}" class="{{ Route::is('programing.add_apprentices_cohorts') ? 'active-link' : '' }}">
+                        <i class="fas fa-user-check"></i> Agregar Aprendiz
+                    </a>
+                </li>
+            </ul>
+        </li>
+
 
             <!-- PROGRAMACIÓN ACADÉMICA -->
           <li class="{{ Route::is('programming.programming_index_states', 'programmig.*', 'programming.register_programming_instructor_index', 'programming.programming_update_index', 'programing.unrecorded_days_index') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('programming.programming_index_states', 'programmig.*', 'programming.register_programming_instructor_index', 'programming.programming_update_index', 'programing.unrecorded_days_index') ? 'active' : '' }}">
 
-                                <i class="fas fa-calendar-alt"></i> Programación Academica
+                 <i class="fas fa-calendar-alt"></i> Programación
                 </a>
                 <ul class="{{ Route::is('programming.*', 'programmig.*', 'programing.unrecorded_days_index') ? 'show' : '' }}">
-                    <li><a href="{{ route('programming.programming_index_states') }}" class="{{ Route::is('programming.programming_index_states') ? 'active-link' : '' }}"><i class="fas fa-tasks"></i> Estado de Competencias</a></li>
-                    <li><a href="{{ route('programmig.programaciones_index') }}" class="{{ Route::is('programmig.programaciones_index') ? 'active-link' : '' }}"><i class="fas fa-list-ul"></i> Ver Programaciones</a></li>
                     <li><a href="{{ route('programming.register_programming_instructor_index') }}" class="{{ Route::is('programming.register_programming_instructor_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-plus"></i> Programar Curso</a></li>
+                    <li><a href="{{ route('programmig.programaciones_index') }}" class="{{ Route::is('programmig.programaciones_index') ? 'active-link' : '' }}"><i class="fas fa-list-ul"></i> Ver Programaciones</a></li>
+                    <li><a href="{{ route('programming.programming_index_states') }}" class="{{ Route::is('programming.programming_index_states') ? 'active-link' : '' }}"><i class="fas fa-tasks"></i> Estado de Competencias</a></li>
                     <li><a href="{{ route('programming.programming_update_index') }}" class="{{ Route::is('programming.programming_update_index') ? 'active-link' : '' }}"><i class="fas fa-edit"></i> Registrar Programación</a></li>
                     <li><a href="{{ route('programing.unrecorded_days_index') }}" class="{{ Route::is('programing.unrecorded_days_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-times"></i> Días No Programados</a></li>
                 </ul>
@@ -416,27 +440,9 @@ form.logout-form {
                 </ul>
             </li>
 
-            <!-- APRENDICES -->
-            <li class="{{ Route::is('programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'open' : '' }}">
-                <a class="menu-toggle {{ Route::is('programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'active' : '' }}">
-                    <i class="fas fa-user-graduate"></i> Aprendices
-                </a>
-                <ul class="{{ Route::is('programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'show' : '' }}">
-                    <li><a href="{{ route('programing.list_apprentices') }}" class="{{ Route::is('programing.list_apprentices') ? 'active-link' : '' }}"><i class="fas fa-address-card"></i> Gestión de Aprendices</a></li>
-                    <li><a href="{{ route('programing.add_apprentices_cohorts') }}" class="{{ Route::is('programing.add_apprentices_cohorts') ? 'active-link' : '' }}"><i class="fas fa-user-plus"></i> Asignar a Fichas</a></li>
-                </ul>
-            </li>
 
-            <!-- FICHAS -->
-            <li class="{{ Route::is('programing.cohort_index') ? 'open' : '' }}">
-                <a class="menu-toggle {{ Route::is('programing.cohort_index') ? 'active' : '' }}">
-                    <i class="fas fa-folder-open"></i> Fichas
-                </a>
-                <ul class="{{ Route::is('programing.cohort_index') ? 'show' : '' }}">
-                    <li><a href="{{ route('programing.cohort_index') }}" class="{{ Route::is('programing.cohort_index') ? 'active-link' : '' }}"><i class="fas fa-file-alt"></i> Gestión de Fichas</a></li>
-                    <li><a href="{{ route('programing.add_apprentices_cohorts') }}" class="{{ Route::is('programing.add_apprentices_cohorts') ? 'active-link' : '' }}"><i class="fas fa-user-check"></i> Agregar Aprendiz</a></li>
-                </ul>
-            </li>
+
+
 
             <!-- AMBIENTES -->
             <li class="{{ Route::is('ambientes_index') ? 'open' : '' }}">

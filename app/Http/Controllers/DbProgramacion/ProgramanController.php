@@ -946,8 +946,8 @@ class ProgramanController extends Controller
         $municipios=Town::all();
         $bloques=Block::all();
         $ambientes = Classroom::with(['programming.days', 'programming.instructor.person'])->get();
-        $jornadaInicio = '08:00:00';
-        $jornadaFin = '18:00:00';
+        $jornadaInicio = '06:00:00';
+        $jornadaFin = '23:00:00';
 
         $ambientes->each(function ($ambiente) use ($jornadaInicio, $jornadaFin) {
             $programaciones = $ambiente->programming->filter(function ($p) {

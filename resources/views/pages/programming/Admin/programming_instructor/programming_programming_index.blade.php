@@ -195,6 +195,23 @@
         .reset-btn:hover {
             background-color: #5a6268;
         }
+         @media (max-width: 768px) {
+            .filters-container {
+                flex-direction: column;
+            }
+            .action-cell form {
+            margin-bottom: 8px;
+        }.reset-btn,
+         .btn-excel {
+            width: 100%;
+            text-align: center;
+        }
+
+        .filter-group {
+            min-width: 100%;
+        }
+    }
+
 
         .no-results {
             text-align: center;
@@ -209,6 +226,9 @@
             align-items: center;
             gap: 5px;
         }
+
+
+
     </style>
 
     <div class="container">
@@ -254,7 +274,7 @@
         <!-- Botón de descarga Excel -->
         <button id="export-excel" class="btn-excel">
             <i class="fas fa-file-excel"></i> Descargar Excel
-            
+
         </button>
 
         <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">

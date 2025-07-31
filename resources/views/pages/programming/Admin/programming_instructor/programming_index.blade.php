@@ -143,6 +143,7 @@
 
         .filter-group select, .filter-group input {
             width: 100%;
+            cursor: pointer;
             padding: 8px 12px;
             border: 1px solid #ced4da;
             border-radius: 4px;
@@ -210,6 +211,51 @@
             align-items: center;
             gap: 5px;
         }
+        .btn-programar {
+            background-color: #0047ab;
+            color: white;
+
+            margin-bottom: 2%;
+             padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+    }
+
+    .btn-programar:hover {
+        background-color: #003a8c;
+    }
+
+    @media (max-width: 768px) {
+        .filters-container {
+            flex-direction: column;
+        }
+        .action-cell form {
+        margin-bottom: 8px;
+    }
+
+
+    .btn-programar,
+    .reset-btn,
+
+    .btn-excel {
+        width: 100%;
+        text-align: center;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+}
+
     </style>
 
     <div class="container">
@@ -233,6 +279,7 @@
                 </select>
             </div>
 
+
             <div class="filter-group">
                 <label for="status-filter">Filtrar por estado:</label>
                 <select id="status-filter">
@@ -245,6 +292,7 @@
                 </select>
             </div>
 
+
             <button class="reset-btn" id="reset-filters">Restablecer filtros</button>
         </div>
 
@@ -252,10 +300,15 @@
             No se encontraron programaciones con los filtros aplicados.
         </div>
 
+
         <!-- Botón de descarga Excel -->
         <button id="export-excel" class="btn-excel">
             <i class="fas fa-file-excel"></i> Descargar Excel
         </button>
+         <button  class="btn-programar" >
+                <a style="text-decoration: none;color: white;"  href="{{ route('programming.register_programming_instructor_index') }}">Registrar Programación</a>
+        </button>
+
 
         <div class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
 
