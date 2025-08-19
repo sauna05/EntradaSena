@@ -3,57 +3,93 @@
     <x-slot:title>Listado de Competencias</x-slot:title>
 
     <style>
-        /* Estilos generales */
+        /* Reset básico */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #eef2f6;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 40px auto;
-            padding: 30px;
+            padding: 25px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
         }
 
         h2 {
-            font-size: 26px;
+            font-size: 28px;
             margin-bottom: 25px;
             color: #2c3e50;
             font-weight: 700;
             text-align: center;
         }
 
-        .btn-primary {
-            background-color: #6c757d;
-            color: white;
-            padding: 12px 20px;
+        /* Botones */
+        .btn {
+            padding: 10px 18px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.3s ease;
-            display: block;
-            margin: 0 auto 25px auto;
-            width: 220px;
-            text-align: center;
-            user-select: none;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
         }
 
         .btn-primary:hover {
+            background-color: #0069d9;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
             background-color: #5a6268;
         }
 
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-edit {
+            max-width: max-content;
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #31b0d5;
+        }
+
+        /* Tabla */
         .table-container {
-            max-height: 400px;
+            max-height: 400px; /* Altura máxima con scroll */
             overflow-y: auto;
-            margin: 0 auto;
-            width: 95%;
-            border: 1px solid #dee2e6;
             border-radius: 8px;
-            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
         }
 
         table {
@@ -63,45 +99,43 @@
             color: #444;
         }
 
-      table th, table td {
-    padding: 8px 14px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-}
-
-
-        table th {
+        thead th {
             background-color: #e9ecef;
             font-weight: 700;
-            color: #495057;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
             position: sticky;
             top: 0;
-            z-index: 2;
+            z-index: 1;
+        }
+
+        tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
         }
 
         table tr:last-child td {
             border-bottom: none;
         }
 
+        /* Alertas */
         .alert-success,
         .alert-danger {
-            width: 100%;
-            padding: 10px 15px;
+            padding: 12px 15px;
             margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: 600;
         }
 
         .alert-success {
             background-color: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
         }
 
         .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
         }
 
         /* Modal */
@@ -109,13 +143,8 @@
             display: none;
             position: fixed;
             z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.45);
-            display: none;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.45);
             align-items: center;
             justify-content: center;
             padding: 15px;
@@ -123,24 +152,22 @@
 
         .modal-content {
             background-color: #fff;
-            padding: 30px 40px;
+            padding: 30px;
             border-radius: 12px;
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
             position: relative;
         }
 
         .close {
             color: #888;
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
+            top: 12px;
+            right: 18px;
+            font-size: 26px;
             font-weight: 700;
             cursor: pointer;
-            transition: color 0.3s ease;
-            user-select: none;
         }
 
         .close:hover {
@@ -148,110 +175,95 @@
         }
 
         .modal-content h3 {
-            margin-top: 0;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-weight: 700;
             color: #2c3e50;
             text-align: center;
         }
 
         .form-group {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            display: block;
             color: #555;
         }
 
+
         .form-group select,
         .form-group input {
+            width: 100%;
             padding: 10px 14px;
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 15px;
-            transition: border-color 0.3s ease;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #6c757d;
-            box-shadow: 0 0 5px rgba(108, 117, 125, 0.5);
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
         }
+        button{
+          margin-bottom: 10px;
+        }
+
 
         .form-group button {
-            background-color: #6c757d;
-            color: white;
-            padding: 12px 0;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            user-select: none;
-        }
 
-        .form-group button:hover {
-            background-color: #5a6268;
+            max-width: ;: 100%;
         }
     </style>
 
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
-            {{ session('success') }}
-        </div>
+        <div class="alert-success">{{ session('success') }}</div>
     @endif
-
     @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
-            {{ session('error') }}
-        </div>
+        <div class="alert-danger">{{ session('error') }}</div>
     @endif
 
     <div class="container">
         <h2>Listado de Competencias</h2>
 
-        <button class="btn-primary" onclick="document.getElementById('competenceModal').style.display='flex'">
-            Registrar Competencia
+        <button class="btn btn-success" onclick="document.getElementById('competenceModal').style.display='flex'">
+             Registrar
         </button>
 
         <div class="table-container">
             <table>
-               <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Duración (horas)</th>
-        <th>Acciones</th>
-    </tr>
-        </thead>
-        <tbody>
-            @forelse($competencies as $competence)
-                <tr>
-                    <td>{{ $competence->id }}</td>
-                    <td>{{ $competence->name }}</td>
-                    <td>{{ $competence->duration_hours }} hr</td>
-                    <td>
-                        <button class="btn-primary" style="width:auto; padding:8px 16px;"
-                            onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
-                            <i class="fa fa-pen-to-square" style="margin-right:6px;"></i>Editar
-                        </button>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
-                        No hay competencias registradas.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Duración (horas)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($competencies as $competence)
+                        <tr>
+                            <td>{{ $competence->id }}</td>
+                            <td>{{ $competence->name }}</td>
+                            <td>{{ $competence->duration_hours }} hr</td>
+                            <td>
+                                <button class="btn btn-edit"
+                                    onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
+                                    ✏️ Editar
+                                </button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
+                                No hay competencias registradas.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
             </table>
         </div>
     </div>
@@ -287,7 +299,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit">Guardar Competencia</button>
+                    <button type="submit" class="btn btn-success">Guardar</button>
                 </div>
             </form>
         </div>
@@ -302,7 +314,6 @@
             <form id="editCompetenceForm" method="POST">
                 @csrf
                 @method('PUT')
-
                 <div class="form-group">
                     <label for="edit_speciality_id">Especialidad</label>
                     <select name="speciality_id" id="edit_speciality_id" required>
@@ -324,31 +335,24 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit">Actualizar Competencia</button>
+                    <button type="submit" class="btn btn-edit">Actualizar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Script -->
     <script>
         function openEditModal(id, name, duration, specialityId) {
             const modal = document.getElementById('editCompetenceModal');
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_duration_hours').value = duration;
             document.getElementById('edit_speciality_id').value = specialityId;
-
-            const form = document.getElementById('editCompetenceForm');
-            form.action = `/programming/admin/competencie_update/${id}`;
-
+            document.getElementById('editCompetenceForm').action = `/programming/admin/competencie_update/${id}`;
             modal.style.display = 'flex';
         }
 
         window.onclick = function(event) {
-            const modals = [
-                document.getElementById('competenceModal'),
-                document.getElementById('editCompetenceModal')
-            ];
+            const modals = [document.getElementById('competenceModal'), document.getElementById('editCompetenceModal')];
             modals.forEach(modal => {
                 if (event.target === modal) {
                     modal.style.display = "none";

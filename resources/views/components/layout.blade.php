@@ -436,7 +436,7 @@ form.logout-form {
                 </a>
                 <ul class="{{ Route::is('programing.instructor_programan_index', 'programming.programming_instructors_profiles') ? 'show' : '' }}">
                     <li><a href="{{ route('programing.instructor_programan_index') }}" class="{{ Route::is('programing.instructor_programan_index') ? 'active-link' : '' }}"><i class="fas fa-user-cog"></i> Gestión de Instructores</a></li>
-                    <li><a href="{{ route('programing.programming_instructors_profiles') }}" class="{{ Route::is('programming.programing_instructors_profiles') ? 'active-link' : '' }}"><i class="fas fa-user-tag"></i> Vincular al Perfil</a></li>
+                    <li><a href="{{ route('programing.programming_instructors_profiles') }}" class="{{ Route::is('programming.programing_instructors_profiles') ? 'active-link' : '' }}"><i class="fas fa-user-tag"></i> Vincular Competencias</a></li>
                 </ul>
             </li>
 
