@@ -11,7 +11,9 @@ use App\Models\DbProgramacion\Cohort;
 use App\Models\DbProgramacion\Competencies;
 use App\Models\DbProgramacion\Day;
 use App\Models\DbProgramacion\Days_training;
+use App\Models\DbProgramacion\EntranceExit;
 use App\Models\DbProgramacion\Instructor;
+use App\Models\DbProgramacion\Person;
 use App\Models\DbProgramacion\Program as dbProgramacionPrograman;
 use App\Models\DbProgramacion\Program_Level;
 use App\Models\DbProgramacion\Programming;
@@ -76,15 +78,15 @@ class ProgramanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function asignarCompetences_index()
-    {
-        $programas = dbProgramacionPrograman::all(); // Lista de programas
+    // public function asignarCompetences_index()
+    // {
+    //     $programaciones = Programming::all();
+    //     $personas = Person::all();
 
-        // Competencias no asignadas a ningún programa
-        $competencias = Competencies::whereDoesntHave('programs')->get();
+    //     $ambientes = Classroom::all();
 
-        return view('pages.programming.Admin.Competencies.competencies_add_programan', compact('programas', 'competencias'));
-    }
+    //     return view('pages.programming.Admin.Competencies.competencies_add_programan', compact('programaciones', 'competencias','ambientes'));
+    // }
 
     //metodo para la vista de agregar competencia al perfil de instructor
     public function asignarCompetences_index_instructor()
@@ -135,6 +137,11 @@ class ProgramanController extends Controller
             'competencias' => 'required|array',
             'competencias.*' => 'exists:db_programacion.competencies,id',
         ]);
+
+        // $programaciones = Programming::all();
+        // $personas = Person::all();
+        // $asistencias = EntranceExit::all();
+        // $ambientes = Classroom::all();
 
         $programa = dbProgramacionPrograman::findOrFail($request->programa_id);
 

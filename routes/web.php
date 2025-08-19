@@ -110,12 +110,15 @@ Route::post('programming/admin/cohort', [CohortController::class, 'registerCohor
 // Route::get('programming/admin/programan', [ProgramanController::class, 'indexPrograman'])
 //     ->middleware('can:programing.programan_add')->name('programming.Programan_add');
 
-
+//rutas de inicio
 Route::get('programming/admin', [ProgrammingAuthController::class, 'dashboard'])->middleware('can:programming.admin')
     ->name('programing.admin_inicio');
 
 Route::post('programming/admin', [ProgramanController::class, 'register_programan'])
     ->middleware('can:programing.programan_store_add')->name('programing.programan_store_add');
+
+Route::get('programming/admin/competencies_programan_index', [ProgrammingAuthController::class, 'programan_index'])
+    ->middleware('can:programing.competencies_programan_index')->name('programing.competencies_program_index');
 
 
 
@@ -162,9 +165,6 @@ Route::get('programming/admin/competenciesIndex_programmig', [ProgramanControlle
 Route::post('programming/admin/competenciesStore_porgramming', [ProgramanController::class, 'competenciesAdd_store'])
     ->middleware('can:programing.competencies_programming_store')->name('programing.competencies_store_program');
 
-
-Route::get('programming/admin/competencies_programan_index', [ProgramanController::class, 'list_competencias_program'])
-    ->middleware('can:programing.competencies_programan_index')->name('programing.competencies_program_index');
 
 
 

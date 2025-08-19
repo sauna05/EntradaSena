@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /*===============================
-  VARIABLES ROOT
+  VARIABLES ROOT - MEJORADAS
 ===============================*/
 :root {
     --verde-sena: #39A900;
@@ -22,6 +22,10 @@
     --gris-texto: #333333;
     --blanco: #ffffff;
     --sombra: 0 2px 16px rgba(57, 169, 0, 0.15);
+    --transicion: all 0.3s ease;
+    --radius: 8px;
+    --sidebar-width: 280px;
+    --sidebar-collapsed: 70px;
 }
 
 /*===============================
@@ -29,16 +33,19 @@
 ===============================*/
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color: var(--gris-fondo);
+    color: var(--gris-texto);
+    line-height: 1.6;
 }
 
 /*===============================
-  HEADER
+  HEADER MEJORADO
 ===============================*/
 .header {
     background-color: var(--blanco);
@@ -48,7 +55,10 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .header-container {
@@ -60,38 +70,95 @@ body {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 .logo-header {
-    height: 70px;
+    height: 60px;
     margin-right: 15px;
     object-fit: contain;
 }
 
 .texto-header {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     letter-spacing: 0.5px;
 }
 
 /*===============================
-  LAYOUT
+  LAYOUT MEJORADO
 ===============================*/
 .main-layout {
     display: flex;
+    min-height: calc(100vh - 120px);
 }
 
 /*===============================
-  SIDEBAR
+  SIDEBAR MEJORADO
 ===============================*/
 .sidebar {
-    width: 250px;
+    width: var(--sidebar-width);
     background-color: var(--verde-sidebar-bg);
-    border-right: 2px solid var(--gris-borde);
-    min-height: calc(100vh - 120px);
-    padding: 15px;
+    border-right: 1px solid var(--gris-borde);
+    padding: 20px 0;
     box-shadow: var(--sombra);
+    transition: var(--transicion);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    z-index: 900;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 15px;
+    right: -15px;
+    background: var(--verde-sena);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 950;
+    transition: var(--transicion);
+}
+
+.sidebar-toggle:hover {
+    background: var(--verde-header-hover);
+    transform: scale(1.05);
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+}
+
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .submenu-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-menu > li > a.menu-toggle::after {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-menu ul {
+    position: absolute;
+    left: var(--sidebar-collapsed);
+    top: 0;
+    background: var(--verde-sidebar-bg);
+    width: 200px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: none !important;
+}
+
+.sidebar.collapsed .sidebar-menu li:hover > ul {
+    display: block !important;
 }
 
 .sidebar-menu {
@@ -101,92 +168,104 @@ body {
 }
 
 .sidebar-menu > li {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
+    position: relative;
 }
 
 .sidebar-menu > li > a.menu-toggle {
     text-decoration: none;
-    color: var(--verde-header);
-    font-weight: bold;
+    color: var(--gris-texto);
+    font-weight: 600;
     display: flex;
     align-items: center;
-    padding: 10px 12px;
-    border-radius: 5px;
+    padding: 12px 20px;
+    border-radius: 0 var(--radius) var(--radius) 0;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: var(--transicion);
     user-select: none;
     position: relative;
+    border-left: 4px solid transparent;
 }
 
 .sidebar-menu > li > a.menu-toggle:hover,
 .sidebar-menu > li > a.menu-toggle.active {
-    background-color: #c5f3de;
+    background-color: rgba(57, 169, 0, 0.1);
     color: var(--verde-header-hover);
+    border-left-color: var(--verde-sena);
 }
 
 .sidebar-menu > li > a.menu-toggle::after {
     content: '▼';
-    font-size: 0.8em;
+    font-size: 0.7em;
     margin-left: auto;
-    transition: transform 0.3s;
+    transition: var(--transicion);
 }
 
 .sidebar-menu > li > a.menu-toggle.active::after {
     transform: rotate(-180deg);
 }
 
+.menu-icon {
+    margin-right: 12px;
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    color: var(--verde-sena);
+}
+
 .sidebar-menu li ul {
     list-style: none;
-    padding-left: 18px;
+    padding-left: 20px;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
-    box-shadow: none;
+    transition: max-height 0.4s ease, padding 0.3s ease;
 }
 
 .sidebar-menu li ul.show {
     max-height: 500px;
     margin-bottom: 8px;
-    background: #fafdff;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(57, 169, 0, 0.1);
 }
 
 .sidebar-menu li ul li a {
-    display: block;
+    display: flex;
+    align-items: center;
     text-decoration: none;
     color: var(--gris-texto);
-    padding: 7px 10px;
-    font-size: 15px;
-    border-radius: 4px;
-    margin: 2px 0;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: var(--radius);
+    margin: 4px 0;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, padding-left 0.2s;
+    transition: var(--transicion);
+    position: relative;
+}
+
+.sidebar-menu li ul li a::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--verde-sena);
+    border-radius: 50%;
+    margin-right: 10px;
+    opacity: 0.6;
+    transition: var(--transicion);
 }
 
 .sidebar-menu li ul li a:hover {
-    background-color: #e0f8ee;
+    background-color: rgba(57, 169, 0, 0.1);
     color: var(--verde-header-hover);
     padding-left: 20px;
 }
 
-.menu-toggle.active,
-.active-link {
-    font-weight: bold;
-    color: #007bff;
+.sidebar-menu li ul li a:hover::before {
+    opacity: 1;
+    transform: scale(1.2);
 }
 
-.sidebar-menu li.open > ul {
-    display: block;
-}
-
-.sidebar-menu .show {
-    display: block !important;
-}
-
-.sidebar-menu a,
-.sidebar-menu .menu-toggle {
-    cursor: pointer;
+.sidebar-menu li ul li a.active-link {
+    background-color: rgba(57, 169, 0, 0.15);
+    color: var(--verde-header-hover);
+    font-weight: 600;
 }
 
 /*===============================
@@ -196,17 +275,21 @@ body {
     flex-grow: 1;
     padding: 25px;
     background-color: var(--blanco);
-    min-height: calc(100vh - 120px);
+    transition: var(--transicion);
+}
+
+.content.expanded {
+    margin-left: calc(var(--sidebar-collapsed) - var(--sidebar-width));
 }
 
 /*===============================
-  FOOTER
+  FOOTER MEJORADO
 ===============================*/
 .footer {
     background-color: var(--blanco);
     color: var(--verde-header);
     text-align: center;
-    padding: 25px 20px;
+    padding: 20px;
     border-top: 1px solid #e0e0e0;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
     display: flex;
@@ -222,48 +305,61 @@ body {
 }
 
 .logo-footer {
-    height: 60px;
+    height: 50px;
     margin-bottom: 10px;
     object-fit: contain;
 }
 
 /*===============================
-  ICONOS / NOTIFICACIONES
+  ICONOS / NOTIFICACIONES MEJORADOS
 ===============================*/
 .usuario-info,
 .notificaciones,
 .programaciones-info {
     display: inline-flex;
     align-items: center;
-    font-size: 18px;
+    font-size: 16px;
     color: var(--verde-header-hover);
-    margin-right: 20px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    transition: var(--transicion);
     position: relative;
+    cursor: pointer;
+}
+
+.usuario-info:hover,
+.notificaciones:hover,
+.programaciones-info:hover {
+    background-color: rgba(57, 169, 0, 0.1);
 }
 
 .usuario-info i,
 .notificaciones i,
 .programaciones-info i {
-    font-size: 24px;
-    margin-right: 6px;
+    font-size: 20px;
+    margin-right: 8px;
     color: var(--verde-header);
 }
 
 .notificaciones .contador,
 .programaciones-info .contador {
     position: absolute;
-    top: -6px;
-    right: -10px;
-    background: red;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
     color: white;
     font-size: 11px;
     border-radius: 50%;
-    padding: 2px 5px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
 }
 
 /*===============================
-  BOTÓN CERRAR SESIÓN
+  BOTÓN CERRAR SESIÓN MEJORADO
 ===============================*/
 form.logout-form {
     margin: 0;
@@ -272,46 +368,178 @@ form.logout-form {
 .logout-button {
     background-color: var(--verde-boton);
     color: var(--blanco);
-    padding: 10px 18px;
+    padding: 10px 16px;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
-    font-weight: 700;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 3px 8px rgba(57, 169, 0, 0.4);
+    font-weight: 600;
+    font-size: 14px;
+    transition: var(--transicion);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .logout-button:hover {
     background-color: var(--verde-boton-hover);
+    transform: translateY(-2px);
 }
 
 /*===============================
-  RESPONSIVE
+  BADGE PARA ELEMENTOS NUEVOS
 ===============================*/
-@media (max-width: 800px) {
+.menu-badge {
+    background: var(--verde-sena);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+/*===============================
+  RESPONSIVE MEJORADO
+===============================*/
+@media (max-width: 992px) {
+    .header {
+        padding: 12px 20px;
+    }
+
+    .texto-header {
+        font-size: 18px;
+    }
+
+    .logo-header {
+        height: 50px;
+    }
+
+    .header-actions {
+        gap: 12px;
+    }
+
+    .usuario-info span,
+    .logout-button span {
+        display: none;
+    }
+
+    .usuario-info,
+    .notificaciones,
+    .programaciones-info {
+        padding: 8px;
+    }
+
+    .usuario-info i,
+    .notificaciones i,
+    .programaciones-info i {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 768px) {
     .main-layout {
         flex-direction: column;
     }
 
     .sidebar {
         width: 100%;
-        min-height: auto;
+        padding: 10px 0;
         border-right: none;
-        border-bottom: 2px solid var(--gris-borde);
+        border-bottom: 1px solid var(--gris-borde);
+        max-height: 60px;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
     }
-}
 
-@media (max-width: 600px) {
-    .header,
-    .footer {
-        padding: 10px;
+    .sidebar.active {
+        max-height: 1000px;
+    }
+
+    .sidebar-toggle {
+        top: 10px;
+        right: 10px;
+        background: var(--verde-sena);
+    }
+
+    .sidebar-toggle::before {
+        content: '☰';
+    }
+
+    .sidebar.active .sidebar-toggle::before {
+        content: '✕';
     }
 
     .content {
-        padding: 10px;
+        padding: 15px;
+    }
+
+    .sidebar.collapsed {
+        width: 100%;
+    }
+
+    .sidebar.collapsed .menu-text,
+    .sidebar.collapsed .submenu-text {
+        display: inline;
+    }
+
+    .sidebar.collapsed .sidebar-menu ul {
+        position: static;
+        width: auto;
+        box-shadow: none;
+        background: transparent;
     }
 }
+
+@media (max-width: 576px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .header-container {
+        justify-content: center;
+    }
+
+    .header-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .footer {
+        padding: 15px;
+    }
+
+    .footer p {
+        font-size: 12px;
+    }
+
+    .logo-footer {
+        height: 40px;
+    }
+}
+
+/*===============================
+  ANIMACIONES
+===============================*/
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar-menu li {
+    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+}
+
+.sidebar-menu li:nth-child(1) { animation-delay: 0.05s; }
+.sidebar-menu li:nth-child(2) { animation-delay: 0.1s; }
+.sidebar-menu li:nth-child(3) { animation-delay: 0.15s; }
+.sidebar-menu li:nth-child(4) { animation-delay: 0.2s; }
+.sidebar-menu li:nth-child(5) { animation-delay: 0.25s; }
+.sidebar-menu li:nth-child(6) { animation-delay: 0.3s; }
+.sidebar-menu li:nth-child(7) { animation-delay: 0.35s; }
+.sidebar-menu li:nth-child(8) { animation-delay: 0.4s; }
 
     </style>
     {{-- llamada de icoconos para el menu --}}
@@ -339,13 +567,10 @@ form.logout-form {
             </div>
 
             <!-- Programaciones sin registrar -->
-            <div class="programaciones-info" style="cursor: pointer" title="Programaciones pendientes por registrar">
-            <a href="{{ route('programming.programming_update_index') }}" class="programaciones-info" title="Programaciones pendientes por registrar" style="cursor: pointer; text-decoration: none; color: inherit;">
+            <a href="{{ route('programming.programming_update_index') }}" class="programaciones-info" title="Programaciones pendientes por registrar" style="text-decoration: none; color: inherit;">
                 <i class="fa-solid fa-calendar-xmark"></i>
                 <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
             </a>
-
-            </div>
 
           @auth
             <form action="{{ route('logout') }}" method="POST" class="logout-form">
@@ -364,39 +589,45 @@ form.logout-form {
     <!-- Layout -->
 <div class="main-layout">
     <!-- Sidebar -->
-    <nav class="sidebar" aria-label="Menú lateral">
+    <nav class="sidebar" aria-label="Menú lateral" id="sidebar">
+        <div class="sidebar-toggle" id="sidebar-toggle"></div>
         <ul class="sidebar-menu">
 
-            <!-- INICIO -->
-           <li class="{{ Route::is('programing.admin_inicio', 'programing.competencies_program_index') ? 'open' : '' }}">
-                <a class="menu-toggle {{ Route::is('programming.admin', 'programing.competencies_program_index') ? 'active' : '' }}">
-
-                    <i class="fas fa-home"></i> Inicio
+           <!-- INICIO -->
+            <li class="{{ Route::is('programing.admin_inicio', 'programing.competencies_program_index') ? 'open' : '' }}">
+                <a class="menu-toggle {{ Route::is('programing.admin_inicio', 'programing.competencies_program_index') ? 'active' : '' }}">
+                    <i class="fas fa-home menu-icon"></i>
+                    <span class="menu-text">Inicio</span>
                 </a>
                 <ul class="{{ Route::is('programing.admin_inicio', 'programing.competencies_program_index') ? 'show' : '' }}">
-                    <li><a href="{{ route('programing.admin_inicio') }}" class="{{ Route::is('programing.admin_inicio') ? 'active-link' : '' }}"><i class="fas fa-clipboard-list"></i> Gestión de Programas</a></li>
-                    <li><a href="{{ route('programing.competencies_program_index') }}" class="{{ Route::is('programing.competencies_program_index') ? 'active-link' : '' }}"><i class="fas fa-link"></i> Competencias Vinculadas</a></li>
+                    <li><a href="{{ route('programing.admin_inicio') }}" class="{{ Route::is('programing.admin_inicio') ? 'active-link' : '' }}"><i class="fas fa-chart-line menu-icon"></i> <span class="submenu-text">Dashboard - Sistema SENA</span></a></li>
+                    <li><a href="{{ route('programing.competencies_program_index') }}" class="{{ Route::is('programing.competencies_program_index') ? 'active-link' : '' }}"><i class="fas fa-clipboard-list menu-icon"></i> <span class="submenu-text">Gestión de Programas</span></a></li>
                 </ul>
             </li>
              <!-- FICHAS -->
           <li class="{{ Route::is('programing.cohort_index','programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'open' : '' }}">
             <a class="menu-toggle {{ Route::is('programing.cohort_index','programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'active' : '' }}">
-                <i class="fas fa-folder-open"></i> Fichas
+                <i class="fas fa-folder-open menu-icon"></i>
+                <span class="menu-text">Fichas</span>
+
             </a>
             <ul class="{{ Route::is('programing.cohort_index','programing.list_apprentices', 'programing.add_apprentices_cohorts') ? 'show' : '' }}">
                 <li>
                     <a href="{{ route('programing.cohort_index') }}" class="{{ Route::is('programing.cohort_index') ? 'active-link' : '' }}">
-                        <i class="fas fa-file-alt"></i> Gestión de Fichas
+                        <i class="fas fa-file-alt menu-icon"></i>
+                        <span class="submenu-text">Gestión de Fichas</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('programing.list_apprentices') }}" class="{{ Route::is('programing.list_apprentices') ? 'active-link' : '' }}">
-                        <i class="fas fa-address-card"></i> Gestión de Aprendices
+                        <i class="fas fa-address-card menu-icon"></i>
+                        <span class="submenu-text">Gestión de Aprendices</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('programing.add_apprentices_cohorts') }}" class="{{ Route::is('programing.add_apprentices_cohorts') ? 'active-link' : '' }}">
-                        <i class="fas fa-user-check"></i> Agregar Aprendiz
+                        <i class="fas fa-user-check menu-icon"></i>
+                        <span class="submenu-text">Agregar Aprendiz</span>
                     </a>
                 </li>
             </ul>
@@ -406,72 +637,73 @@ form.logout-form {
             <!-- PROGRAMACIÓN ACADÉMICA -->
           <li class="{{ Route::is('programming.programming_index_states', 'programmig.*', 'programming.register_programming_instructor_index', 'programming.programming_update_index', 'programing.unrecorded_days_index') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('programming.programming_index_states', 'programmig.*', 'programming.register_programming_instructor_index', 'programming.programming_update_index', 'programing.unrecorded_days_index') ? 'active' : '' }}">
-
-                 <i class="fas fa-calendar-alt"></i> Programación
+                    <i class="fas fa-calendar-alt menu-icon"></i>
+                    <span class="menu-text">Programación</span>
                 </a>
                 <ul class="{{ Route::is('programming.*', 'programmig.*', 'programing.unrecorded_days_index') ? 'show' : '' }}">
-                    <li><a href="{{ route('programming.register_programming_instructor_index') }}" class="{{ Route::is('programming.register_programming_instructor_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-plus"></i> Programar Curso</a></li>
-                    <li><a href="{{ route('programmig.programaciones_index') }}" class="{{ Route::is('programmig.programaciones_index') ? 'active-link' : '' }}"><i class="fas fa-list-ul"></i> Ver Programaciones</a></li>
-                    <li><a href="{{ route('programming.programming_index_states') }}" class="{{ Route::is('programming.programming_index_states') ? 'active-link' : '' }}"><i class="fas fa-tasks"></i> Estado de Competencias</a></li>
-                    <li><a href="{{ route('programming.programming_update_index') }}" class="{{ Route::is('programming.programming_update_index') ? 'active-link' : '' }}"><i class="fas fa-edit"></i> Registrar Programación</a></li>
-                    <li><a href="{{ route('programing.unrecorded_days_index') }}" class="{{ Route::is('programing.unrecorded_days_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-times"></i> Días No Programados</a></li>
+                    <li><a href="{{ route('programming.register_programming_instructor_index') }}" class="{{ Route::is('programming.register_programming_instructor_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-plus menu-icon"></i> <span class="submenu-text">Programar Curso</span></a></li>
+                    <li><a href="{{ route('programmig.programaciones_index') }}" class="{{ Route::is('programmig.programaciones_index') ? 'active-link' : '' }}"><i class="fas fa-list-ul menu-icon"></i> <span class="submenu-text">Ver Programaciones</span></a></li>
+                    <li><a href="{{ route('programming.programming_index_states') }}" class="{{ Route::is('programming.programming_index_states') ? 'active-link' : '' }}"><i class="fas fa-tasks menu-icon"></i> <span class="submenu-text">Estado de Competencias</span></a></li>
+                    <li><a href="{{ route('programming.programming_update_index') }}" class="{{ Route::is('programming.programming_update_index') ? 'active-link' : '' }}"><i class="fas fa-edit menu-icon"></i> <span class="submenu-text">Registrar Programación</span></a></li>
+                    <li><a href="{{ route('programing.unrecorded_days_index') }}" class="{{ Route::is('programing.unrecorded_days_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-times menu-icon"></i> <span class="submenu-text">Días No Programados</span></a></li>
                 </ul>
             </li>
 
             <!-- COMPETENCIAS -->
             <li class="{{ Route::is('programing.competencies_index', 'programing.competencies_index_program') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('programing.competencies_index', 'programing.competencies_index_program') ? 'active' : '' }}">
-                    <i class="fas fa-cubes"></i> Competencias
+                    <i class="fas fa-cubes menu-icon"></i>
+                    <span class="menu-text">Competencias</span>
                 </a>
                 <ul class="{{ Route::is('programing.competencies_index', 'programing.competencies_index_program') ? 'show' : '' }}">
-                    <li><a href="{{ route('programing.competencies_index') }}" class="{{ Route::is('programing.competencies_index') ? 'active-link' : '' }}"><i class="fas fa-check-square"></i> Gestión de Competencias</a></li>
-                    <li><a href="{{ route('programing.competencies_index_program') }}" class="{{ Route::is('programing.competencies_index_program') ? 'active-link' : '' }}"><i class="fas fa-random"></i> Vincular a Programas y Fichas</a></li>
+                    <li><a href="{{ route('programing.competencies_index') }}" class="{{ Route::is('programing.competencies_index') ? 'active-link' : '' }}"><i class="fas fa-check-square menu-icon"></i> <span class="submenu-text">Gestión de Competencias</span></a></li>
+                    <li><a href="{{ route('programing.competencies_index_program') }}" class="{{ Route::is('programing.competencies_index_program') ? 'active-link' : '' }}"><i class="fas fa-random menu-icon"></i> <span class="submenu-text">Vincular a Programas y Fichas</span></a></li>
                 </ul>
             </li>
 
             <!-- INSTRUCTORES -->
             <li class="{{ Route::is('programing.instructor_programan_index', 'programming.programming_instructors_profiles') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('programing.instructor_programan_index', 'programming.programming_instructors_profiles') ? 'active' : '' }}">
-                    <i class="fas fa-chalkboard-teacher"></i> Instructores
+                    <i class="fas fa-chalkboard-teacher menu-icon"></i>
+                    <span class="menu-text">Instructores</span>
                 </a>
                 <ul class="{{ Route::is('programing.instructor_programan_index', 'programming.programming_instructors_profiles') ? 'show' : '' }}">
-                    <li><a href="{{ route('programing.instructor_programan_index') }}" class="{{ Route::is('programing.instructor_programan_index') ? 'active-link' : '' }}"><i class="fas fa-user-cog"></i> Gestión de Instructores</a></li>
-                    <li><a href="{{ route('programing.programming_instructors_profiles') }}" class="{{ Route::is('programming.programing_instructors_profiles') ? 'active-link' : '' }}"><i class="fas fa-user-tag"></i> Vincular Competencias</a></li>
+                    <li><a href="{{ route('programing.instructor_programan_index') }}" class="{{ Route::is('programing.instructor_programan_index') ? 'active-link' : '' }}"><i class="fas fa-user-cog menu-icon"></i> <span class="submenu-text">Gestión de Instructores</span></a></li>
+                    <li><a href="{{ route('programing.programming_instructors_profiles') }}" class="{{ Route::is('programming.programing_instructors_profiles') ? 'active-link' : '' }}"><i class="fas fa-user-tag menu-icon"></i> <span class="submenu-text">Vincular Competencias</span></a></li>
                 </ul>
             </li>
-
-
-
-
 
             <!-- AMBIENTES -->
             <li class="{{ Route::is('ambientes_index') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('ambientes_index') ? 'active' : '' }}">
-                    <i class="fas fa-door-open"></i> Ambientes
+                    <i class="fas fa-door-open menu-icon"></i>
+                    <span class="menu-text">Ambientes</span>
                 </a>
                 <ul class="{{ Route::is('ambientes_index') ? 'show' : '' }}">
-                    <li><a href="{{ route('ambientes_index') }}" class="{{ Route::is('ambientes_index') ? 'active-link' : '' }}"><i class="fas fa-warehouse"></i> Gestión de Ambientes</a></li>
+                    <li><a href="{{ route('ambientes_index') }}" class="{{ Route::is('ambientes_index') ? 'active-link' : '' }}"><i class="fas fa-warehouse menu-icon"></i> <span class="submenu-text">Gestión de Ambientes</span></a></li>
                 </ul>
             </li>
 
             <!-- GESTIÓN DE PERSONAS -->
             <li class="{{ Route::is('entrance.people.index', 'entrance.people.create') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('entrance.people.index', 'entrance.people.create') ? 'active' : '' }}">
-                    <i class="fas fa-users"></i> Gestión de Personas
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">Gestión de Personas</span>
                 </a>
                 <ul class="{{ Route::is('entrance.people.index', 'entrance.people.create') ? 'show' : '' }}">
-                    <li><a href="{{ route('entrance.people.index') }}" class="{{ Route::is('entrance.people.index') ? 'active-link' : '' }}"><i class="fas fa-id-card"></i> Personas</a></li>
-                    <li><a href="{{ route('entrance.people.create') }}" class="{{ Route::is('entrance.people.create') ? 'active-link' : '' }}"><i class="fas fa-user-plus"></i> Registro de Personas</a></li>
+                    <li><a href="{{ route('entrance.people.index') }}" class="{{ Route::is('entrance.people.index') ? 'active-link' : '' }}"><i class="fas fa-id-card menu-icon"></i> <span class="submenu-text">Personas</span></a></li>
+                    <li><a href="{{ route('entrance.people.create') }}" class="{{ Route::is('entrance.people.create') ? 'active-link' : '' }}"><i class="fas fa-user-plus menu-icon"></i> <span class="submenu-text">Registro de Personas</span></a></li>
                 </ul>
             </li>
 
             <!-- ASISTENCIA -->
             <li class="{{ Route::is('entrance.assistance.index') ? 'open' : '' }}">
                 <a class="menu-toggle {{ Route::is('entrance.assistance.index') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-check"></i> Asistencia
+                    <i class="fas fa-calendar-check menu-icon"></i>
+                    <span class="menu-text">Asistencia</span>
                 </a>
                 <ul class="{{ Route::is('entrance.assistance.index') ? 'show' : '' }}">
-                    <li><a href="{{ route('entrance.assistance.index') }}" class="{{ Route::is('entrance.assistance.index') ? 'active-link' : '' }}"><i class="fas fa-check-circle"></i> Control de Asistencia</a></li>
+                    <li><a href="{{ route('entrance.assistance.index') }}" class="{{ Route::is('entrance.assistance.index') ? 'active-link' : '' }}"><i class="fas fa-check-circle menu-icon"></i> <span class="submenu-text">Control de Asistencia</span></a></li>
                 </ul>
             </li>
 
@@ -479,7 +711,7 @@ form.logout-form {
     </nav>
 
     <!-- Contenido principal -->
-    <main class="content">
+    <main class="content" id="main-content">
         {{ $slot }}
     </main>
 </div>
@@ -491,30 +723,79 @@ form.logout-form {
         <p>&copy; {{ date('Y') }} Centro Agroempresarial y Acuícola. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- JS: Menú toggle -->
+    <!-- JS: Menú toggle mejorado -->
     <script>
-        document.querySelectorAll('.menu-toggle').forEach(menu => {
-            menu.addEventListener('click', function () {
-                const submenu = this.nextElementSibling;
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const mainContent = document.getElementById('main-content');
 
-                // Cierra otros submenús y desactiva otras flechas
-                document.querySelectorAll('.sidebar-menu ul').forEach(ul => {
-                    if (ul !== submenu) {
-                        ul.classList.remove('show');
-                        if (ul.previousElementSibling) {
-                            ul.previousElementSibling.classList.remove('active');
-                        }
-                    }
-                });
-
-                submenu.classList.toggle('show');
-                this.classList.toggle('active');
+            // Función para alternar el menú lateral
+            sidebarToggle.addEventListener('click', function() {
+                if (window.innerWidth > 768) {
+                    // En desktop: modo colapsado/expandido
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                } else {
+                    // En móvil: mostrar/ocultar completamente
+                    sidebar.classList.toggle('active');
+                }
             });
+
+            // Cerrar submenús al hacer clic fuera en móviles
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 &&
+                    sidebar.classList.contains('active') &&
+                    !sidebar.contains(event.target) &&
+                    !sidebarToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Manejo de submenús
+            document.querySelectorAll('.menu-toggle').forEach(menu => {
+                menu.addEventListener('click', function(e) {
+                    // En móviles, evitar que el clic se propague
+                    if (window.innerWidth <= 768) {
+                        e.stopPropagation();
+                    }
+
+                    const submenu = this.nextElementSibling;
+
+                    // Si estamos en modo colapsado en desktop, no cerrar otros menús
+                    if (window.innerWidth > 768 && sidebar.classList.contains('collapsed')) {
+                        submenu.classList.toggle('show');
+                        this.classList.toggle('active');
+                        return;
+                    }
+
+                    // Comportamiento normal: cerrar otros menús
+                    document.querySelectorAll('.sidebar-menu ul').forEach(ul => {
+                        if (ul !== submenu && !sidebar.classList.contains('collapsed')) {
+                            ul.classList.remove('show');
+                            if (ul.previousElementSibling) {
+                                ul.previousElementSibling.classList.remove('active');
+                            }
+                        }
+                    });
+
+                    submenu.classList.toggle('show');
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Ajustar inicialmente según el tamaño de pantalla
+            function adjustLayout() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('expanded');
+                }
+            }
+
+            window.addEventListener('resize', adjustLayout);
+            adjustLayout();
         });
-
-
     </script>
 
 </body>
 </html>
-

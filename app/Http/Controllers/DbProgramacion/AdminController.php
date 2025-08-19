@@ -16,6 +16,6 @@ class AdminController extends Controller
         $programan_level = Program_Level::all();
         $instructors=Instructor::with('person')->get();
 
-        return view('pages.programming.Admin.programming_dashboard',compact('programs', 'instructors', 'programan_level'));
+        return view('pages.programming.Admin.programan.competencies_program_index',compact('programs', 'instructors', 'programan_level'));
     }
 }

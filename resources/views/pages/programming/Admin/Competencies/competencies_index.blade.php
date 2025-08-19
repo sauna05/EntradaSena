@@ -284,7 +284,7 @@
                             <option value="{{ $espe->id }}">{{ $espe->name }}</option>
                         @empty
                             <option value="">No hay especialidades</option>
-                        @endforelse
+                        @endforelse          
                     </select>
                 </div>
 
