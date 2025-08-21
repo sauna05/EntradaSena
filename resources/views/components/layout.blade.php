@@ -644,7 +644,14 @@ form.logout-form {
                     <li><a href="{{ route('programming.register_programming_instructor_index') }}" class="{{ Route::is('programming.register_programming_instructor_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-plus menu-icon"></i> <span class="submenu-text">Programar Curso</span></a></li>
                     <li><a href="{{ route('programmig.programaciones_index') }}" class="{{ Route::is('programmig.programaciones_index') ? 'active-link' : '' }}"><i class="fas fa-list-ul menu-icon"></i> <span class="submenu-text">Ver Programaciones</span></a></li>
                     <li><a href="{{ route('programming.programming_index_states') }}" class="{{ Route::is('programming.programming_index_states') ? 'active-link' : '' }}"><i class="fas fa-tasks menu-icon"></i> <span class="submenu-text">Estado de Competencias</span></a></li>
-                    <li><a href="{{ route('programming.programming_update_index') }}" class="{{ Route::is('programming.programming_update_index') ? 'active-link' : '' }}"><i class="fas fa-edit menu-icon"></i> <span class="submenu-text">Registrar Programación</span></a></li>
+                 <li>
+                 <a href="{{ route('programming.programming_update_index') }}"
+                  class="{{ Route::is('programming.programming_update_index') ? 'active-link' : '' }}">
+                   <i class="fas fa-check-circle menu-icon"></i>
+                   <span class="submenu-text">Marcar como registrada</span>
+                 </a>
+</li>
+
                     <li><a href="{{ route('programing.unrecorded_days_index') }}" class="{{ Route::is('programing.unrecorded_days_index') ? 'active-link' : '' }}"><i class="fas fa-calendar-times menu-icon"></i> <span class="submenu-text">Días No Programados</span></a></li>
                 </ul>
             </li>
