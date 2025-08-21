@@ -208,24 +208,24 @@
             .content-wrapper {
                 padding: 1.5rem 1rem;
             }
-            
+
             h1 {
                 font-size: 1.75rem;
             }
-            
+
             #full_hour {
                 font-size: 2rem;
             }
-            
+
             #document_number {
                 font-size: 1.25rem;
                 padding: 0.75rem;
             }
-            
+
             .action {
                 font-size: 1.5rem;
             }
-            
+
             .user-info h2 {
                 font-size: 1.1rem;
             }
@@ -235,19 +235,19 @@
             h1 {
                 font-size: 1.5rem;
             }
-            
+
             #full_hour {
                 font-size: 1.75rem;
             }
-            
+
             label[for="document_number"] {
                 font-size: 1.1rem;
             }
-            
+
             #document_number {
                 font-size: 1.1rem;
             }
-            
+
             .action {
                 font-size: 1.25rem;
                 padding: 0.5rem 1rem;
@@ -268,25 +268,25 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <div class="content-wrapper">
-        <h1>REGISTRO DE ENTRADA AL CENTRO DE FORMACIÓN</h1>
-        
+        <h1>REGISTRO DE ENTRADA Y SALIDA DEL CENTRO DE FORMACIÓN</h1>
+
         <div id="full_hour"></div>
-        
+
         <div class="document-input-container">
             <label for="document_number">NÚMERO DE DOCUMENTO</label>
             <input type="text" id="document_number" autofocus>
         </div>
-        
+
         <div class="action-container">
             <h2>ACCIÓN REGISTRADA</h2>
             <span class="action" id="action"></span>
         </div>
-        
+
         <div class="user-info">
             <h2>Nombre: <span id="name"></span></h2>
             <h2>Cargo: <span id="position"></span></h2>
         </div>
-        
+
         <div id="error_message"></div>
     </div>
 

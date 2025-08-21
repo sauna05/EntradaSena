@@ -226,12 +226,24 @@ class ProgramanController extends Controller
 
     public function ListAprenticesxcohorts(Request $request)
     {
+        // Obtener variables de filtros de la vista
+        $busqueda = $request->input('buscar');
         $comboFicha = $request->input('combo_ficha');
 
-        // Obtenemos todos los aprendices con sus fichas y programas
-        $aprendices = Apprentice::with(['person', 'cohorts.program'])
-            ->whereHas('cohorts') // Solo los que tienen fichas asignadas
-            ->get();
+        // Construir la consulta con relaciones
+        $aprendicesQuery = Apprentice::with(['person', 'cohorts.program'])
+            ->whereHas('cohorts'); // Solo los que tienen fichas asignadas
+
+        // Aplicar filtro de búsqueda si existe
+        if ($busqueda) {
+            $aprendicesQuery->whereHas('person', function ($query) use ($busqueda) {
+                $query->where('name', 'like', '%' . $busqueda . '%')
+                    ->orWhere('document_number', 'like', '%' . $busqueda . '%');
+            });
+        }
+
+        // Obtener los resultados
+        $aprendices = $aprendicesQuery->get();
 
         $resultado = [];
 
@@ -274,7 +286,6 @@ class ProgramanController extends Controller
                 ];
             });
 
-
         return view('pages.programming.Admin.Apprentices.apprentice_list', [
             'apprentices' => $resultado,
             'fichas' => $fichas
@@ -284,10 +295,23 @@ class ProgramanController extends Controller
 
     //metodo para gestion de competencias
 
-    public function Listcompetencies()
+    public function Listcompetencies(Request $request)
     {
-        $competencies = Competencies::orderBy('created_at','desc')->get(); // Cambia all() por paginate(10)
+        // Obtener variables de la vista para filtro
+        $busqueda = $request->input('buscar');
         $especialidad = Speciality::all();
+
+        // Construir la consulta
+        $query = Competencies::orderBy('created_at', 'desc');
+
+        // Aplicar filtro de búsqueda si existe
+        if ($busqueda) {
+            $query->where('name', 'like', '%' . $busqueda . '%');
+        }
+
+        // Ejecutar la consulta
+        $competencies = $query->get();
+
         return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies', 'especialidad'));
     }
 

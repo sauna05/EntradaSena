@@ -1,380 +1,718 @@
 <x-layout>
     <x-slot:page_style></x-slot:page_style>
-    <x-slot:title>Crear Ficha</x-slot:title>
+    <x-slot:title>Gestión de Fichas</x-slot:title>
 
     <style>
-       body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          background-color: #f4f6f8;
-          margin: 0;
-          padding: 0;
-       }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-       .container {
-          max-width: 1200px;
-          margin: 40px auto;
-          padding: 40px;
-          border-radius: 10px;
-          background-color: white;
-          box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-       }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #333;
+        }
 
-       h2 {
-          font-size: 26px;
-          font-weight: bold;
-          color: #2c3e50;
-          margin-bottom: 20px;
-          text-align: center;
-       }
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
 
-       .btn {
-          background-color: #2980b9;
-          color: white;
-          width: max-content;
-          border: none;
-          padding: 10px 20px;
-          font-size: 15px;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          margin-bottom: 20px;
-       }
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #28a745;
+            font-weight: 700;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
 
-       .btn:hover {
-          background-color: #1c598c;
-       }
+        .page-description {
+            text-align: center;
+            color: #000;
+            margin-bottom: 30px;
+            font-size: 16px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
 
-       .form-buttons {
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px;
-          margin-top: 20px;
-          flex-wrap: wrap;
-       }
-
-       .form-buttons .btn {
-          min-width: 100px;
-       }
-
-       /* Modal */
-       .modal {
-          display: none;
-          position: fixed;
-          z-index: 1000;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          overflow: auto;
-          background-color: rgba(0, 0, 0, 0.5);
-       }
-
-       .modal-content {
-          background-color: #fff;
-          margin: 5% auto;
-          padding: 30px;
-          border-radius: 10px;
-          width: 90%;
-          max-width: 600px;
-          max-height: 90vh;
-          overflow-y: auto;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-          position: relative;
-       }
-
-       .close {
-          color: #888;
-          position: absolute;
-          top: 10px;
-          right: 20px;
-          font-size: 28px;
-          cursor: pointer;
-       }
-
-       .close:hover {
-          color: red;
-       }
-
-       form label {
-          display: block;
-          margin-top: 14px;
-          font-weight: 600;
-          color: #333;
-       }
-
-       form input,
-       form select {
-          width: 100%;
-          padding: 10px;
-          margin-top: 6px;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          background-color: #f9f9f9;
-          font-size: 14px;
-       }
-
-       table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 30px;
-          background-color: white;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-       }
-
-       table th,
-       table td {
-          padding: 12px 15px;
-          text-align: left;
-          border-bottom: 1px solid #eee;
-          font-size: 14px;
-       }
-       .table-container{
-         max-height: 400px;
-            overflow-y: auto;
-
+        /* Botones */
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+            padding: 14px 30px;
+            border: none;
             border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Alertas */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-danger ul {
+            margin: 10px 0 0 20px;
+        }
+
+        /* Filtros */
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: end;
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #888;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+        }
+
+        .close:hover {
+            color: #444;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        /* Formulario */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
             margin-top: 20px;
-       }
+        }
 
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-       thead th {
-          background-color: #ecf0f1;
-          font-weight: bold;
-          color: #2c3e50;
-          position: sticky;
-          top: 0;
-        z-index: 1;
-       }
+        .btn-submit:hover {
+            background-color: #218838;
+        }
 
-       table tbody tr:hover {
-          background-color: #f2f2f2;
-       }
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-       .message {
-          padding: 12px;
-          border-radius: 6px;
-          margin-bottom: 20px;
-          font-size: 14px;
-       }
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
 
-       .success {
-          background-color: #d4edda;
-          color: #155724;
-          border-left: 6px solid #28a745;
-       }
+        /* Tabla */
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            margin-top: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
 
-       .error {
-          background-color: #f8d7da;
-          color: #721c24;
-          border-left: 6px solid #dc3545;
-       }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            color: #444;
+        }
 
-       .progress {
-          background-color: #ddd;
-          height: 20px;
-          border-radius: 10px;
-          overflow: hidden;
-       }
+        thead th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            color: #2d3748;
+        }
 
-       .progress-bar {
-          height: 100%;
-          color: white;
-          text-align: center;
-          line-height: 20px;
-          font-size: 13px;
-       }
+        tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-       .bg-success {
-          background-color: #28a745;
-       }
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
 
-       .bg-warning {
-          background-color: #f0ad4e;
-       }
+        table tr:last-child td {
+            border-bottom: none;
+        }
 
-       .bg-danger {
-          background-color: #d9534f;
-       }
+        /* Progress bar */
+        .progress {
+            background-color: #e5e7eb;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: width 0.3s ease;
+        }
+
+        .bg-success { background-color: #28a745; }
+        .bg-warning { background-color: #ffc107; color: #000; }
+        .bg-danger { background-color: #dc3545; }
+
+        /* Status badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .filters-container {
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 1000px;
+            }
+        }
+        .dashboard-header {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--verde-sena);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            color: var(--gris-texto);
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
     </style>
 
-    <script>
-       document.addEventListener('DOMContentLoaded', function () {
-          const startSchoolInput = document.querySelector('input[name="start_date_school_stage"]');
-          const endSchoolInput = document.querySelector('input[name="end_date_school_stage"]');
-          const startPracticeInput = document.querySelector('input[name="start_date_practical_stage"]');
-          const endPracticeInput = document.querySelector('input[name="end_date_practical_stage"]');
-
-          startSchoolInput.addEventListener('change', function () {
-             if (this.value) {
-                const startDate = new Date(this.value);
-                const minEndDate = new Date(startDate);
-                minEndDate.setDate(startDate.getDate() + 15);
-                endSchoolInput.min = minEndDate.toISOString().split('T')[0];
-
-                endSchoolInput.addEventListener('change', function () {
-                   if (this.value) {
-                      const endSchoolDate = new Date(this.value);
-                      const minPracticeStart = new Date(endSchoolDate);
-                      minPracticeStart.setDate(endSchoolDate.getDate() + 1);
-                      startPracticeInput.min = minPracticeStart.toISOString().split('T')[0];
-                   }
-                });
-             }
-          });
-
-          startPracticeInput.addEventListener('change', function () {
-             if (this.value) {
-                const startPracticeDate = new Date(this.value);
-                const minEndPractice = new Date(startPracticeDate);
-                minEndPractice.setDate(startPracticeDate.getDate() + 15);
-                endPracticeInput.min = minEndPractice.toISOString().split('T')[0];
-             }
-          });
-
-          // Cerrar modal al hacer clic fuera del contenido
-          window.addEventListener('click', function(event) {
-              if (event.target === document.getElementById('modal')) {
-                  document.getElementById('modal').style.display = 'none';
-              }
-          });
-       });
-    </script>
-
     <div class="container">
-       <h2>Gestion de Fichas </h2>
 
-       @if (session('success'))
-       <div class="message success">{{ session('success') }}</div>
-       @endif
+           <div class="dashboard-header">
+                <h1>Gestión de Fichas de Formación</h1>
+                <p>  En esta sección puede administrar todas las fichas de formación del centro.
+            Registre nuevas fichas, consulte el estado de avance de cada una y gestione
+            la información relacionada con programas, jornadas y municipios.
+          </p>
+        </div>
 
-       @if ($errors->any())
-       <div class="message error">
-          <ul>
-             @foreach ($errors->all() as $error)
-             <li>{{ $error }}</li>
-             @endforeach
-          </ul>
-       </div>
-       @endif
 
-       <button class="btn" onclick="document.getElementById('modal').style.display='block'">Registrar ficha</button>
+        @if (session('success'))
+            <div class="alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                {{ session('success') }}
+            </div>
+        @endif
 
-       <!-- Modal -->
-       <div id="modal" class="modal">
-          <div class="modal-content">
-             <span class="close" onclick="document.getElementById('modal').style.display='none'">&times;</span>
-             <h3>Registrar ficha</h3>
-
-             <form method="POST" action="{{ route('programming.Register') }}">
-                @csrf
-
-                <label>Número de ficha</label>
-                <input type="number" name="number_cohort" required min="1">
-
-                <label>Programa</label>
-                <select name="id_program" required>
-                   <option value="">Seleccione programa</option>
-                   @foreach ($programs as $pro)
-                   <option value="{{ $pro->id }}" @if(old('id_program') == $pro->id) selected @endif>{{ $pro->name }}</option>
-                   @endforeach
-                </select>
-
-                <label>Jornada</label>
-                <select name="id_time" required>
-                   <option value="">Seleccione jornada</option>
-                   @foreach ($cohortimes as $tms)
-                   <option value="{{ $tms->id }}" @if(old('id_time') == $tms->id) selected @endif>{{ $tms->name }}</option>
-                   @endforeach
-                </select>
-
-                <label>Municipio</label>
-                <select name="id_town" required>
-                   <option value="">Seleccione municipio</option>
-                   @foreach ($towns as $tn)
-                   <option value="{{ $tn->id }}" @if(old('id_town') == $tn->id) selected @endif>{{ $tn->name }}</option>
-                   @endforeach
-                </select>
-
-                <label>Horas etapa escolar</label>
-                <input type="number" name="hours_school_stage" required min="1" value="{{ old('hours_school_stage') }}">
-
-                <label>Horas etapa práctica</label>
-                <input type="number" name="hours_practical_stage" required min="0" value="{{ old('hours_practical_stage') }}">
-
-                <label>Inicio etapa escolar</label>
-                <input type="date" name="start_date_school_stage" required value="{{ old('start_date_school_stage') }}">
-
-                <label>Fin etapa escolar</label>
-                <input type="date" name="end_date_school_stage" required value="{{ old('end_date_school_stage') }}">
-
-                <label>Inicio etapa práctica</label>
-                <input type="date" name="start_date_practical_stage" required value="{{ old('start_date_practical_stage') }}">
-
-                <label>Fin etapa práctica</label>
-                <input type="date" name="end_date_practical_stage" required value="{{ old('end_date_practical_stage') }}">
-
-                <label>Cantidad Matriculados</label>
-                <input type="number" name="enrolled_quantity" required min="1" value="{{ old('enrolled_quantity') }}">
-
-                <div class="form-buttons">
-                   <button type="submit" class="btn">Guardar</button>
-                   <button type="button" class="btn" style="background-color: #ccc; color: #333;" onclick="document.getElementById('modal').style.display='none'">Cancelar</button>
+        @if ($errors->any())
+            <div class="alert-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <div>
+                    <strong>Por favor, corrige los siguientes errores:</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-             </form>
-          </div>
-       </div>
-       {{-- agregar filtro de fchas por activas y no activas
-       las activas son aquellas que la fecha final es menor ala fecha actual y las inactivas son aquellas
-       que la fecha final es mayor ala actual el cual se le agregaria color rojo  --}}
+            </div>
+        @endif
 
+        <button class="btn-primary" onclick="openModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Registrar Nueva Ficha
+        </button>
 
-       <!-- Tabla de fichas -->
-       <div class="table-container" >
-          <table>
-             <thead>
-                <tr>
-                   <th>Ficha</th>
-                   <th>Programa</th>
-                   <th>Jornada</th>
-                   <th>Municipio</th>
-                   <th>Hrs lectiva</th>
-                   <th>Hrs programadas</th>
-                   <th>Hrs cumplidas</th>
-                   <th>Matriculados</th>
-                   <th>Avance</th>
-                </tr>
-             </thead>
-             <tbody>
-                @foreach($cohorts as $cohort)
-                <tr>
-                   <td>{{ $cohort->number_cohort }}</td>
-                   <td>{{ $cohort->program->name ?? 'N/A' }}</td>
-                   <td>{{ $cohort->cohortime->name ?? 'N/A' }}</td>
-                   <td>{{ $cohort->town->name ?? 'N/A' }}</td>
-                   <td>{{ $cohort->hours_school_stage }} hrs</td>
-                   <td>{{ $cohort->horas_programadas }} hrs</td>
-                   <td>{{ $cohort->horas_cumplidas }} hrs</td>
-                   <td>{{ $cohort->enrolled_quantity}}</td>
-                   <td>
-                      @php
-                         $color = match(true) {
-                            $cohort->porcentaje_avance >= 100 => 'success',
-                            $cohort->porcentaje_avance >= 75 => 'warning',
-                            default => 'danger'
-                         };
-                      @endphp
-                      <div class="progress">
-                         <div class="progress-bar bg-{{ $color }}" style="width: {{ min($cohort->porcentaje_avance, 100) }}%">
-                            {{ $cohort->porcentaje_avance }}%
-                         </div>
-                      </div>
-                   </td>
-                </tr>
-                @endforeach
-             </tbody>
-          </table>
-       </div>
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="statusFilter">Filtrar por estado:</label>
+                <select id="statusFilter" onchange="filterTable()">
+                    <option value="all">Todas las fichas</option>
+                    <option value="active">Fichas activas</option>
+                    <option value="inactive">Fichas inactivas</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabla de fichas -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ficha</th>
+                        <th>Programa</th>
+                        <th>Jornada</th>
+                        <th>Municipio</th>
+                        <th>Estado</th>
+                        <th>Hrs Lectiva</th>
+                        <th>Hrs Programadas</th>
+                        <th>Hrs Cumplidas</th>
+                        <th>Matriculados</th>
+                        <th>Avance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($cohorts as $cohort)
+                        @php
+                            $isActive = $cohort->end_date_practical_stage && $cohort->end_date_practical_stage > now();
+                            $statusClass = $isActive ? 'status-active' : 'status-inactive';
+                            $statusText = $isActive ? 'Activa' : 'Inactiva';
+
+                            $progressColor = match(true) {
+                                $cohort->porcentaje_avance >= 100 => 'success',
+                                $cohort->porcentaje_avance >= 75 => 'warning',
+                                default => 'danger'
+                            };
+                        @endphp
+                        <tr class="ficha-row" data-status="{{ $isActive ? 'active' : 'inactive' }}">
+                            <td><strong>{{ $cohort->number_cohort }}</strong></td>
+                            <td>{{ $cohort->program->name ?? 'N/A' }}</td>
+                            <td>{{ $cohort->cohortime->name ?? 'N/A' }}</td>
+                            <td>{{ $cohort->town->name ?? 'N/A' }}</td>
+                            <td>
+                                <span class="status-badge {{ $statusClass }}">
+                                    {{ $statusText }}
+                                </span>
+                            </td>
+                            <td>{{ $cohort->hours_school_stage }} hrs</td>
+                            <td>{{ $cohort->horas_programadas }} hrs</td>
+                            <td>{{ $cohort->horas_cumplidas }} hrs</td>
+                            <td>{{ $cohort->enrolled_quantity }}</td>
+                            <td style="min-width: 120px;">
+                                <div class="progress">
+                                    <div class="progress-bar bg-{{ $progressColor }}"
+                                         style="width: {{ min($cohort->porcentaje_avance, 100) }}%">
+                                        {{ $cohort->porcentaje_avance }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10">
+                                <div class="empty-state">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                    <p>No hay fichas registradas</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal de registro -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal()">&times;</button>
+                <h3>Registrar Nueva Ficha</h3>
+
+                <form method="POST" action="{{ route('programming.Register') }}">
+                    @csrf
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Número de ficha</label>
+                            <input type="number" name="number_cohort" required min="1" placeholder="Ej: 123456">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Programa</label>
+                            <select name="id_program" required>
+                                <option value="">Seleccione programa</option>
+                                @foreach ($programs as $pro)
+                                    <option value="{{ $pro->id }}" @if(old('id_program') == $pro->id) selected @endif>
+                                        {{ $pro->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Jornada</label>
+                            <select name="id_time" required>
+                                <option value="">Seleccione jornada</option>
+                                @foreach ($cohortimes as $tms)
+                                    <option value="{{ $tms->id }}" @if(old('id_time') == $tms->id) selected @endif>
+                                        {{ $tms->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Municipio</label>
+                            <select name="id_town" required>
+                                <option value="">Seleccione municipio</option>
+                                @foreach ($towns as $tn)
+                                    <option value="{{ $tn->id }}" @if(old('id_town') == $tn->id) selected @endif>
+                                        {{ $tn->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Horas etapa escolar</label>
+                            <input type="number" name="hours_school_stage" required min="1"
+                                   value="{{ old('hours_school_stage') }}" placeholder="Horas lectivas">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Horas etapa práctica</label>
+                            <input type="number" name="hours_practical_stage" required min="0"
+                                   value="{{ old('hours_practical_stage') }}" placeholder="Horas prácticas">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Inicio etapa escolar</label>
+                            <input type="date" name="start_date_school_stage" required
+                                   value="{{ old('start_date_school_stage') }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fin etapa escolar</label>
+                            <input type="date" name="end_date_school_stage" required
+                                   value="{{ old('end_date_school_stage') }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Inicio etapa práctica</label>
+                            <input type="date" name="start_date_practical_stage" required
+                                   value="{{ old('start_date_practical_stage') }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fin etapa práctica</label>
+                            <input type="date" name="end_date_practical_stage" required
+                                   value="{{ old('end_date_practical_stage') }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cantidad Matriculados</label>
+                            <input type="number" name="enrolled_quantity" required min="1"
+                                   value="{{ old('enrolled_quantity') }}" placeholder="Número de aprendices">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                        <button type="submit" class="btn-submit">Guardar Ficha</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
- </x-layout>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function filterTable() {
+            const filter = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('.ficha-row');
+
+            rows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                if (filter === 'all' || filter === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Validación de fechas
+        document.addEventListener('DOMContentLoaded', function() {
+            const startSchoolInput = document.querySelector('input[name="start_date_school_stage"]');
+            const endSchoolInput = document.querySelector('input[name="end_date_school_stage"]');
+            const startPracticeInput = document.querySelector('input[name="start_date_practical_stage"]');
+            const endPracticeInput = document.querySelector('input[name="end_date_practical_stage"]');
+
+            startSchoolInput.addEventListener('change', function() {
+                if (this.value) {
+                    const startDate = new Date(this.value);
+                    const minEndDate = new Date(startDate);
+                    minEndDate.setDate(startDate.getDate() + 15);
+                    endSchoolInput.min = minEndDate.toISOString().split('T')[0];
+                }
+            });
+
+            endSchoolInput.addEventListener('change', function() {
+                if (this.value) {
+                    const endSchoolDate = new Date(this.value);
+                    const minPracticeStart = new Date(endSchoolDate);
+                    minPracticeStart.setDate(endSchoolDate.getDate() + 1);
+                    startPracticeInput.min = minPracticeStart.toISOString().split('T')[0];
+                }
+            });
+
+            startPracticeInput.addEventListener('change', function() {
+                if (this.value) {
+                    const startPracticeDate = new Date(this.value);
+                    const minEndPractice = new Date(startPracticeDate);
+                    minEndPractice.setDate(startPracticeDate.getDate() + 15);
+                    endPracticeInput.min = minEndPractice.toISOString().split('T')[0];
+                }
+            });
+
+            // Cerrar modal al hacer clic fuera
+            window.addEventListener('click', function(event) {
+                if (event.target === document.getElementById('modal')) {
+                    closeModal();
+                }
+            });
+
+            // Cerrar con tecla ESC
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</x-layout>

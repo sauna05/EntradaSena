@@ -12,39 +12,57 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eef2f6;
+            background-color: #f8fafc;
+            color: #333;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 25px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
 
-        h2 {
-            font-size: 28px;
-            margin-bottom: 25px;
-            color: #2c3e50;
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #28a745;
             font-weight: 700;
             text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .page-description {
+            text-align: center;
+            color: #000;
+            margin-bottom: 30px;
+            font-size: 16px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
         }
 
         /* Botones */
         .btn {
-            padding: 10px 18px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease;
-            display: inline-block;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
@@ -75,21 +93,59 @@
         }
 
         .btn-edit {
-            max-width: max-content;
-            background-color: #5bc0de;
+            background-color: #17a2b8;
             color: white;
+            padding: 8px 15px;
+            font-size: 14px;
         }
 
         .btn-edit:hover {
-            background-color: #31b0d5;
+            background-color: #138496;
+        }
+
+        .btn-search {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .btn-search:hover {
+            background-color: #5a6268;
+        }
+
+        /* Search box */
+        .search-container {
+            display: flex;
+            margin-bottom: 25px;
+            max-width: 500px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 15px center;
+            background-size: 18px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
         }
 
         /* Tabla */
         .table-container {
-            max-height: 400px; /* Altura máxima con scroll */
+            max-height: 500px;
             overflow-y: auto;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid #dee2e6;
+            margin-top: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
 
         table {
@@ -100,19 +156,24 @@
         }
 
         thead th {
-            background-color: #e9ecef;
+            background-color: #f1f5f9;
             font-weight: 700;
-            padding: 12px;
+            padding: 15px;
             text-align: left;
             border-bottom: 2px solid #dee2e6;
             position: sticky;
             top: 0;
             z-index: 1;
+            color: #2d3748;
         }
 
         tbody td {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
         }
 
         table tr:last-child td {
@@ -122,20 +183,25 @@
         /* Alertas */
         .alert-success,
         .alert-danger {
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .alert-success {
             background-color: #d4edda;
             color: #155724;
+            border-left: 4px solid #28a745;
         }
 
         .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
+            border-left: 4px solid #dc3545;
         }
 
         /* Modal */
@@ -144,10 +210,11 @@
             position: fixed;
             z-index: 1000;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.45);
+            background-color: rgba(0, 0, 0, 0.5);
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 20px;
+            backdrop-filter: blur(3px);
         }
 
         .modal-content {
@@ -155,19 +222,32 @@
             padding: 30px;
             border-radius: 12px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .close {
             color: #888;
             position: absolute;
-            top: 12px;
-            right: 18px;
-            font-size: 26px;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
             font-weight: 700;
             cursor: pointer;
+            transition: color 0.2s;
         }
 
         .close:hover {
@@ -175,63 +255,150 @@
         }
 
         .modal-content h3 {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-weight: 700;
             color: #2c3e50;
             text-align: center;
+            font-size: 24px;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: block;
-            color: #555;
+            color: #374151;
         }
-
 
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 15px;
             border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 15px;
+            border: 1px solid #d1d5db;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
-        }
-        button{
-          margin-bottom: 10px;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
         }
 
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-        .form-group button {
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
 
-            max-width: ;: 100%;
+        .empty-state svg {
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--verde-sena);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            color: var(--gris-texto);
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                width: 100%;
+            }
         }
     </style>
 
     @if (session('success'))
-        <div class="alert-success">{{ session('success') }}</div>
+        <div class="alert-success">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            {{ session('success') }}
+        </div>
     @endif
     @if (session('error'))
-        <div class="alert-danger">{{ session('error') }}</div>
+        <div class="alert-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            {{ session('error') }}
+        </div>
     @endif
 
     <div class="container">
-        <h2>Listado de Competencias</h2>
 
-        <button class="btn btn-success" onclick="document.getElementById('competenceModal').style.display='flex'">
-             Registrar
-        </button>
+         <div class="dashboard-header">
+                <h1>Gestión de Competencias</h1>
+                <p>En esta sección se gestionan las competencias del sistema. Puede registrar nuevas competencias,
+                editarlas o buscarlas por nombre. Cada competencia está asociada a una especialidad y tiene una duración específica.
+          </p>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="document.getElementById('competenceModal').style.display='flex'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Registrar
+            </button>
+
+            <form method="GET" class="search-container">
+                <input type="text" name="buscar" class="search-input" placeholder="Buscar por nombre..." value="{{ request('buscar') }}">
+                <button type="submit" class="btn btn-search">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Buscar
+                </button>
+            </form>
+        </div>
 
         <div class="table-container">
             <table>
@@ -240,26 +407,51 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Duración (horas)</th>
+                        <th>Especialidad</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $contador=0;
+
+                    @endphp
                     @forelse($competencies as $competence)
+                            @php
+                                $contador=$contador +1;
+                            @endphp
                         <tr>
-                            <td>{{ $competence->id }}</td>
+                            <td>{{ $contador }}</td>
                             <td>{{ $competence->name }}</td>
                             <td>{{ $competence->duration_hours }} hr</td>
                             <td>
+                                @php
+                                    $specialityName = $especialidad->firstWhere('id', $competence->speciality_id)->name ?? 'N/A';
+                                @endphp
+                                {{ $specialityName }}
+                            </td>
+                            <td>
                                 <button class="btn btn-edit"
                                     onclick="openEditModal({{ $competence->id }}, '{{ $competence->name }}', {{ $competence->duration_hours }}, {{ $competence->speciality_id }})">
-                                    ✏️ Editar
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    Editar
                                 </button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" style="text-align:center; font-style: italic; color: #888;">
-                                No hay competencias registradas.
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                    <p>No se encontraron competencias</p>
+                                </div>
                             </td>
                         </tr>
                     @endforelse
@@ -284,7 +476,7 @@
                             <option value="{{ $espe->id }}">{{ $espe->name }}</option>
                         @empty
                             <option value="">No hay especialidades</option>
-                        @endforelse          
+                        @endforelse
                     </select>
                 </div>
 
@@ -298,7 +490,8 @@
                     <input type="number" id="duration_hours" name="duration_hours" required min="1">
                 </div>
 
-                <div class="form-group">
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('competenceModal').style.display='none'">Cancelar</button>
                     <button type="submit" class="btn btn-success">Guardar</button>
                 </div>
             </form>
@@ -334,7 +527,8 @@
                     <input type="number" id="edit_duration_hours" name="duration_hours" required min="1">
                 </div>
 
-                <div class="form-group">
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('editCompetenceModal').style.display='none'">Cancelar</button>
                     <button type="submit" class="btn btn-edit">Actualizar</button>
                 </div>
             </form>
