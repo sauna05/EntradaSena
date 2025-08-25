@@ -664,8 +664,7 @@ form.logout-form {
                 </a>
                 <ul class="{{ Route::is('programing.competencies_index', 'programing.competencies_index_program') ? 'show' : '' }}">
                     <li><a href="{{ route('programing.competencies_index') }}" class="{{ Route::is('programing.competencies_index') ? 'active-link' : '' }}"><i class="fas fa-check-square menu-icon"></i> <span class="submenu-text">Gestión de Competencias</span></a></li>
-                    <li><a href="{{ route('programing.competencies_index_program') }}" class="{{ Route::is('programing.competencies_index_program') ? 'active-link' : '' }}"><i class="fas fa-random menu-icon"></i> <span class="submenu-text">Vincular a Programas y Fichas</span></a></li>
-                </ul>
+                                   </ul>
             </li>
 
             <!-- INSTRUCTORES -->
