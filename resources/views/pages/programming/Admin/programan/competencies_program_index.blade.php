@@ -879,7 +879,7 @@ form.logout-form {
                         <a href="#" class="view-all">Ver reporte completo</a>
                     </div>
                     <div class="chart-placeholder">
-                        <i class="fas fa-chart-pie" style="font-size: 24px; margin-right: 10px;"></i>
+                        <i class="fas fa-chart-pie" style="font-size: 24px; margin-right: 10px;"></i>   
                         Gráfico de programaciones por estado
                     </div>
                 </div>

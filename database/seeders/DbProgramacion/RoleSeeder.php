@@ -79,6 +79,9 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'programmig.programming_update_index'])->syncRoles([$role10, $role5]);
         Permission::create(['name' => 'programmig.programming_update_store'])->syncRoles([$role10, $role5]);
 
+        //agregar permiso para eliminar y editar fichas
+        
+
 
 
 

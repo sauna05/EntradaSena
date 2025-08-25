@@ -522,7 +522,9 @@ class ProgramanController extends Controller
     {
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
             'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
-            'cohorts' => Cohort::with('program')->get(),
+            'cohorts' => Cohort::with('program')
+                ->where('end_date_practical_stage', '>', Carbon::today())
+                ->get(),
             'ambientes' => Classroom::with('towns')->get(),
             'competencias' => Competencies::all(),
             'modo' => 'nuevo'
@@ -708,7 +710,9 @@ class ProgramanController extends Controller
         return view('pages.programming.Admin.programming_instructor.instructor_reprogramming', [
             'programacion' => $programacion,
             'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
-            'cohorts' => Cohort::with('program')->get(),
+            'cohorts' => Cohort::with('program')
+                ->where('end_date_practical_stage', '>', Carbon::today())
+                ->get(),
             'ambientes' => Classroom::with('towns')->get(),
 
             // 👇 Solo pasa la competencia vinculada, envuelta en una colección
