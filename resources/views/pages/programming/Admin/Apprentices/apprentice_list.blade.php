@@ -315,11 +315,9 @@
                         <th>Correo</th>
                         <th>Ficha</th>
                         <th>Programa</th>
-                        <th>Etapa Actual</th>
-                        <th>Inicio Lectiva</th>
-                        <th>Fin Lectiva</th>
-                        <th>Inicio Práctica</th>
-                        <th>Fin Práctica</th>
+                        <th>Inicio</th>
+                        <th>Finalizacion</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -331,30 +329,9 @@
                             <td>{{ $apprentice['email'] }}</td>
                             <td>{{ $apprentice['cohort_name'] }}</td>
                             <td>{{ $apprentice['nombre_programa'] }}</td>
-                            <td>
-                                @php
-                                    $currentDate = now();
-                                    $inLectiva = $apprentice['start_date_school_stage'] && $apprentice['end_date_school_stage'] &&
-                                                $currentDate >= $apprentice['start_date_school_stage'] &&
-                                                $currentDate <= $apprentice['end_date_school_stage'];
+                            <td>{{$apprentice['start_date']}}</td>
+                            <td>{{$apprentice['end_date']}}</td>
 
-                                    $inPractica = $apprentice['start_date_practical_stage'] && $apprentice['end_date_practical_stage'] &&
-                                                $currentDate >= $apprentice['start_date_practical_stage'] &&
-                                                $currentDate <= $apprentice['end_date_practical_stage'];
-                                @endphp
-
-                                @if($inLectiva)
-                                    <span class="badge badge-lectiva">Lectiva</span>
-                                @elseif($inPractica)
-                                    <span class="badge badge-practica">Práctica</span>
-                                @else
-                                    <span>No asignada</span>
-                                @endif
-                            </td>
-                            <td>{{ $apprentice['start_date_school_stage'] ? date('d/m/Y', strtotime($apprentice['start_date_school_stage'])) : 'N/A' }}</td>
-                            <td>{{ $apprentice['end_date_school_stage'] ? date('d/m/Y', strtotime($apprentice['end_date_school_stage'])) : 'N/A' }}</td>
-                            <td>{{ $apprentice['start_date_practical_stage'] ? date('d/m/Y', strtotime($apprentice['start_date_practical_stage'])) : 'N/A' }}</td>
-                            <td>{{ $apprentice['end_date_practical_stage'] ? date('d/m/Y', strtotime($apprentice['end_date_practical_stage'])) : 'N/A' }}</td>
                         </tr>
                     @empty
                         <tr>

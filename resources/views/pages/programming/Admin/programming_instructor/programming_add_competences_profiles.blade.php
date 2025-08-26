@@ -336,7 +336,7 @@
                             <th>Ficha</th>
                             <th>Competencia</th>
                             <th>Duración</th>
-                            <th>Especialidad</th>
+
                         </tr>
                     </thead>
                     <tbody id="competenciasContainer">
@@ -372,9 +372,9 @@
                                         <td>
                                             <span class="duration-badge">{{ $competencia->duration_hours }} horas</span>
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             {{ $competencia->specialty->name ?? 'N/A' }}
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             @endif

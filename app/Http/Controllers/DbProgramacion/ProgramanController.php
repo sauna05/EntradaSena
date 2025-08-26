@@ -263,10 +263,8 @@ class ProgramanController extends Controller
                     'email'           => $apprentice->person->email,
                     'apprentice_id'   => $apprentice->id,
                     'cohort_id'       => $cohort->id,
-                    'start_date_school_stage' => $cohort->start_date_school_stage,
-                    'end_date_school_stage'   => $cohort->end_date_school_stage,
-                    'start_date_practical_stage' => $cohort->start_date_practical_stage,
-                    'end_date_practical_stage'   => $cohort->end_date_practical_stage,
+                    'start_date' => $cohort->start_date,
+                    'end_date'   => $cohort->end_date,
                     'cohort_name'     => $cohort->number_cohort,
                     'nombre_programa' => $cohort->program->name ?? 'Sin programa',
                 ];
