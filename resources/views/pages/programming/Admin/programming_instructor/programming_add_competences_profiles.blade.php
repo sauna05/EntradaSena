@@ -23,17 +23,21 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .page-title {
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            color: #28a745;
             font-size: 32px;
             margin-bottom: 15px;
-            color: #28a745;
             font-weight: 700;
             text-align: center;
             padding-bottom: 15px;
             border-bottom: 2px solid #eaeaea;
         }
 
-        .page-description {
+        .dashboard-header p {
             text-align: center;
             color: #000;
             margin-bottom: 30px;
@@ -98,6 +102,12 @@
             border-radius: 8px;
             border: 1px solid #d1d5db;
             font-size: 16px;
+            background-color: white;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            appearance: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
@@ -178,22 +188,6 @@
             margin-top: 30px;
         }
 
-        .dashboard-header {
-            margin-bottom: 20px;
-        }
-
-        .dashboard-header h1 {
-            color: var(--verde-sena);
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .dashboard-header p {
-            color: var(--gris-texto);
-            font-size: 16px;
-            opacity: 0.8;
-        }
-
         .btn {
             background-color: #28a745;
             color: white;
@@ -225,6 +219,31 @@
         .empty-state svg {
             margin-bottom: 15px;
             opacity: 0.5;
+        }
+
+        /* Estilos para agrupación de fichas */
+        .ficha-group {
+            background-color: #f1f8ff;
+            border-left: 4px solid #007bff;
+        }
+
+        .ficha-group td {
+            font-weight: bold;
+            padding: 12px 15px;
+        }
+
+        .ficha-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ficha-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
         }
 
         /* Responsive */
@@ -271,26 +290,24 @@
     @endif
 
     <div class="container">
-
         <div class="dashboard-header">
-                <h1>Asignación de Competencias a Instructores</h1>
-                <p> En esta sección puede vincular competencias al perfil de los instructores.
-            Seleccione un instructor y marque las competencias que desea asignarle.
-            Esta acción permitirá al instructor ser asignado a programas que requieran estas competencias específicas.
-          </p>
+            <h1>Asignación de Competencias a Instructores</h1>
+            <p>En esta sección puede vincular competencias al perfil de los instructores.
+                Seleccione un instructor y marque las competencias que desea asignarle.
+                Esta acción permitirá al instructor ser asignado a programas que requieran estas competencias específicas.
+            </p>
         </div>
-
 
         <form action="{{ route('programming.instructors_competencies_profile_store') }}" method="POST">
             @csrf
 
             <div class="form-container">
                 <div class="form-group">
-                    <label for="especialidadSelect">Filtrar por Especialidad:</label>
-                    <select id="especialidadSelect">
-                        <option value="">-- Todas las especialidades --</option>
-                        @foreach ($especialidad as $esp)
-                            <option value="{{ $esp->id }}">{{ $esp->name }}</option>
+                    <label for="fichaSelect">Filtrar por ficha:</label>
+                    <select id="fichaSelect">
+                        <option value="">-- Todas las Fichas --</option>
+                        @foreach ($fichas as $ficha)
+                            <option value="{{ $ficha->id }}">{{ $ficha->number_cohort }} | {{ $ficha->program->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -312,48 +329,76 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 50px; text-align: center;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                            </th>
+                            {{-- <th style="width: 50px; text-align: center;">
+                                <input type="checkbox" id="selectAll">
+                            </th> --}}
+                            <th>Codigo</th>
+                            <th>Ficha</th>
                             <th>Competencia</th>
                             <th>Duración</th>
                             <th>Especialidad</th>
                         </tr>
                     </thead>
                     <tbody id="competenciasContainer">
-                        @forelse($especialidad as $esp)
-                            @foreach($esp->competencies as $competencia)
-                                <tr data-especialidad="{{ $esp->id }}">
-                                    <td class="checkbox-container">
-                                        <input type="checkbox" name="competencias[]" value="{{ $competencia->id }}">
+                        @php
+                            $hasCompetencias = false;
+                        @endphp
+
+                        @foreach($fichas as $ficha)
+                            @if($ficha->competences->count() > 0)
+                                @php $hasCompetencias = true; @endphp
+
+                                <!-- Fila de agrupación por ficha -->
+                                <tr class="ficha-group" data-ficha="{{ $ficha->id }}">
+                                    <td colspan="6">
+                                        <div class="ficha-info">
+                                            <span class="ficha-badge">FICHA</span>
+                                            {{ $ficha->number_cohort }} - {{ $ficha->program->name }}
+                                            ({{ $ficha->competences->count() }} competencias)
+                                        </div>
                                     </td>
-                                    <td>{{ $competencia->name }}</td>
-                                    <td>
-                                        <span class="duration-badge">{{ $competencia->duration_hours }} horas</span>
-                                    </td>
-                                    <td>{{ $esp->name }}</td>
                                 </tr>
-                            @endforeach
-                        @empty
+
+                                <!-- Competencias de esta ficha -->
+                                @foreach($ficha->competences as $competencia)
+                                    <tr class="competencia-row" data-ficha="{{ $ficha->id }}">
+                                        <td class="checkbox-container">
+                                            <input type="checkbox" name="competencias[]" value="{{ $competencia->id }}"
+                                                   class="competencia-checkbox">
+                                        </td>
+                                        <td>{{ $ficha->program->program_code ?? 'N/A' }}</td>
+                                        <td>{{ $ficha->number_cohort }}</td>
+                                        <td>{{ $competencia->name }}</td>
+                                        <td>
+                                            <span class="duration-badge">{{ $competencia->duration_hours }} horas</span>
+                                        </td>
+                                        <td>
+                                            {{ $competencia->specialty->name ?? 'N/A' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        @endforeach
+
+                        @if(!$hasCompetencias)
                             <tr>
-                                <td colspan="4">
+                                <td colspan="6">
                                     <div class="empty-state">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="12" cy="12" r="10"></circle>
                                             <line x1="12" y1="8" x2="12" y2="12"></line>
                                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                         </svg>
-                                        <p>No hay competencias disponibles para asignar</p>
+                                        <p>No hay fichas con competencias disponibles</p>
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse
+                        @endif
                     </tbody>
                 </table>
             </div>
 
+            @if($hasCompetencias)
             <div class="form-buttons">
                 <button type="submit" class="btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -364,39 +409,40 @@
                     Vincular Competencias Seleccionadas
                 </button>
             </div>
+            @endif
         </form>
     </div>
 
     <script>
-        // Filtrar competencias por especialidad
-        document.getElementById('especialidadSelect').addEventListener('change', function () {
+        // Filtrar competencias por ficha
+        document.getElementById('fichaSelect').addEventListener('change', function () {
             const selectedId = this.value;
-            const rows = document.querySelectorAll('#competenciasContainer tr');
+            const rows = document.querySelectorAll('.competencia-row, .ficha-group');
 
-            rows.forEach(row => {
-                if (row.getAttribute('data-especialidad')) {
-                    const rowEspId = row.getAttribute('data-especialidad');
-                    row.style.display = (selectedId === '' || rowEspId === selectedId) ? '' : 'none';
-                }
-            });
+            if (selectedId === '') {
+                // Mostrar todas
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+            } else {
+                // Ocultar todas primero
+                rows.forEach(row => {
+                    row.style.display = 'none';
+                });
+
+                // Mostrar solo las de la ficha seleccionada
+                const filteredRows = document.querySelectorAll(`[data-ficha="${selectedId}"]`);
+                filteredRows.forEach(row => {
+                    row.style.display = '';
+                });
+            }
         });
 
-        // // Seleccionar/deseleccionar todos los checkboxes
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const selectAllCheckbox = document.createElement('input');
-        //     selectAllCheckbox.type = 'checkbox';
-        //     selectAllCheckbox.id = 'selectAll';
-        //     selectAllCheckbox.style.marginLeft = '5px';
-        //     selectAllCheckbox.style.cursor = 'pointer';
-
-        //     const firstTh = document.querySelector('thead th:first-child');
-        //     firstTh.appendChild(selectAllCheckbox);
-
-        //     selectAllCheckbox.addEventListener('change', function() {
-        //         const visibleCheckboxes = document.querySelectorAll('#competenciasContainer tr:not([style*="display: none"]) input[type="checkbox"]');
-        //         visibleCheckboxes.forEach(checkbox => {
-        //             checkbox.checked = selectAllCheckbox.checked;
-        //         });
+        // // Seleccionar/deseleccionar todos
+        // document.getElementById('selectAll').addEventListener('change', function() {
+        //     const checkboxes = document.querySelectorAll('.competencia-checkbox');
+        //     checkboxes.forEach(checkbox => {
+        //         checkbox.checked = this.checked;
         //     });
         // });
 

@@ -11,8 +11,10 @@ use App\Models\DbProgramacion\Competencies;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\Person;
 use App\Models\DbProgramacion\Program;
+use App\Models\DbProgramacion\Programming;
 use App\Models\DbProgramacion\Speciality;
 use App\Models\DbProgramacion\Town;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -111,8 +113,50 @@ class CohortController extends Controller
         // Competencias ya asignadas a la ficha
         $assignedCompetencies = $cohort->competences()->get();
 
-        return view('pages.programming.Admin.Competencies.competencies_index',
-            compact('competencies', 'especialidad', 'cohort', 'assignedCompetencies'));
+        // 🔥 SOLUCIÓN: Filtrar programaciones por la cohorte específica
+        $programaciones = Programming::with([
+            'instructor.person',
+            'cohort.program',
+            'competencie',
+            'classroom',
+            'days'
+        ])
+            ->where('id_cohort', $cohortId) // ← Filtro agregado aquí
+            ->get();
+
+        $now = Carbon::now();
+
+        foreach ($programaciones as $prog) {
+            $startDate = Carbon::parse($prog->start_date);
+            $endDate = Carbon::parse($prog->end_date);
+
+            if ($now->lt($startDate)) {
+                $prog->status = 'pendiente';
+            } elseif ($now->between($startDate, $endDate)) {
+                $prog->status = 'en_ejecucion';
+            } else {
+                $prog->status = $prog->evaluated
+                    ? 'finalizada_evaluada'
+                    : 'finalizada_no_evaluada';
+            }
+
+            // Guardar solo si cambió el estado
+            if ($prog->isDirty('status')) {
+                $prog->save();
+            }
+        }
+
+        // 🔥 Obtener las últimas programaciones por competencia (solo de esta cohorte)
+        $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
+            ->where('id_cohort', $cohortId) // ← Filtro agregado aquí también
+            ->groupBy('id_competencie')
+            ->pluck('id')
+            ->toArray();
+
+        return view(
+            'pages.programming.Admin.Competencies.competencies_index',
+            compact('competencies', 'especialidad', 'cohort', 'assignedCompetencies', 'ultimasProgramaciones', 'programaciones')
+        );
     }
 
 

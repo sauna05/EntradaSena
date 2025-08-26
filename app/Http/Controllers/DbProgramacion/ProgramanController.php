@@ -89,17 +89,33 @@ class ProgramanController extends Controller
     // }
 
     //metodo para la vista de agregar competencia al perfil de instructor
-    public function asignarCompetences_index_instructor()
+    public function asignarCompetences_index_instructor(Request $request)
     {
-        $instructors = Instructor::with('person')->get(); // Lista de programas
-        $especialidad = Speciality::with('competencies')->get();
+        // Obtener instructores con sus personas
+        $instructors = Instructor::with('person')->get();
 
-        // Competencias no asignadas a ningún programa
-        $competencias = Competencies::whereDoesntHave('instructors')->get();
+        // Obtener todas las fichas (cohortes) con sus programas y competencias
+        $fichas = Cohort::with(['program', 'competences'])->get();
 
-        return view('pages.programming.Admin.programming_instructor.programming_add_competences_profiles', compact('instructors', 'competencias', 'especialidad'));
+        // Obtener competencias asignadas a instructores
+        $assignedCompetencies = Competencies::whereHas('instructors')
+            ->with(['cohorts' => function ($query) {
+                $query->with('program');
+            }])
+            ->get();
+
+        // Competencias no asignadas a ningún instructor
+        $unassignedCompetencies = Competencies::whereDoesntHave('instructors')
+            ->with(['cohorts' => function ($query) {
+                $query->with('program');
+            }])
+            ->get();
+
+        return view(
+            'pages.programming.Admin.programming_instructor.programming_add_competences_profiles',
+            compact('instructors', 'fichas', 'assignedCompetencies', 'unassignedCompetencies')
+        );
     }
-
 
     //asignar competencias a los perfiles de instructor registrar
     public function competenciesAdd_store_profile_instructor(Request $request)
@@ -210,6 +226,7 @@ class ProgramanController extends Controller
 
 
 
+    //Listar aprendiz en su ficha correspondiente
     public function ListAprenticesxcohorts(Request $request)
     {
         // Obtener variables de filtros de la vista
@@ -279,11 +296,8 @@ class ProgramanController extends Controller
     }
 
 
-    //metodo para gestion de competencias
 
-    // App\Http\Controllers\ProgramanController.php
-
-
+    //metodo para actualizar competencia
     public function competencies_update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -871,7 +885,7 @@ class ProgramanController extends Controller
         return false;
     }
 
-    //metodo para actualizar a evaluda la competencia
+    //metodo para actualizar a evaluda la competencia segun su programacion correspondiente
     public function evaluateProgramming($id)
     {
         $prog = Programming::findOrFail($id);
@@ -887,9 +901,8 @@ class ProgramanController extends Controller
 
         return redirect()->back()->with('error', 'Esta programación no puede ser evaluada.');
     }
+
     //metodo para registrar un nuevo ambiente
-
-
     public function classroom_store(Request $request)
     {
         $request->validate([
@@ -907,6 +920,8 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Ambiente registrado correctamente.');
     }
 
+
+    //metodo para Eliminar ambiente
     public function deleteClassroom($id)
     {
 
@@ -937,11 +952,6 @@ class ProgramanController extends Controller
         return redirect()->back() // Ajusta esta ruta
             ->with('success', 'Ambiente actualizado correctamente.');
     }
-
-
-
-
-
 
 
     //metodo para visualizar el estado de horario de los ambientes disponibles no disponibles  y demas
@@ -1059,6 +1069,7 @@ class ProgramanController extends Controller
     }
 
 
+    //metodo para agregar DIAS NO PROGRAMADOS
     public function daysCalendarStore(Request $request)
     {
         $request->validate([
@@ -1087,10 +1098,13 @@ class ProgramanController extends Controller
     }
     //agregar que una ves se programen las horas del instructor se le descuenten de las asignadas
 
+    //metodo para eliminar dia No programado
     public function day_delete($id)
     {
         $day = Days_training::findOrFail($id);
         $day->delete();
         return redirect()->back()->with('success', 'Día eliminado correctamente.');
     }
+
+
 }

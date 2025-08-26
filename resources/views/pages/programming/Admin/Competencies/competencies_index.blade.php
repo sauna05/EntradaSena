@@ -101,8 +101,7 @@
             font-weight: 500;
             transition: all 0.3s;
             width: max-content; /* 👈 evita que ocupen todo el ancho */
-}
-
+        }
 
         .btn-primary {
             background-color: #28a745;
@@ -142,6 +141,61 @@
 
         tr:hover {
             background-color: #f8f9fa;
+        }
+
+        /* En ejecución */
+        .status-en_ejecucion {
+            background-color: #fff3bf;
+            color: #8a6d3b;
+        }
+
+        /* Finalizada evaluada */
+        .status-finalizada_evaluada {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Finalizada no evaluada */
+        .status-finalizada_no_evaluada {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Disponible */
+        .status-disponible {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #ddd;
+        }
+
+        /* Estado desconocido */
+        .status-desconocido {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .disponible-badge {
+            font-size: 0.7rem;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+            font-weight: normal;
+            border: 1px solid #ddd;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para los iconos */
+        .status-icon {
+            margin-right: 5px;
         }
 
         .actions {
@@ -238,15 +292,22 @@
             color: #333;
             cursor: pointer;
         }
+
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
     </style>
 
     <div class="container">
         <div class="admin-header">
-            <h1 class="page-title">Administrar Competencias - Ficha {{ $cohort->number_cohort }}</h1>
+            <h1 class="page-title">Administrar Competencias - Ficha {{ $cohort->number_cohort }} </h1>
 
             <div class="ficha-info">
                 <div class="info-card">
                     <h3>Programa de Formación</h3>
+                    <h3>COD PROGRAMA :  {{$cohort->program->program_code ?? 'N/A'}}</h3>
                     <p>{{ $cohort->program->name ?? 'N/A' }}</p>
                 </div>
                 <div class="info-card">
@@ -268,6 +329,7 @@
             </div>
         </div>
 
+        {{-- manejar los vistas por opciones --}}
         <div class="tabs">
             <div class="tab active" data-tab="asignadas">Competencias</div>
             <div class="tab" data-tab="programaciones">Programaciones</div>
@@ -287,20 +349,27 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Código</th>
+                            <th>Cód_programa</th>
                             <th>Nombre de la Competencia</th>
                             <th>Duración (Horas)</th>
-                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($assignedCompetencies as $competence)
                         <tr>
-                            <td>{{ $competence->code ?? 'N/A' }}</td>
+                            <td>
+                            @if($competence->cohorts->count() > 0)
+                                @foreach($competence->cohorts as $cohort)
+                                    {{ $cohort->program->program_code ?? 'N/A' }}<br>
+                                @endforeach
+                            @else
+                                N/A
+                            @endif
+                        </td>
                             <td>{{ $competence->name }}</td>
                             <td>{{ $competence->duration_hours }} hrs</td>
-                            <td><span class="status-badge status-active">Asignada</span></td>
+                           
                             <td class="actions">
                                 <button class="btn btn-primary btn-sm">Programar</button>
                                 <button class="btn btn-danger btn-sm">Quitar</button>
@@ -314,6 +383,139 @@
                     <p>No hay competencias asignadas a esta ficha</p>
                 </div>
                 @endif
+            </div>
+        </div>
+
+        <div class="tab-content" id="programaciones">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Programaciones de Competencias</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="programming-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Programa</th>
+                                <th>Ficha</th>
+                                <th>Instructor</th>
+                                <th>Competencia</th>
+                                <th>Duracion</th>
+                                <th>Ambiente</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Horario</th>
+                                <th>Estado</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($programaciones as $programacion)
+                                <tr data-program="{{ $programacion->cohort->program->name ?? '' }}"
+                                    data-status="{{ $programacion->status }}"
+                                    @if($programacion->status === 'finalizada_evaluada')
+                                        data-disponible="true"
+                                    @endif>
+                                    <td>{{ $programacion->id }}</td>
+
+                                    <td>{{ $programacion->cohort->program->name ?? 'N/A' }}</td>
+                                    <td>{{ $programacion->cohort->number_cohort ?? 'N/A' }}</td>
+                                    <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
+                                    <td>
+                                        {{ $programacion->competencie->name ?? 'N/A' }}
+                                        @if($programacion->status === 'finalizada_evaluada')
+                                            <span class="disponible-badge" title="Esta competencia está disponible para reprogramación">
+                                                (Disponible)
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>{{$programacion->hours_duration}}  hrs </td>
+                                    <td>{{ $programacion->classroom->name ?? 'N/A' }}</td>
+                                    <td>{{ $programacion->start_date }}</td>
+                                    <td>{{ $programacion->end_date }}</td>
+                                    <td>
+                                        {{ $programacion->start_time }} -
+                                        {{ $programacion->end_time }}
+                                    </td>
+                                    <td>
+                                        <div class="status-container">
+                                            @php
+                                                $estados = [
+                                                    'pendiente' => [
+                                                        'class' => 'status-pendiente',
+                                                        'text' => 'Pendiente',
+                                                        'icon' => '⏱️'
+                                                    ],
+                                                    'en_ejecucion' => [
+                                                        'class' => 'status-en_ejecucion',
+                                                        'text' => 'En ejecución',
+                                                        'icon' => '🔄'
+                                                    ],
+                                                    'finalizada_evaluada' => [
+                                                        'class' => 'status-finalizada_evaluada',
+                                                        'text' => 'Finalizada (Evaluada)',
+                                                        'icon' => '✅'
+                                                    ],
+                                                    'finalizada_no_evaluada' => [
+                                                        'class' => 'status-finalizada_no_evaluada',
+                                                        'text' => 'Finalizada (Pendiente evaluación)',
+                                                        'icon' => '⚠️'
+                                                    ],
+                                                ];
+
+                                                $estado = $estados[$programacion->status] ?? [
+                                                    'class' => 'status-desconocido',
+                                                    'text' => 'Desconocido',
+                                                    'icon' => '❓'
+                                                ];
+                                            @endphp
+
+                                            <span class="status-badge {{ $estado['class'] }}">
+                                                <span class="status-icon">{{ $estado['icon'] }}</span>
+                                                {{ $estado['text'] }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="action-cell">
+                                        @if ($programacion->status === 'finalizada_no_evaluada')
+                                            {{-- Botón para Evaluar --}}
+                                            <form action="{{ route('programmig.evaluate', $programacion->id) }}" method="POST" onsubmit="return confirm('¿Está seguro que desea evaluar esta programación?')">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn-evaluar" style="cursor: pointer">
+                                                    <i class="fas fa-check-circle"></i> Evaluar
+                                                </button>
+                                            </form>
+
+                                        @elseif ($programacion->status === 'finalizada_evaluada')
+                                            @if (in_array($programacion->id, $ultimasProgramaciones))
+                                                {{-- ✅ Solo la última programación de la competencia puede reprogramarse --}}
+                                                <form action="{{ route('programmig.programming_update_index', $programacion->id) }}" method="GET" onsubmit="return confirm('¿Está seguro que desea reprogramar?')">
+                                                    @csrf
+                                                    <button type="submit" class="btn-reprogramar" style="cursor: pointer">
+                                                        <i class="fas fa-calendar-alt"></i> Reprogramar
+                                                    </button>
+                                                </form>
+                                            @else
+                                                {{-- ❌ Esta ya fue reprogramada --}}
+                                                <span class="text-muted">Reprogramado</span>
+                                            @endif
+
+                                        @else
+                                            <span class="text-muted">N/A</span>
+                                        @endif
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="12" style="text-align: center;">No hay programaciones registradas</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -379,7 +581,6 @@
         </form>
     </div>
 </div>
-
 
     <script>
         // Funcionalidad de pestañas
