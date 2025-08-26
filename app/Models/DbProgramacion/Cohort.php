@@ -7,25 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cohort extends Model
 {
-    //
     use HasFactory;
-    protected $table = 'cohorts'; // o el nombre que uses
-
+    protected $table = 'cohorts';
     protected $connection = 'db_programacion';
 
     protected $fillable = [
         'number_cohort',
         'id_program',
-
         'id_time',
-
         'id_town',
-        'hours_school_stage',
-        'hours_practical_stage',
-        'start_date_school_stage',
-        'end_date_school_stage',
-        'start_date_practical_stage',
-        'end_date_practical_stage',
+        'start_date',
+        'end_date',
         'enrolled_quantity',
     ];
 
@@ -33,6 +25,7 @@ class Cohort extends Model
     {
         return $this->hasMany(Programming::class, 'id_cohort');
     }
+
     public function program()
     {
         return $this->belongsTo(Program::class, 'id_program');
@@ -61,7 +54,17 @@ class Cohort extends Model
     public function apprentices()
     {
         return $this->belongsToMany(Apprentice::class, 'apprentices_cohorts', 'id_cohort', 'id_apprentice')
-                    ->using(ApprenticeCohort::class); // 💡 Relación con modelo pivote
+                    ->using(ApprenticeCohort::class);
+    }
+
+    public function competences()
+    {
+        return $this->belongsToMany(
+            Competencies::class,
+            'competencies_cohorts',
+            'cohort_id',
+            'competence_id'
+        )->using(Competencies_cohort::class);
     }
 
 

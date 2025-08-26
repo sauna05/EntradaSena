@@ -147,7 +147,7 @@
       </div>
   @endif
 
-  @if ($errors->any()))
+  @if ($errors->any())
       <div class="alert-danger">
           <ul>
               @foreach ($errors->all() as $error)

@@ -141,14 +141,18 @@ Route::get('programming/admin/apprentices_cohorts', [ProgramanController::class,
     ->middleware('can:programing.apprentices_cohorts_list')->name('programing.list_apprentices_cohorts');
 
 
+// routes/web.php
+// solo dejas esta
+Route::get('programming/admin/competenciesIndex/{cohort}', [CohortController::class, 'Listcompetencies'])
+    ->middleware('can:programing.competencies_index_administrar')
+    ->name('programing.competencies_index_administrar');
 
-Route::get('programming/admin/competenciesIndex', [ProgramanController::class, 'Listcompetencies'])
-    ->middleware('can:programing.competencies_index')->name('programing.competencies_index');
+
+// Route::get('programming/admin/competenciesIndex/', [CohortController::class, 'Listcompetencies'])
+//     ->middleware('can:programing.competencies_index')
+//     ->name('programing.competencies_index');
 
 
-
-Route::post('programming/admin/competenciesStore', [ProgramanController::class, 'competencies_Store'])
-    ->middleware('can:programing.competencies_store')->name('programing.competencies_store');
 
 //programing.competencies_update
 Route::put('programming/admin/competencie_update/{id}', [ProgramanController::class, 'competencies_update'])
@@ -160,11 +164,13 @@ Route::put('programming/admin/competencie_update/{id}', [ProgramanController::cl
 Route::get('programming/admin/competenciesIndex_programmig', [ProgramanController::class, 'asignarCompetences_index'])
     ->middleware('can:programing.competencies_programming_index')->name('programing.competencies_index_program');
 
+//ruata para asignar competencia a una ficha
 
 
-Route::post('programming/admin/competenciesStore_porgramming', [ProgramanController::class, 'competenciesAdd_store'])
-    ->middleware('can:programing.competencies_programming_store')->name('programing.competencies_store_program');
-
+//metodo para asignar competencia a una ficha
+Route::post('programming/admin/competenciesStore', [CohortController::class, 'competenciesAdd_store'])
+    ->middleware('can:programing.competencies_programming_store')
+    ->name('programing.competencies_store');
 
 
 

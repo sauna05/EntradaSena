@@ -59,7 +59,7 @@ class ProgramanController extends Controller
             'program_code' => $request->program_code,
             'program_version' => $request->program_version,
             'name' => $request->name,
-            'instructor_id'=>$request->instructor_id,
+            'instructor_id' => $request->instructor_id,
         ]);
 
         // Opción 2 (comentada): guardar usando new y save()
@@ -92,12 +92,12 @@ class ProgramanController extends Controller
     public function asignarCompetences_index_instructor()
     {
         $instructors = Instructor::with('person')->get(); // Lista de programas
-        $especialidad=Speciality::with('competencies')->get();
+        $especialidad = Speciality::with('competencies')->get();
 
         // Competencias no asignadas a ningún programa
         $competencias = Competencies::whereDoesntHave('instructors')->get();
 
-        return view('pages.programming.Admin.programming_instructor.programming_add_competences_profiles', compact('instructors', 'competencias','especialidad'));
+        return view('pages.programming.Admin.programming_instructor.programming_add_competences_profiles', compact('instructors', 'competencias', 'especialidad'));
     }
 
 
@@ -130,36 +130,36 @@ class ProgramanController extends Controller
 
 
 
-    public function competenciesAdd_store(Request $request)
-    {
-        $request->validate([
-            'programa_id' => 'required|exists:db_programacion.programs,id',
-            'competencias' => 'required|array',
-            'competencias.*' => 'exists:db_programacion.competencies,id',
-        ]);
+    // public function competenciesAdd_store(Request $request)
+    // {
+    //     $request->validate([
+    //         'programa_id' => 'required|exists:db_programacion.programs,id',
+    //         'competencias' => 'required|array',
+    //         'competencias.*' => 'exists:db_programacion.competencies,id',
+    //     ]);
 
-        // $programaciones = Programming::all();
-        // $personas = Person::all();
-        // $asistencias = EntranceExit::all();
-        // $ambientes = Classroom::all();
+    //     // $programaciones = Programming::all();
+    //     // $personas = Person::all();
+    //     // $asistencias = EntranceExit::all();
+    //     // $ambientes = Classroom::all();
 
-        $programa = dbProgramacionPrograman::findOrFail($request->programa_id);
+    //     $programa = dbProgramacionPrograman::findOrFail($request->programa_id);
 
-        // Solo competencias que no estén ya asociadas
-        $competenciasValidas = Competencies::whereIn('id', $request->competencias)
-            ->whereDoesntHave('programs') // evita duplicados
-            ->pluck('id')
-            ->toArray();
+    //     // Solo competencias que no estén ya asociadas
+    //     $competenciasValidas = Competencies::whereIn('id', $request->competencias)
+    //         ->whereDoesntHave('programs') // evita duplicados
+    //         ->pluck('id')
+    //         ->toArray();
 
-        if (count($competenciasValidas) === 0) {
-            return redirect()->back()->with('error', 'Las competencias seleccionadas ya están asignadas a un programa.');
-        }
+    //     if (count($competenciasValidas) === 0) {
+    //         return redirect()->back()->with('error', 'Las competencias seleccionadas ya están asignadas a un programa.');
+    //     }
 
-        // Asignar
-        $programa->competencies()->attach($competenciasValidas);
+    //     // Asignar
+    //     $programa->competencies()->attach($competenciasValidas);
 
-        return redirect()->back()->with('success', 'Competencias asignadas correctamente al programa.');
-    }
+    //     return redirect()->back()->with('success', 'Competencias asignadas correctamente al programa.');
+    // }
 
 
 
@@ -207,20 +207,6 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Aprendices asignados correctamente.');
     }
 
-
-    public function list_competencias_program()
-    {
-        $query = dbProgramacionPrograman::with('competencies')
-            ->whereHas('competencies'); // solo programas con competencias
-
-        if (request('programa_id')) {
-            $query->where('id', request('programa_id'));
-        }
-
-        $programas = $query->get();
-
-        return view('pages.programming.Admin.programan.competencies_program_index', compact('programas'));
-    }
 
 
 
@@ -295,30 +281,13 @@ class ProgramanController extends Controller
 
     //metodo para gestion de competencias
 
-    public function Listcompetencies(Request $request)
-    {
-        // Obtener variables de la vista para filtro
-        $busqueda = $request->input('buscar');
-        $especialidad = Speciality::all();
+    // App\Http\Controllers\ProgramanController.php
 
-        // Construir la consulta
-        $query = Competencies::orderBy('created_at', 'desc');
-
-        // Aplicar filtro de búsqueda si existe
-        if ($busqueda) {
-            $query->where('name', 'like', '%' . $busqueda . '%');
-        }
-
-        // Ejecutar la consulta
-        $competencies = $query->get();
-
-        return view('pages.programming.Admin.Competencies.competencies_index', compact('competencies', 'especialidad'));
-    }
 
     public function competencies_update(Request $request, $id)
     {
         $validated = $request->validate([
-            'speciality_id'=> 'required|exists:db_programacion.specialities,id',
+            'speciality_id' => 'required|exists:db_programacion.specialities,id',
             'name' => 'required|string|max:255',
             'duration_hours' => 'required|integer|min:1',
         ]);
@@ -329,22 +298,22 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Competencia actualizada correctamente.');
     }
 
-    // Guardar nueva competencia
-    public function competencies_store(Request $request)
-    {
-        // Validar datos
-        $validated = $request->validate([
-            'speciality_id'=> 'required|exists:db_programacion.specialities,id',
-            'name' => 'required|string|max:255',
-            'duration_hours' => 'required|integer|min:1',
-        ]);
+    // // Guardar nueva competencia
+    // public function competencies_store(Request $request)
+    // {
+    //     // Validar datos
+    //     $validated = $request->validate([
+    //         'speciality_id'=> 'required|exists:db_programacion.specialities,id',
+    //         'name' => 'required|string|max:255',
+    //         'duration_hours' => 'required|integer|min:1',
+    //     ]);
 
-        // Crear y guardar nueva competencia
-        Competencies::create($validated);
+    //     // Crear y guardar nueva competencia
+    //     Competencies::create($validated);
 
-        // Redirigir con mensaje de éxito
-        return redirect()->back()->with('success', 'Competencia registrada correctamente.');
-    }
+    //     // Redirigir con mensaje de éxito
+    //     return redirect()->back()->with('success', 'Competencia registrada correctamente.');
+    // }
 
 
 
@@ -357,7 +326,7 @@ class ProgramanController extends Controller
         foreach ($instructores as $instructor) {
             // Sumar las horas programadas en estados activos
             $horasProgramadas = $instructor->programming
-                ->whereIn('status', ['pendiente', 'en_ejecucion','finalizada_evaluada'])
+                ->whereIn('status', ['pendiente', 'en_ejecucion', 'finalizada_evaluada'])
                 ->sum('hours_duration'); // Se deben contar las horas reales (no las diarias)
 
             // Calcular horas restantes
@@ -523,7 +492,7 @@ class ProgramanController extends Controller
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
             'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
             'cohorts' => Cohort::with('program')
-                ->where('end_date_practical_stage', '>', Carbon::today())
+                ->where('end_date', '>', Carbon::today())
                 ->get(),
             'ambientes' => Classroom::with('towns')->get(),
             'competencias' => Competencies::all(),
@@ -938,14 +907,14 @@ class ProgramanController extends Controller
         return redirect()->back()->with('success', 'Ambiente registrado correctamente.');
     }
 
-    public function deleteClassroom($id){
+    public function deleteClassroom($id)
+    {
 
         //ELOQUENT ORM
-        $ambiente_eliminar=Classroom::findOrfail($id);
+        $ambiente_eliminar = Classroom::findOrfail($id);
         $ambiente_eliminar->delete();
 
-        return redirect()->back()->with('success','Ambiente eliminado correctamente');
-
+        return redirect()->back()->with('success', 'Ambiente eliminado correctamente');
     }
 
     //metido para editar ambiente
@@ -978,8 +947,8 @@ class ProgramanController extends Controller
     //metodo para visualizar el estado de horario de los ambientes disponibles no disponibles  y demas
     public function index_classroom()
     {
-        $municipios=Town::all();
-        $bloques=Block::all();
+        $municipios = Town::all();
+        $bloques = Block::all();
         $ambientes = Classroom::with(['programming.days', 'programming.instructor.person'])->get();
         $jornadaInicio = '06:00:00';
         $jornadaFin = '23:00:00';
@@ -1067,7 +1036,7 @@ class ProgramanController extends Controller
             $ambiente->horas_disponibles = $horas_disponibles;
         });
 
-        return view('pages.programming.Admin.Ambientes.ambientes_index', compact('ambientes','municipios','bloques'));
+        return view('pages.programming.Admin.Ambientes.ambientes_index', compact('ambientes', 'municipios', 'bloques'));
     }
 
     //metodos para gestionar calendario academico
@@ -1084,7 +1053,7 @@ class ProgramanController extends Controller
             $query->whereMonth('date', request('month'));
         }
 
-        $days = $query->orderBy('date','desc')->get();
+        $days = $query->orderBy('date', 'desc')->get();
 
         return view('pages.programming.Admin.programming_instructor.programming_day_calendar_index', compact('days'));
     }
@@ -1124,7 +1093,4 @@ class ProgramanController extends Controller
         $day->delete();
         return redirect()->back()->with('success', 'Día eliminado correctamente.');
     }
-
-
-
 }

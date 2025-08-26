@@ -84,7 +84,7 @@ class DatabaseSeeder extends Seeder
             ClassRoomSeeder::class,
             CohortSeeder::class,
             DbProgramacionDayseeder::class,
-            CompetenceSeeder::class,
+            // CompetenceSeeder::class,
             DaysTrainingSeeder::class,
         ]);
         DB::connection('db_programacion')->commit();

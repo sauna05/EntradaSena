@@ -302,6 +302,27 @@
             color: #2d3748;
         }
 
+            .btn-admin {
+            background-color: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .btn-admin:hover {
+            background-color: #0069d9;
+            transform: translateY(-1px);
+        }
+
         tbody td {
             padding: 12px 15px;
             border-bottom: 1px solid #e2e8f0;
@@ -314,29 +335,6 @@
         table tr:last-child td {
             border-bottom: none;
         }
-
-        /* Progress bar */
-        .progress {
-            background-color: #e5e7eb;
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .progress-bar {
-            height: 100%;
-            color: white;
-            text-align: center;
-            line-height: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            transition: width 0.3s ease;
-        }
-
-        .bg-success { background-color: #28a745; }
-        .bg-warning { background-color: #ffc107; color: #000; }
-        .bg-danger { background-color: #dc3545; }
 
         /* Status badges */
         .status-badge {
@@ -388,7 +386,7 @@
             }
 
             table {
-                min-width: 1000px;
+                min-width: 800px;
             }
         }
         .dashboard-header {
@@ -411,14 +409,13 @@
 
     <div class="container">
 
-           <div class="dashboard-header">
-                <h1>Gestión de Fichas de Formación</h1>
-                <p>  En esta sección puede administrar todas las fichas de formación del centro.
-            Registre nuevas fichas, consulte el estado de avance de cada una y gestione
-            la información relacionada con programas, jornadas y municipios.
-          </p>
+        <div class="dashboard-header">
+            <h1>Gestión de Fichas de Formación</h1>
+            <p>En esta sección puede administrar todas las fichas de formación del centro.
+                Registre nuevas fichas, consulte el estado de cada una y gestione
+                la información relacionada con programas, jornadas y municipios.
+            </p>
         </div>
-
 
         @if (session('success'))
             <div class="alert-success">
@@ -469,7 +466,7 @@
         </div>
 
         <!-- Tabla de fichas -->
-        <div class="table-container">
+       <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -477,53 +474,42 @@
                         <th>Programa</th>
                         <th>Jornada</th>
                         <th>Municipio</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
                         <th>Estado</th>
-                        <th>Hrs Lectiva</th>
-                        <th>Hrs Programadas</th>
-                        <th>Hrs Cumplidas</th>
                         <th>Matriculados</th>
-                        <th>Avance</th>
+                        <th>Acciones</th> <!-- Nueva columna para acciones -->
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($cohorts as $cohort)
                         @php
-                            $isActive = $cohort->end_date_practical_stage && $cohort->end_date_practical_stage > now();
+                            $isActive = $cohort->end_date > now();
                             $statusClass = $isActive ? 'status-active' : 'status-inactive';
                             $statusText = $isActive ? 'Activa' : 'Inactiva';
-
-                            $progressColor = match(true) {
-                                $cohort->porcentaje_avance >= 100 => 'success',
-                                $cohort->porcentaje_avance >= 75 => 'warning',
-                                default => 'danger'
-                            };
                         @endphp
                         <tr class="ficha-row" data-status="{{ $isActive ? 'active' : 'inactive' }}">
                             <td><strong>{{ $cohort->number_cohort }}</strong></td>
                             <td>{{ $cohort->program->name ?? 'N/A' }}</td>
                             <td>{{ $cohort->cohortime->name ?? 'N/A' }}</td>
                             <td>{{ $cohort->town->name ?? 'N/A' }}</td>
+                            <td>{{ $cohort->start_date }}</td>
+                            <td>{{ $cohort->end_date }}</td>
                             <td>
                                 <span class="status-badge {{ $statusClass }}">
                                     {{ $statusText }}
                                 </span>
                             </td>
-                            <td>{{ $cohort->hours_school_stage }} hrs</td>
-                            <td>{{ $cohort->horas_programadas }} hrs</td>
-                            <td>{{ $cohort->horas_cumplidas }} hrs</td>
                             <td>{{ $cohort->enrolled_quantity }}</td>
-                            <td style="min-width: 120px;">
-                                <div class="progress">
-                                    <div class="progress-bar bg-{{ $progressColor }}"
-                                         style="width: {{ min($cohort->porcentaje_avance, 100) }}%">
-                                        {{ $cohort->porcentaje_avance }}%
-                                    </div>
-                                </div>
+                            <td>
+                                <a href="{{ route('programing.competencies_index_administrar', $cohort->id) }}" class="btn-admin">
+                                    <i class="fas fa-cog"></i> Administrar
+                                </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10">
+                            <td colspan="9"> <!-- Aumentado a 9 columnas -->
                                 <div class="empty-state">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                         <circle cx="12" cy="12" r="10"></circle>
@@ -590,39 +576,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Horas etapa escolar</label>
-                            <input type="number" name="hours_school_stage" required min="1"
-                                   value="{{ old('hours_school_stage') }}" placeholder="Horas lectivas">
+                            <label>Fecha Inicio</label>
+                            <input type="date" name="start_date" required value="{{ old('start_date') }}">
                         </div>
 
                         <div class="form-group">
-                            <label>Horas etapa práctica</label>
-                            <input type="number" name="hours_practical_stage" required min="0"
-                                   value="{{ old('hours_practical_stage') }}" placeholder="Horas prácticas">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Inicio etapa escolar</label>
-                            <input type="date" name="start_date_school_stage" required
-                                   value="{{ old('start_date_school_stage') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Fin etapa escolar</label>
-                            <input type="date" name="end_date_school_stage" required
-                                   value="{{ old('end_date_school_stage') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Inicio etapa práctica</label>
-                            <input type="date" name="start_date_practical_stage" required
-                                   value="{{ old('start_date_practical_stage') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Fin etapa práctica</label>
-                            <input type="date" name="end_date_practical_stage" required
-                                   value="{{ old('end_date_practical_stage') }}">
+                            <label>Fecha Finalización</label>
+                            <input type="date" name="end_date" required value="{{ old('end_date') }}">
                         </div>
 
                         <div class="form-group">
@@ -668,35 +628,12 @@
 
         // Validación de fechas
         document.addEventListener('DOMContentLoaded', function() {
-            const startSchoolInput = document.querySelector('input[name="start_date_school_stage"]');
-            const endSchoolInput = document.querySelector('input[name="end_date_school_stage"]');
-            const startPracticeInput = document.querySelector('input[name="start_date_practical_stage"]');
-            const endPracticeInput = document.querySelector('input[name="end_date_practical_stage"]');
+            const startDateInput = document.querySelector('input[name="start_date"]');
+            const endDateInput = document.querySelector('input[name="end_date"]');
 
-            startSchoolInput.addEventListener('change', function() {
+            startDateInput.addEventListener('change', function() {
                 if (this.value) {
-                    const startDate = new Date(this.value);
-                    const minEndDate = new Date(startDate);
-                    minEndDate.setDate(startDate.getDate() + 15);
-                    endSchoolInput.min = minEndDate.toISOString().split('T')[0];
-                }
-            });
-
-            endSchoolInput.addEventListener('change', function() {
-                if (this.value) {
-                    const endSchoolDate = new Date(this.value);
-                    const minPracticeStart = new Date(endSchoolDate);
-                    minPracticeStart.setDate(endSchoolDate.getDate() + 1);
-                    startPracticeInput.min = minPracticeStart.toISOString().split('T')[0];
-                }
-            });
-
-            startPracticeInput.addEventListener('change', function() {
-                if (this.value) {
-                    const startPracticeDate = new Date(this.value);
-                    const minEndPractice = new Date(startPracticeDate);
-                    minEndPractice.setDate(startPracticeDate.getDate() + 15);
-                    endPracticeInput.min = minEndPractice.toISOString().split('T')[0];
+                    endDateInput.min = this.value;
                 }
             });
 

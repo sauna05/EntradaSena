@@ -80,7 +80,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'programmig.programming_update_store'])->syncRoles([$role10, $role5]);
 
         //agregar permiso para eliminar y editar fichas
-        
+
 
 
 
@@ -96,7 +96,7 @@ class RoleSeeder extends Seeder
 
         //permiso para gestionar competencias
 
-        Permission::create(['name' => 'programing.competencies_index'])->assignRole($role10, $role2);
+        // Permission::create(['name' => 'programing.competencies_index'])->assignRole($role10, $role2);
 
         Permission::create(['name' => 'programing.competencies_store'])->assignRole($role10, $role2);
         Permission::create(['name' => 'programing.competencies_update'])->assignRole($role10, $role2);
@@ -161,6 +161,9 @@ class RoleSeeder extends Seeder
         //vista pra reprogramar y registrar
         Permission::create(['name' => 'programaciones_index'])->assignRole($role10, $role2);
         Permission::create(['name' => 'programaciones_store'])->assignRole($role10, $role2);
+
+        //permiso para gestionar ficha
+        Permission::create(['name' => 'programing.competencies_index_administrar'])->assignRole($role10, $role2);
 
     }
 }

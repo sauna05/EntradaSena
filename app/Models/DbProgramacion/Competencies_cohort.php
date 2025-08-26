@@ -4,16 +4,16 @@ namespace App\Models\DbProgramacion;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CompetenciePrograman extends Pivot
+class Competencies_cohort extends Pivot
 {
-    protected $table = 'competencies_programs';
+    protected $table = 'competencies_cohorts';
     protected $connection = 'db_programacion';
 
-    public $incrementing = false; 
+    public $incrementing = false;
 
     protected $fillable = [
-        'id_program',
-        'id_competence',
-
+        'cohort_id',
+        'competence_id',
     ];
 }
+
