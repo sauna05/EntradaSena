@@ -433,7 +433,7 @@
                         <tbody>
                             @foreach($assignedCompetencies as $competence)
                             <tr>
-                                <td>{{ $competence->code ?? 'N/A' }}</td>
+                                <td>{{ $competence->id ?? 'N/A' }}</td>
                                 <td>{{ $competence->name }}</td>
                                 <td>{{ $competence->duration_hours }} hrs</td>
                                 {{-- <td class="actions">

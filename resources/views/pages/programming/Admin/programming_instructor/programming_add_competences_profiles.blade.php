@@ -377,7 +377,7 @@
                                         </td> --}}
                                     </tr>
                                 @endforeach
-                            @endif
+                            @endif   
                         @endforeach
 
                         @if(!$hasCompetencias)
