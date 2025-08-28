@@ -172,6 +172,13 @@ Route::post('programming/admin/competenciesStore', [CohortController::class, 'co
     ->middleware('can:programing.competencies_programming_store')
     ->name('programing.competencies_store');
 
+//ruta para agregar competencias de una ficha a otra copiandola programing.programming.competencies_copy
+
+Route::post('programming/admin/copy', [CohortController::class, 'copyCompetenciesFromCohort'])
+    ->middleware('can:programing.programming.competencies_copy')
+    ->name('programing.programming.competencies_copy');
+
+
 
 
 

@@ -99,103 +99,193 @@ class CohortController extends Controller
             }
         }
 
-    public function Listcompetencies(Request $request, $cohortId)
-    {
-        // Obtener la ficha específica con relaciones
-        $cohort = Cohort::with(['program', 'cohortime', 'town'])->findOrFail($cohortId);
+                //  1. Listar competencias y programaciones de la ficha
+        public function Listcompetencies(Request $request, $cohortId)
+        {
+            try {
+                // Obtener la ficha con sus relaciones
+                $cohort = Cohort::with(['program', 'cohortime', 'town'])->findOrFail($cohortId);
 
-        // Todas las especialidades (para selects)
-        $especialidad = Speciality::all();
+                // Obtener especialidades
+                $especialidad = Speciality::all();
 
-        // Todas las competencias disponibles
-        $competencies = Competencies::orderBy('created_at', 'desc')->get();
+                // Obtener competencias asignadas a esta ficha
+                $assignedCompetencies = $cohort->competences()->get();
 
-        // Competencias ya asignadas a la ficha
-        $assignedCompetencies = $cohort->competences()->get();
+                // Obtener programaciones para esta ficha
+                $programaciones = Programming::with([
+                    'instructor.person',
+                    'cohort.program',
+                    'competencie',
+                    'classroom',
+                    'days'
+                ])
+                ->where('id_cohort', $cohortId)
+                ->get();
 
-        // 🔥 SOLUCIÓN: Filtrar programaciones por la cohorte específica
-        $programaciones = Programming::with([
-            'instructor.person',
-            'cohort.program',
-            'competencie',
-            'classroom',
-            'days'
-        ])
-            ->where('id_cohort', $cohortId) // ← Filtro agregado aquí
-            ->get();
+                // Actualizar estados de las programaciones
+                $now = Carbon::now();
+                foreach ($programaciones as $prog) {
+                    $startDate = Carbon::parse($prog->start_date);
+                    $endDate = Carbon::parse($prog->end_date);
 
-        $now = Carbon::now();
+                    if ($now->lt($startDate)) {
+                        $prog->status = 'pendiente';
+                    } elseif ($now->between($startDate, $endDate)) {
+                        $prog->status = 'en_ejecucion';
+                    } else {
+                        $prog->status = $prog->evaluated
+                            ? 'finalizada_evaluada'
+                            : 'finalizada_no_evaluada';
+                    }
 
-        foreach ($programaciones as $prog) {
-            $startDate = Carbon::parse($prog->start_date);
-            $endDate = Carbon::parse($prog->end_date);
+                    if ($prog->isDirty('status')) {
+                        $prog->save();
+                    }
+                }
 
-            if ($now->lt($startDate)) {
-                $prog->status = 'pendiente';
-            } elseif ($now->between($startDate, $endDate)) {
-                $prog->status = 'en_ejecucion';
-            } else {
-                $prog->status = $prog->evaluated
-                    ? 'finalizada_evaluada'
-                    : 'finalizada_no_evaluada';
-            }
+                // Obtener las últimas programaciones por competencia
+                $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
+                    ->where('id_cohort', $cohortId)
+                    ->groupBy('id_competencie')
+                    ->pluck('id')
+                    ->toArray();
 
-            // Guardar solo si cambió el estado
-            if ($prog->isDirty('status')) {
-                $prog->save();
+                // Obtener otras fichas del mismo programa para copiar competencias
+                $otherCohorts = Cohort::with('competences')
+                    ->where('id_program', $cohort->id_program)
+                    ->where('id', '!=', $cohortId)
+                    ->get();
+
+                $otherCohortsData = $otherCohorts->map(function($c) {
+                    return [
+                        'id' => $c->id,
+                        'number_cohort' => $c->number_cohort,
+                        'start_date' => $c->start_date,
+                        'end_date' => $c->end_date,
+                        'competences' => $c->competences->map(function($cp) {
+                            return [
+                                'id' => $cp->id,
+                                'name' => $cp->name,
+                                'hours' => $cp->duration_hours,
+                            ];
+                        })->values()->all()
+                    ];
+                })->values()->all();
+
+                return view('pages.programming.Admin.Competencies.competencies_index', compact(
+                    'especialidad',
+                    'cohort',
+                    'assignedCompetencies',
+                    'ultimasProgramaciones',
+                    'programaciones',
+                    'otherCohortsData'
+                ));
+
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Error al cargar la información: ' . $e->getMessage());
             }
         }
 
-        // 🔥 Obtener las últimas programaciones por competencia (solo de esta cohorte)
-        $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
-            ->where('id_cohort', $cohortId) // ← Filtro agregado aquí también
-            ->groupBy('id_competencie')
-            ->pluck('id')
-            ->toArray();
-
-        return view(
-            'pages.programming.Admin.Competencies.competencies_index',
-            compact('competencies', 'especialidad', 'cohort', 'assignedCompetencies', 'ultimasProgramaciones', 'programaciones')
-        );
-    }
 
 
+        //  2. Registrar una NUEVA competencia y asignarla a la ficha
+        public function competenciesAdd_store(Request $request)
+        {
+            $request->validate([
+                'cohort_id'      => 'required|exists:db_programacion.cohorts,id',
+                'speciality_id'  => 'required|exists:db_programacion.specialities,id',
+                'name'           => 'required|string|max:255',
+                'duration_hours' => 'required|integer|min:1',
+            ]);
 
-    public function competenciesAdd_store(Request $request)
+            try {
+                DB::connection('db_programacion')->beginTransaction();
+
+                $ficha = Cohort::findOrFail($request->cohort_id);
+
+                // Crear la competencia nueva
+                $competenciaNueva = Competencies::create([
+                    'speciality_id'  => $request->speciality_id,
+                    'name'           => $request->name,
+                    'duration_hours' => $request->duration_hours,
+                ]);
+
+                // Asignarla a la ficha
+                $ficha->competences()->attach($competenciaNueva->id, [
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+
+                DB::connection('db_programacion')->commit();
+
+                return redirect()->back()->with('success', '✅ Competencia creada y asignada correctamente.');
+            } catch (\Exception $e) {
+                DB::connection('db_programacion')->rollBack();
+                return redirect()->back()->with('error', '❌ Error: ' . $e->getMessage());
+            }
+        }
+
+
+     // 3. Copiar competencias desde OTRA ficha (manual)
+    public function copyCompetenciesFromCohort(Request $request)
     {
         $request->validate([
-            'cohort_id'      => 'required|exists:db_programacion.cohorts,id',
-            'speciality_id'  => 'required|exists:db_programacion.specialities,id',
-            'name'           => 'required|string|max:255',
-            'duration_hours' => 'required|integer|min:1',
+            'target_cohort_id' => 'required|exists:db_programacion.cohorts,id', // Cambiado a target_cohort_id
+            'source_cohort_id' => 'required|exists:db_programacion.cohorts,id',
         ]);
 
         try {
             DB::connection('db_programacion')->beginTransaction();
 
-            // 1. Crear competencia
-            $competencia = Competencies::create([
-                'speciality_id'  => $request->speciality_id,
-                'name'           => $request->name,
-                'duration_hours' => $request->duration_hours,
-            ]);
+            $fichaDestino = Cohort::with('competences')->findOrFail($request->target_cohort_id);
+            $fichaOrigen = Cohort::with('competences')->findOrFail($request->source_cohort_id);
 
-            // 2. Buscar ficha y asignar competencia
-            $ficha = Cohort::findOrFail($request->cohort_id);
+            // Validar que sean del mismo programa
+            if ($fichaDestino->id_program !== $fichaOrigen->id_program) {
+                throw new \Exception('Las fichas deben pertenecer al mismo programa de formación');
+            }
 
-            $ficha->competences()->attach($competencia->id, [
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            // Validar que la ficha origen tenga competencias
+            if ($fichaOrigen->competences->isEmpty()) {
+                throw new \Exception('La ficha origen no tiene competencias para copiar');
+            }
 
-            DB::connection('db_programacion')->commit();
+            // Obtener IDs de competencias que ya están asignadas
+            $existingCompetenceIds = $fichaDestino->competences->pluck('id')->toArray();
 
-            return redirect()->back()->with('success', '✅ Competencia creada y asignada a la ficha correctamente.');
+            // Filtrar competencias que no están ya asignadas
+            $newCompetenceIds = $fichaOrigen->competences
+                ->pluck('id')
+                ->reject(function ($competenceId) use ($existingCompetenceIds) {
+                    return in_array($competenceId, $existingCompetenceIds);
+                })
+                ->toArray();
+
+            // Asignar solo las competencias que no existen
+            if (!empty($newCompetenceIds)) {
+                $fichaDestino->competences()->attach($newCompetenceIds);
+
+                DB::connection('db_programacion')->commit();
+
+                return redirect()->back()->with('success',
+                    '✅ Se copiaron ' . count($newCompetenceIds) . ' competencias desde la ficha ' .
+                    $fichaOrigen->number_cohort
+                );
+            } else {
+                DB::connection('db_programacion')->rollBack();
+                return redirect()->back()->with('info',
+                    'ℹ️ Todas las competencias de la ficha origen ya están asignadas a esta ficha'
+                );
+            }
+
         } catch (\Exception $e) {
             DB::connection('db_programacion')->rollBack();
-            return redirect()->back()->with('error', '❌ Error al crear y asignar la competencia: ' . $e->getMessage());
+            return redirect()->back()->with('error', '❌ Error: ' . $e->getMessage());
         }
     }
+
+
 
 
 

@@ -165,5 +165,8 @@ class RoleSeeder extends Seeder
         //permiso para gestionar ficha
         Permission::create(['name' => 'programing.competencies_index_administrar'])->assignRole($role10, $role2);
 
+        Permission::create(['name' => 'programing.programming.competencies_copy'])->assignRole($role10, $role2);
+
+
     }
 }

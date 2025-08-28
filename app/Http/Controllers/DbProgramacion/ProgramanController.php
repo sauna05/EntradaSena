@@ -499,18 +499,31 @@ class ProgramanController extends Controller
 
 
     // Vista para registrar nuevo
+    // public function registerProgramming_index()
+    // {
+    //     return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
+    //         'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
+    //         'cohorts' => Cohort::with('program')
+    //             ->where('end_date', '>', Carbon::today())
+    //             ->get(),
+    //         'ambientes' => Classroom::with('towns')->get(),
+    //         'competencias' => Competencies::all(),
+    //         'modo' => 'nuevo'
+    //     ]);
+    // }
     public function registerProgramming_index()
     {
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
-            'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
-            'cohorts' => Cohort::with('program')
-                ->where('end_date', '>', Carbon::today())
-                ->get(),
-            'ambientes' => Classroom::with('towns')->get(),
-            'competencias' => Competencies::all(),
-            'modo' => 'nuevo'
+            'cohorts'   => Cohort::with(['program','competences']) // 👈 corregido aquí
+                                ->where('end_date', '>', \Carbon\Carbon::today())
+                                ->get(),
+            'ambientes' => Classroom::with('towns','Block')->get(),
+            'modo'      => 'nuevo'
         ]);
     }
+
+
+
 
     //metodo para registrar programacion
 
