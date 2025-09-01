@@ -99,98 +99,86 @@ class CohortController extends Controller
             }
         }
 
-                //  1. Listar competencias y programaciones de la ficha
-        public function Listcompetencies(Request $request, $cohortId)
-        {
-            try {
-                // Obtener la ficha con sus relaciones
-                $cohort = Cohort::with(['program', 'cohortime', 'town'])->findOrFail($cohortId);
+    //  1. Listar competencias y programaciones de la ficha
+    public function Listcompetencies(Request $request, $cohortId)
+    {
+        $cohort = Cohort::with(['program', 'cohortime', 'town'])->findOrFail($cohortId);
+        $especialidad = Speciality::all();
 
-                // Obtener especialidades
-                $especialidad = Speciality::all();
+        $assignedCompetencies = $cohort->competences()->get();
 
-                // Obtener competencias asignadas a esta ficha
-                $assignedCompetencies = $cohort->competences()->get();
+        $programaciones = Programming::with([
+            'instructor.person',
+            'cohort.program',
+            'competencie',
+            'classroom',
+            'days'
+        ])
+            ->where('id_cohort', $cohortId)
+            ->get();
 
-                // Obtener programaciones para esta ficha
-                $programaciones = Programming::with([
-                    'instructor.person',
-                    'cohort.program',
-                    'competencie',
-                    'classroom',
-                    'days'
-                ])
-                ->where('id_cohort', $cohortId)
-                ->get();
+        // Estados
+        $now = Carbon::now();
+        foreach ($programaciones as $prog) {
+            $startDate = Carbon::parse($prog->start_date);
+            $endDate   = Carbon::parse($prog->end_date);
 
-                // Actualizar estados de las programaciones
-                $now = Carbon::now();
-                foreach ($programaciones as $prog) {
-                    $startDate = Carbon::parse($prog->start_date);
-                    $endDate = Carbon::parse($prog->end_date);
-
-                    if ($now->lt($startDate)) {
-                        $prog->status = 'pendiente';
-                    } elseif ($now->between($startDate, $endDate)) {
-                        $prog->status = 'en_ejecucion';
-                    } else {
-                        $prog->status = $prog->evaluated
-                            ? 'finalizada_evaluada'
-                            : 'finalizada_no_evaluada';
-                    }
-
-                    if ($prog->isDirty('status')) {
-                        $prog->save();
-                    }
-                }
-
-                // Obtener las últimas programaciones por competencia
-                $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
-                    ->where('id_cohort', $cohortId)
-                    ->groupBy('id_competencie')
-                    ->pluck('id')
-                    ->toArray();
-
-                // Obtener otras fichas del mismo programa para copiar competencias
-                $otherCohorts = Cohort::with('competences')
-                    ->where('id_program', $cohort->id_program)
-                    ->where('id', '!=', $cohortId)
-                    ->get();
-
-                $otherCohortsData = $otherCohorts->map(function($c) {
-                    return [
-                        'id' => $c->id,
-                        'number_cohort' => $c->number_cohort,
-                        'start_date' => $c->start_date,
-                        'end_date' => $c->end_date,
-                        'competences' => $c->competences->map(function($cp) {
-                            return [
-                                'id' => $cp->id,
-                                'name' => $cp->name,
-                                'hours' => $cp->duration_hours,
-                            ];
-                        })->values()->all()
-                    ];
-                })->values()->all();
-
-                return view('pages.programming.Admin.Competencies.competencies_index', compact(
-                    'especialidad',
-                    'cohort',
-                    'assignedCompetencies',
-                    'ultimasProgramaciones',
-                    'programaciones',
-                    'otherCohortsData'
-                ));
-
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'Error al cargar la información: ' . $e->getMessage());
+            if ($now->lt($startDate)) {
+                $prog->status = 'pendiente';
+            } elseif ($now->between($startDate, $endDate)) {
+                $prog->status = 'en_ejecucion';
+            } else {
+                $prog->status = $prog->evaluated
+                    ? 'finalizada_evaluada'
+                    : 'finalizada_no_evaluada';
             }
         }
 
+        $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
+            ->where('id_cohort', $cohortId)
+            ->groupBy('id_competencie')
+            ->pluck('id')
+            ->toArray();
+
+        $otherCohorts = Cohort::with('competences')
+            ->where('id_program', $cohort->id_program)
+            ->where('id', '!=', $cohortId)
+            ->get();
+
+        $otherCohortsData = $otherCohorts->map(function ($c) {
+            return [
+                'id' => $c->id,
+                'number_cohort' => $c->number_cohort,
+                'start_date' => $c->start_date,
+                'end_date' => $c->end_date,
+                'competences' => $c->competences->map(function ($cp) {
+                    return [
+                        'id' => $cp->id,
+                        'name' => $cp->name,
+                        'hours' => $cp->duration_hours,
+                    ];
+                })->values()->all()
+            ];
+        })->values()->all();
+
+        return view('pages.programming.Admin.Competencies.competencies_index', compact(
+            'especialidad',
+            'cohort',
+            'assignedCompetencies',
+            'ultimasProgramaciones',
+            'programaciones',
+            'otherCohortsData'
+        ));
+    }
 
 
-        //  2. Registrar una NUEVA competencia y asignarla a la ficha
-        public function competenciesAdd_store(Request $request)
+
+
+
+
+
+    //  2. Registrar una NUEVA competencia y asignarla a la ficha
+    public function competenciesAdd_store(Request $request)
         {
             $request->validate([
                 'cohort_id'      => 'required|exists:db_programacion.cohorts,id',

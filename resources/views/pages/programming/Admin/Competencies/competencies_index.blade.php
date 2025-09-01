@@ -1,350 +1,454 @@
 <x-layout>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Competencias - Ficha {{ $cohort->number_cohort }}</title>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        :root {
+            --primary-color: #28a745;
+            --secondary-color: #6c757d;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
 
-        <style>
-            /* --- ESTILOS GENERALES --- */
-            .admin-header {
-                background-color: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                margin-bottom: 20px;
-            }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-            .page-title {
-                color: #28a745;
-                margin-bottom: 15px;
-                font-size: 28px;
-            }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
 
-            .ficha-info {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 15px;
-                margin-bottom: 20px;
-            }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-            .info-card {
-                background-color: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-                border-left: 4px solid #28a745;
-            }
+        .admin-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
 
-            .info-card h3 {
-                font-size: 14px;
-                color: #6c757d;
-                margin-bottom: 5px;
-            }
+        .search-form {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
 
-            .info-card p {
-                font-size: 16px;
-                font-weight: 500;
-            }
+        .search-form input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
 
-            .tabs {
-                display: flex;
-                border-bottom: 2px solid #dee2e6;
-                margin-bottom: 20px;
-            }
+        .search-form button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
 
-            .tab {
-                padding: 12px 20px;
-                cursor: pointer;
-                font-weight: 500;
-                border-bottom: 3px solid transparent;
-                margin-bottom: -2px;
-            }
+        .search-form button:hover {
+            background-color: #218838;
+        }
 
-            .tab.active {
-                border-bottom-color: #28a745;
-                color: #28a745;
-            }
+        .page-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
 
-            .tab-content {
-                display: none;
-            }
+        .ficha-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-            .tab-content.active {
-                display: block;
-            }
+        .info-card {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
 
-            .card {
-                background-color: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                margin-bottom: 20px;
-                overflow: hidden;
-            }
+        .info-card h3 {
+            font-size: 14px;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
 
+        .info-card p {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background-color: var(--light-color);
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        /* --- BOTONES --- */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            width: max-content;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- TABLA --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: var(--light-color);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Estados de programación */
+        .status-pendiente {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-en_ejecucion {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-finalizada_evaluada {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-finalizada_no_evaluada {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-desconocido {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .disponible-badge {
+            font-size: 0.7rem;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+            font-weight: normal;
+            border: 1px solid #ddd;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-cell {
+            white-space: nowrap;
+        }
+
+        .text-muted {
+            color: var(--secondary-color) !important;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(-20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .alert {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .pagination-link {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        .pagination-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .pagination-link:hover:not(.active) {
+            background-color: #f8f9fa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
             .card-header {
-                padding: 15px 20px;
-                background-color: #f8f9fa;
-                border-bottom: 1px solid #dee2e6;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
-            .card-header h2 {
-                font-size: 18px;
-                color: #343a40;
-                margin: 0;
-            }
-
-            /* --- BOTONES --- */
-            .btn {
-                padding: 8px 16px;
-                border-radius: 4px;
-                border: none;
-                width: max-content;
-                cursor: pointer;
-                font-weight: 500;
-                transition: all 0.3s;
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
-            }
-
-            .btn-primary {
-                background-color: #28a745;
-                color: white;
-            }
-
-            .btn-primary:hover {
-                background-color: #218838;
-            }
-
-            .btn-danger {
-                background-color: #dc3545;
-                color: white;
-            }
-
-            .btn-sm {
-                padding: 5px 10px;
-                font-size: 12px;
-            }
-
-            .btn-secondary {
-                background-color: #6c757d;
-                color: white;
-            }
-
-            .btn-secondary:hover {
-                background-color: #5a6268;
-            }
-
-            .btn:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-            }
-
-            /* --- TABLA --- */
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            th, td {
-                padding: 12px 15px;
-                text-align: left;
-                border-bottom: 1px solid #dee2e6;
-            }
-
-            th {
-                background-color: #f8f9fa;
-                font-weight: 600;
-            }
-
-            tr:hover {
-                background-color: #f8f9fa;
-            }
-
-            /* Estados de programación */
-            .status-pendiente {
-                background-color: #e2e3e5;
-                color: #383d41;
-            }
-
-            .status-en_ejecucion {
-                background-color: #fff3cd;
-                color: #856404;
-            }
-
-            .status-finalizada_evaluada {
-                background-color: #d4edda;
-                color: #155724;
-            }
-
-            .status-finalizada_no_evaluada {
-                background-color: #f8d7da;
-                color: #721c24;
-            }
-
-            .status-desconocido {
-                background-color: #e2e3e5;
-                color: #383d41;
-            }
-
-            .status-badge {
-                padding: 6px 12px;
-                border-radius: 16px;
-                font-size: 12px;
-                font-weight: 600;
-                display: inline-block;
-            }
-
-            .disponible-badge {
-                font-size: 0.7rem;
-                color: #666;
-                background-color: #f0f0f0;
-                padding: 2px 5px;
-                border-radius: 3px;
-                margin-left: 5px;
-                font-weight: normal;
-                border: 1px solid #ddd;
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .actions {
-                display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-
-            .action-cell {
-                white-space: nowrap;
-            }
-
-            .text-muted {
-                color: #6c757d !important;
-            }
-
-            /* --- MODAL --- */
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
                 width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0,0,0,0.5);
-                justify-content: center;
-                align-items: center;
+                justify-content: flex-start;
             }
 
-            .modal-content {
-                background-color: #fff;
-                padding: 20px;
-                border-radius: 8px;
-                width: 100%;
-                max-width: 500px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                animation: fadeIn 0.3s ease;
-                position: relative;
-            }
-
-            @keyframes fadeIn {
-                from {opacity: 0; transform: translateY(-20px);}
-                to {opacity: 1; transform: translateY(0);}
-            }
-
-            .modal-content h3 {
-                margin-bottom: 15px;
-                font-size: 20px;
-                color: #28a745;
-            }
-
-            .form-group {
-                margin-bottom: 15px;
-            }
-
-            .form-group label {
-                display: block;
-                font-weight: 600;
-                margin-bottom: 5px;
-            }
-
-            .form-group input,
-            .form-group select {
-                width: 100%;
-                padding: 8px 10px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-sizing: border-box;
-            }
-
-            .form-actions {
-                display: flex;
-                justify-content: flex-end;
-                gap: 10px;
-                margin-top: 20px;
-            }
-
-            .close {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                font-size: 24px;
-                font-weight: bold;
-                color: #333;
-                cursor: pointer;
+            .ficha-info {
+                grid-template-columns: 1fr;
             }
 
             .table-responsive {
                 overflow-x: auto;
-                max-width: 100%;
             }
 
-            .alert {
-                padding: 10px 15px;
-                border-radius: 4px;
-                margin-bottom: 15px;
+            table {
+                min-width: 600px;
             }
 
-            .alert-success {
-                background-color: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
+            .search-form {
+                flex-direction: column;
             }
-
-            .alert-danger {
-                background-color: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-            }
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                .card-header {
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
-
-                .actions {
-                    width: 100%;
-                    justify-content: flex-start;
-                }
-
-                .ficha-info {
-                    grid-template-columns: 1fr;
-                }
-
-                .table-responsive {
-                    overflow-x: auto;
-                }
-
-                table {
-                    min-width: 600px;
-                }
-            }
-        </style>
-
-
-    <x-slot:title>Administrar Competencias - Ficha {{ $cohort->number_cohort }}</x-slot:title>
-
+        }
+    </style>
+</head>
+<body>
     <div class="container">
         <!-- Mensajes de alerta -->
         @if(session('success'))
@@ -370,6 +474,12 @@
         @endif
 
         <div class="admin-header">
+            <form method="GET" action="" class="search-form">
+                @csrf
+                <input type="text" name="search" placeholder="Buscar por número de ficha" value="{{ request('search') }}">
+                <button type="submit">Buscar</button>
+            </form>
+
             <h1 class="page-title">Administrar Competencias - Ficha {{ $cohort->number_cohort }}</h1>
 
             <div class="ficha-info">
@@ -433,23 +543,23 @@
                         <tbody>
                             @foreach($assignedCompetencies as $competence)
                             <tr>
-                                <td>{{ $competence->id ?? 'N/A' }}</td>
+                                <td>{{ $competence->code ?? 'N/A' }}</td>
                                 <td>{{ $competence->name }}</td>
                                 <td>{{ $competence->duration_hours }} hrs</td>
-                                {{-- <td class="actions">
+                                <td class="actions">
                                     <a href="{{ route('programming.register_programming_instructor_index', ['competenceId' => $competence->id, 'cohortId' => $cohort->id]) }}"
                                        class="btn btn-primary btn-sm">
                                         Programar
                                     </a>
-                                    <form action="{{ route('programing.competencies_remove', ['cohortId' => $cohort->id, 'competenceId' => $competence->id]) }}"
+                                    {{-- <form action="{{ route('programing.competencies_remove', ['cohortId' => $cohort->id, 'competenceId' => $competence->id]) }}"
                                           method="POST"
                                           onsubmit="return confirm('¿Está seguro de quitar esta competencia?')"
                                           style="display: inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Quitar</button>
-                                    </form>
-                                </td> --}}
+                                    </form> --}}
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -745,6 +855,20 @@
             @if($errors->has('name') || $errors->has('duration_hours') || $errors->has('speciality_id'))
                 openModal('competenceModal');
             @endif
+
+            // Manejo de búsqueda
+            const searchForm = document.querySelector('.search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    const searchValue = this.querySelector('input[name="ficha"]').value.trim();
+                    if (!searchValue) {
+                        e.preventDefault();
+                        alert('Por favor, ingrese un número de ficha para buscar');
+                    }
+                });
+            }
         });
     </script>
+</body>
+</html>
 </x-layout>
