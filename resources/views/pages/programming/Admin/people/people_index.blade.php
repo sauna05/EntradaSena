@@ -3,6 +3,7 @@
     <x-slot:title>Gestión de Personas</x-slot:title>
 
     <style>
+        /* Tus estilos CSS existentes (se mantienen igual) */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -287,7 +288,7 @@
     </style>
 
     <div class="container">
-        
+
          <div class="dashboard-header">
                 <h1>Gestión de Personas del Centro</h1>
                 <p> En esta sección puede visualizar y gestionar todas las personas registradas en el centro de formación.
@@ -319,33 +320,42 @@
 
         {{-- Búsqueda y Filtros --}}
         <section class="filters-container">
-            <form method="GET" action="{{ route('entrance.people.index') }}" class="filter-group">
-                <label for="search">Buscar persona:</label>
-                <input type="text" id="search" name="search" value="{{ request('search') }}"
-                       class="search-input" placeholder="Nombre o número de documento">
+            <form method="GET" action="{{ route('entrance.people.index') }}" id="filterForm">
+                <div class="filter-group">
+                    <label for="search">Buscar persona:</label>
+                    <input type="text" id="search" name="search" value="{{ request('search') }}"
+                           class="search-input" placeholder="Nombre o número de documento">
+                </div>
+
+                <div class="filter-group">
+                    <label for="position">Filtrar por cargo:</label>
+                    <select id="position" name="position">
+                        <option value="">Todos los cargos</option>
+                        @foreach ($positions as $position)
+                            <option value="{{ $position->id }}" {{ request('position') == $position->id ? 'selected' : '' }}>
+                                {{ $position->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <button type="submit" class="btn-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Buscar
+                    </button>
+                    <button type="button" class="btn-search" onclick="clearFilters()" style="background-color: #6c757d; margin-left: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        Limpiar
+                    </button>
+                </div>
             </form>
-
-            <div class="filter-group">
-                <label for="position">Filtrar por cargo:</label>
-                <select id="position" name="position" onchange="this.form.submit()">
-                    <option value="">Todos los cargos</option>
-                    @foreach ($positions as $position)
-                        <option value="{{ $position->id }}" {{ request('position') == $position->id ? 'selected' : '' }}>
-                            {{ $position->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <button type="submit" class="btn-search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    Buscar
-                </button>
-            </div>
         </section>
 
         {{-- Tabla de Personas --}}
@@ -405,8 +415,6 @@
                         </tbody>
                     </table>
                 </div>
-
-
             @endif
         </section>
     </div>
@@ -417,9 +425,21 @@
         document.getElementById('search').addEventListener('input', function() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
-                this.form.submit();
+                document.getElementById('filterForm').submit();
             }, 500);
         });
+
+        // Auto-submit al cambiar el select de cargo
+        document.getElementById('position').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+
+        // Función para limpiar filtros
+        function clearFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('position').value = '';
+            document.getElementById('filterForm').submit();
+        }
 
         // Mejora: Focus en el campo de búsqueda al cargar
         document.addEventListener('DOMContentLoaded', function() {

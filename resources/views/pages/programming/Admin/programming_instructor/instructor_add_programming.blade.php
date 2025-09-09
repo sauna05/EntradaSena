@@ -27,6 +27,16 @@
   .time-container input { width:auto; }
   .alert-info { width:100%; background:#d1ecf1; color:#0c5460; padding:10px; margin:10px 0; border-radius:4px; border:1px solid #bee5eb; }
   .excluded-dates { margin-top:5px; font-size:0.9em; color:#6c757d; }
+  .instructor-hours-info {
+    background-color: #e8f4fc;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    border-left: 4px solid #3498db;
+  }
+  .hours-positive { color: #28a745; }
+  .hours-warning { color: #ffc107; }
+  .hours-danger { color: #dc3545; }
 </style>
 </head>
 <body>
@@ -78,6 +88,12 @@
     <select id="instructor" name="instructor_id" disabled required>
       <option value="">Seleccione una competencia primero</option>
     </select>
+
+    {{-- Información de horas del instructor --}}
+    <div id="instructorHoursInfo" class="instructor-hours-info" style="display: none;">
+      <div id="instructorHoursText"></div>
+    </div>
+
     <div id="noInstructorAlert" class="alert-warning">Ningún instructor tiene la competencia seleccionada. Por favor asignele la competencia <a href="{{ route('programing.programming_instructors_profiles') }}">Aqui</a></div>
 
     {{-- AMBIENTE --}}
@@ -168,6 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const fechasExcluidasInfo = document.getElementById('fechas-excluidas-info');
     const excludedDatesList   = document.getElementById('excluded-dates-list');
     const effectiveDaysInfo   = document.getElementById('effective-days-info');
+    const instructorHoursInfo = document.getElementById('instructorHoursInfo');
+    const instructorHoursText = document.getElementById('instructorHoursText');
 
     // ----- DATOS DESDE PHP -----
     const fechasExcluidas = @json(
@@ -177,15 +195,15 @@ document.addEventListener('DOMContentLoaded', function() {
     );
 
     // Cohort -> Competencias (id, name, hours)
-        const cohortCompetencies = @json(
-            $cohorts->mapWithKeys(fn($c) => [
-                $c->id => $c->competences->map(fn($comp) => [
-                    'id' => $comp->id,
-                    'name' => $comp->name,
-                    'hours' => $comp->duration_hours
-                ])
+    const cohortCompetencies = @json(
+        $cohorts->mapWithKeys(fn($c) => [
+            $c->id => $c->competences->map(fn($comp) => [
+                'id' => $comp->id,
+                'name' => $comp->name,
+                'hours' => $comp->duration_hours
             ])
-        );
+        ])
+    );
 
     // Competencia -> Instructores (id, name, doc)
     const competenciaInstructores = @json(
@@ -198,6 +216,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     'doc'  => $i->person->document_number
                 ])
             ])
+    );
+
+    // Datos de horas de instructores (precalculados en el controlador)
+    const instructorHoursData = @json(
+        $instructores->mapWithKeys(fn($i) => [
+            $i->id => [
+                'assigned_hours' => $i->assigned_hours,
+                'horas_programadas' => $i->horas_programadas,
+                'horas_restantes' => $i->horas_restantes
+            ]
+        ])
     );
 
     // ----- ESTADO -----
@@ -221,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
         buscarInput.value = '';
         buscarInput.disabled = true;
         selectOriginalSnapshot = null;
+        instructorHoursInfo.style.display = 'none';
     }
 
     function setCompetenciaHorasFromSelection() {
@@ -231,6 +261,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const found = cohortCompetencies[fichaId].find(c => parseInt(c.id) === compId);
         if (found) competenciaHoras = Number(found.hours || 0);
+    }
+
+    // Función para mostrar las horas del instructor
+    function mostrarHorasInstructor(instructorId) {
+        if (!instructorId || !instructorHoursData[instructorId]) {
+            instructorHoursInfo.style.display = 'none';
+            return;
+        }
+
+        const data = instructorHoursData[instructorId];
+        let horasClass = 'hours-positive';
+
+        if (data.horas_restantes < 10) {
+            horasClass = 'hours-danger';
+        } else if (data.horas_restantes < 30) {
+            horasClass = 'hours-warning';
+        }
+
+        instructorHoursText.innerHTML = `
+            <strong>Horas asignadas:</strong> ${data.assigned_hours || 0} <br>
+            <strong>Horas programadas:</strong> ${data.horas_programadas || 0} <br>
+            <strong class="${horasClass}">Horas restantes:</strong> ${data.horas_restantes || 0}
+        `;
+        instructorHoursInfo.style.display = 'block';
     }
 
     // ----- EVENTOS -----
@@ -297,7 +351,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 4) Horas diarias
+    // 4) Cambio de instructor - mostrar horas
+    selectInstructor.addEventListener('change', function() {
+        mostrarHorasInstructor(this.value);
+    });
+
+    // 5) Horas diarias
     function calcularHorasDiarias() {
         const hi = horaInicioInput.value, hf = horaFinInput.value;
         if (hi && hf) {
@@ -320,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
     horaInicioInput.addEventListener('change', calcularHorasDiarias);
     horaFinInput.addEventListener('change', calcularHorasDiarias);
 
-    // 5) Fechas excluidas
+    // 6) Fechas excluidas
     function verificarFechasExcluidas() {
         const fi = fechaInicioInput.value, ff = fechaFinInput.value;
         const seleccionados = Array.from(diasCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
@@ -360,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 6) Total de horas (vs horas de la competencia)
+    // 7) Total de horas (vs horas de la competencia)
     function calcularTotalHoras() {
         const fi = fechaInicioInput.value, ff = fechaFinInput.value;
         const horasDia = parseFloat(horasDiaInput.value);
@@ -409,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 7) Eventos de días/fechas
+    // 8) Eventos de días/fechas
     diasCheckboxes.forEach(cb => cb.addEventListener('change', function() {
         calcularTotalHoras(); verificarFechasExcluidas();
     }));

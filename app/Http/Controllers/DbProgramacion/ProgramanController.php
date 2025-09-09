@@ -513,12 +513,27 @@ class ProgramanController extends Controller
     // }
     public function registerProgramming_index()
     {
+        // Obtener todos los instructores con sus horas calculadas
+        $instructores = Instructor::with(['person', 'speciality', 'programming'])->get();
+
+        foreach ($instructores as $instructor) {
+            // Sumar las horas programadas en estados activos
+            $horasProgramadas = $instructor->programming
+                ->whereIn('status', ['pendiente', 'en_ejecucion', 'finalizada_evaluada'])
+                ->sum('hours_duration');
+
+            // Calcular horas restantes
+            $instructor->horas_restantes = max(0, $instructor->assigned_hours - $horasProgramadas);
+            $instructor->horas_programadas = $horasProgramadas;
+        }
+
         return view('pages.programming.Admin.programming_instructor.instructor_add_programming', [
-            'cohorts'   => Cohort::with(['program','competences']) // 👈 corregido aquí
-                                ->where('end_date', '>', \Carbon\Carbon::today())
-                                ->get(),
-            'ambientes' => Classroom::with('towns','Block')->get(),
-            'modo'      => 'nuevo'
+            'cohorts'      => Cohort::with(['program', 'competences'])
+                ->where('end_date', '>', \Carbon\Carbon::today())
+                ->get(),
+            'ambientes'    => Classroom::with('towns', 'Block')->get(),
+            'instructores' => $instructores, // 👈 Agregar instructores con horas calculadas
+            'modo'         => 'nuevo'
         ]);
     }
 
