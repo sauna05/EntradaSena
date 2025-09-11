@@ -336,6 +336,26 @@
             font-weight: 600;
             margin-bottom: 5px;
         }
+         .btn-regresar {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;       /* Verde elegante */
+            color: #fff;                     /* Texto blanco */
+            text-decoration: none;           /* Quitar subrayado */
+            border-radius: 8px;              /* Bordes redondeados */
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-regresar:hover {
+            background-color: #45a049;       /* Efecto hover */
+        }
+
+        .btn-regresar:active {
+            background-color: #3e8e41;       /* Al hacer clic */
+        }
+
+
 
         .form-group input,
         .form-group select {
@@ -433,6 +453,7 @@
             .ficha-info {
                 grid-template-columns: 1fr;
             }
+                    /* Botón de regresar */
 
             .table-responsive {
                 overflow-x: auto;
@@ -474,11 +495,11 @@
         @endif
 
         <div class="admin-header">
-            <form method="GET" action="" class="search-form">
-                @csrf
-                <input type="text" name="search" placeholder="Buscar por número de ficha" value="{{ request('search') }}">
-                <button type="submit">Buscar</button>
-            </form>
+                <!-- resources/views/tu_vista.blade.php -->
+        <a href="{{ route('programing.cohort_index') }}" class="btn-regresar">
+            ⬅ Regresar
+        </a>
+
 
             <h1 class="page-title">Administrar Competencias - Ficha {{ $cohort->number_cohort }}</h1>
 

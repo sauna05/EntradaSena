@@ -65,21 +65,47 @@
     @csrf
 
     {{-- FICHA --}}
-    <label for="ficha">Seleccione ficha y programa</label>
-    <select id="ficha" name="ficha_id" required>
-      <option value="">Seleccione</option>
-      @foreach ($cohorts as $ficha)
+   <label for="ficha">Seleccione ficha y programa</label>
+<select id="ficha" name="ficha_id" required>
+    <option value="">Seleccione</option>
+    @foreach ($cohorts as $ficha)
         <option value="{{ $ficha->id }}">{{ $ficha->number_cohort }} - {{ $ficha->program->name }}</option>
-      @endforeach
-    </select>
+    @endforeach
+</select>
 
-    {{-- COMPETENCIA (DE LA FICHA) --}}
-    <label for="competencia">Competencia:</label>
-    <select id="competencia" name="competencia_id" disabled required>
-      <option value="">Seleccione una ficha primero</option>
-    </select>
-    <div id="noCompetenciasAlert" class="alert-warning">La ficha seleccionada no tiene competencias asignadas. Por favor registrele competencias  <a href="{{ route('programing.competencies_index_administrar', $ficha->id) }}"> aqui </a></div>
+{{-- COMPETENCIA (DE LA FICHA) --}}
+<label for="competencia">Competencia:</label>
+<select id="competencia" name="competencia_id" disabled required>
+    <option value="">Seleccione una ficha primero</option>
+</select>
 
+<div id="noCompetenciasAlert" class="alert-warning" style="display:none;">
+    La ficha seleccionada no tiene competencias asignadas.
+    Por favor regístrele competencias
+    <a id="linkCompetencias" href="#" target="_blank">aquí</a>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectFicha = document.getElementById('ficha');
+    const linkCompetencias = document.getElementById('linkCompetencias');
+    const noCompetenciasAlert = document.getElementById('noCompetenciasAlert');
+
+    selectFicha.addEventListener('change', function() {
+        const fichaId = this.value;
+
+        if (fichaId) {
+            // Construir la URL con el ID de la ficha seleccionada
+            const baseUrl = "{{ route('programing.competencies_index_administrar', '') }}";
+            linkCompetencias.href = baseUrl + '/' + fichaId;
+            noCompetenciasAlert.style.display = 'block';
+        } else {
+            linkCompetencias.href = '#';
+            noCompetenciasAlert.style.display = 'none';
+        }
+    });
+});
+</script>
     {{-- BUSCADOR + INSTRUCTOR (FILTRADO POR COMPETENCIA) --}}
     <label for="buscarInstructor">Buscar Instructor:</label>
     <input type="text" id="buscarInstructor" placeholder="Escribe el nombre o documento" disabled>
