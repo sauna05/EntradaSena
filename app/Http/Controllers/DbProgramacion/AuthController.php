@@ -20,7 +20,7 @@ class AuthController extends Controller
             $request->validate([
                 'user_name' => 'required',
                 'password' => 'required',
-                'module' => 'required|in:Administrador_programacion',
+                // 'module' => 'required|in:Coordinador',
             ]);
 
             // Solo se pasan las credenciales válidas al Auth
@@ -28,7 +28,7 @@ class AuthController extends Controller
 
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
-                $selectedRole = $request->input('module');
+                $selectedRole = "Coordinador";
 
                 if ($user->hasRole($selectedRole)) {
                 // Redirección según el módulo seleccionado

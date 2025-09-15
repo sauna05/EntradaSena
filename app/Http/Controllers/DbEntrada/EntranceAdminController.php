@@ -31,7 +31,7 @@ class EntranceAdminController extends Controller
         $positions = Position::all();
 
         // Construir la consulta de personas
-        $personQuery = Person::with('position');
+        $personQuery = Person::with('position')->orderBy('created_at', 'desc');
 
         // Filtrar por nombre, documento o cargo
         if ($search) {
@@ -41,12 +41,12 @@ class EntranceAdminController extends Controller
             });
         }
 
-        // Filtrar por cargo si se selecciona uno
-        if ($selectedPosition) {
+        // Filtrar por cargo si se selecciona uno y es válido
+        if ($selectedPosition && is_numeric($selectedPosition)) {
             $personQuery->where('id_position', $selectedPosition);
         }
 
-        // Obtener todos los resultados (sin paginación)
+        // Obtener todos los resultados (sin paginación para usar la paginación JavaScript)
         $person = $personQuery->get();
 
         return view('pages.programming.Admin.people.people_index', [
@@ -55,8 +55,6 @@ class EntranceAdminController extends Controller
             'selectedPosition' => $selectedPosition
         ]);
     }
-
-
     public function peopleShow($id){
 
         $person = Person::with('days_available')->findOrFail($id);

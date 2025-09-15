@@ -60,7 +60,7 @@
             border-left: 4px solid #28a745;
         }
 
-        /* Filtros */
+        /* Filtros - MEJORADO */
         .filters-container {
             display: flex;
             flex-wrap: wrap;
@@ -110,9 +110,14 @@
             padding-left: 45px !important;
         }
 
-        .btn-search {
-            background-color: #28a745;
-            color: white;
+        /* Botones de filtro - MEJORADOS */
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
             padding: 12px 20px;
             border: none;
             border-radius: 8px;
@@ -122,10 +127,27 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 16px;
+        }
+
+        .btn-search {
+            background-color: #28a745;
+            color: white;
         }
 
         .btn-search:hover {
             background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-clear {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background-color: #5a6268;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -219,12 +241,24 @@
             opacity: 0.5;
         }
 
-        /* Paginación */
+        /* Paginación - MEJORADA */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .pagination-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
         .pagination {
             display: flex;
-            justify-content: center;
             gap: 8px;
-            margin-top: 25px;
             flex-wrap: wrap;
         }
 
@@ -237,6 +271,21 @@
             text-decoration: none;
             transition: all 0.2s ease;
             font-weight: 500;
+        }
+
+        .pagination a:hover {
+            background-color: #e5e7eb;
+        }
+
+        .pagination .active span {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .dashboard-header {
@@ -255,17 +304,6 @@
             opacity: 0.8;
         }
 
-
-        .pagination a:hover {
-            background-color: #e5e7eb;
-        }
-
-        .pagination .active span {
-            background-color: #28a745;
-            color: white;
-            border-color: #28a745;
-        }
-
         /* Responsive */
         @media (max-width: 1024px) {
             .container {
@@ -277,12 +315,22 @@
                 flex-direction: column;
             }
 
+            .filter-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
             .table-container {
                 overflow-x: auto;
             }
 
             table {
                 min-width: 800px;
+            }
+
+            .pagination-container {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -340,20 +388,23 @@
                 </div>
 
                 <div class="filter-group">
-                    <button type="submit" class="btn-search">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        Buscar
-                    </button>
-                    <button type="button" class="btn-search" onclick="clearFilters()" style="background-color: #6c757d; margin-left: 10px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                        Limpiar
-                    </button>
+                    <label style="opacity: 0; height: 0;">Acciones</label>
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Buscar
+                        </button>
+                        <button type="button" class="btn btn-clear" onclick="clearFilters()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
             </form>
         </section>
@@ -371,7 +422,10 @@
                 </div>
             @else
                 <div class="table-container">
-                    <table>
+                    @php
+                        $contador=0;
+                    @endphp
+                    <table id="peopleTable">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -387,10 +441,11 @@
                         <tbody>
                             @foreach ($person as $p)
                                 @php
+                                    $contador=$contador+1;
                                     $isActive = $p->end_date && $p->end_date->isFuture();
                                 @endphp
                                 <tr>
-                                    <td>{{ $p->id }}</td>
+                                    <td>{{ $contador }}</td>
                                     <td>{{ $p->position->name }}</td>
                                     <td>{{ $p->document_number }}</td>
                                     <td>{{ $p->name }}</td>
@@ -415,38 +470,202 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Paginación con JavaScript -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfo">
+                        Mostrando <span id="currentItems">0</span> de <span id="totalItems">{{ $person->count() }}</span> registros
+                    </div>
+                    <div class="pagination" id="pagination">
+                        <!-- La paginación se generará con JavaScript -->
+                    </div>
+                </div>
             @endif
         </section>
     </div>
 
-    <script>
-        // Mejora: Auto-submit al escribir después de un delay
-        let searchTimeout;
-        document.getElementById('search').addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                document.getElementById('filterForm').submit();
-            }, 500);
-        });
+   <script>
+    // Auto-submit al cambiar el select de cargo
+    document.getElementById('position').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
 
-        // Auto-submit al cambiar el select de cargo
-        document.getElementById('position').addEventListener('change', function() {
-            document.getElementById('filterForm').submit();
-        });
+    // Función para limpiar filtros
+    function clearFilters() {
+        document.getElementById('search').value = '';
+        document.getElementById('position').value = '';
+        document.getElementById('filterForm').submit();
+    }
 
-        // Función para limpiar filtros
-        function clearFilters() {
-            document.getElementById('search').value = '';
-            document.getElementById('position').value = '';
-            document.getElementById('filterForm').submit();
+    // Mejora: Focus en el campo de búsqueda al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search');
+        if (searchInput && !searchInput.value) {
+            searchInput.focus();
         }
 
-        // Mejora: Focus en el campo de búsqueda al cargar
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('search');
-            if (searchInput && !searchInput.value) {
-                searchInput.focus();
+        // Inicializar paginación si hay registros
+        if (document.getElementById('peopleTable')) {
+            initPagination();
+        }
+    });
+
+    // Sistema de paginación con JavaScript
+    function initPagination() {
+        const table = document.getElementById('peopleTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const totalItems = rows.length;
+        const itemsPerPage = 40;
+        let currentPage = 1;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        // Actualizar información de paginación
+        document.getElementById('totalItems').textContent = totalItems;
+        updatePaginationInfo();
+
+        // Generar controles de paginación
+        generatePaginationControls();
+
+        // Mostrar primera página
+        showPage(currentPage);
+
+        function showPage(page) {
+            currentPage = page;
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            // Ocultar todas las filas
+            rows.forEach(row => row.style.display = 'none');
+
+            // Mostrar solo las filas de la página actual
+            for (let i = startIndex; i < endIndex && i < totalItems; i++) {
+                rows[i].style.display = '';
             }
-        });
-    </script>
+
+            // Actualizar información de paginación
+            updatePaginationInfo();
+
+            // Actualizar controles de paginación
+            updatePaginationControls();
+        }
+
+        function updatePaginationInfo() {
+            const startIndex = (currentPage - 1) * itemsPerPage + 1;
+            const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+            document.getElementById('currentItems').textContent = `${startIndex}-${endIndex}`;
+
+            // Actualizar el texto de la página actual
+            const pageInfo = document.getElementById('pageInfo');
+            if (pageInfo) {
+                pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+            }
+        }
+
+        function generatePaginationControls() {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+
+            // Crear contenedor para la información de página
+            const pageInfo = document.createElement('span');
+            pageInfo.id = 'pageInfo';
+            pageInfo.className = 'page-info';
+            pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+            paginationContainer.appendChild(pageInfo);
+
+            // Botón Anterior
+            const prevButton = document.createElement('a');
+            prevButton.href = '#';
+            prevButton.innerHTML = '&laquo; Anterior';
+            prevButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage > 1) showPage(currentPage - 1);
+            });
+            paginationContainer.appendChild(prevButton);
+
+            // Botón Siguiente
+            const nextButton = document.createElement('a');
+            nextButton.href = '#';
+            nextButton.innerHTML = 'Siguiente &raquo;';
+            nextButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) showPage(currentPage + 1);
+            });
+            paginationContainer.appendChild(nextButton);
+        }
+
+        function updatePaginationControls() {
+            const paginationLinks = document.querySelectorAll('#pagination a');
+            paginationLinks.forEach(link => link.classList.remove('disabled'));
+
+            // Deshabilitar botones anterior/siguiente si es necesario
+            if (currentPage === 1) {
+                paginationLinks[0].classList.add('disabled');
+            }
+
+            if (currentPage === totalPages) {
+                paginationLinks[1].classList.add('disabled');
+            }
+
+            // Actualizar el texto de la página actual
+            const pageInfo = document.getElementById('pageInfo');
+            if (pageInfo) {
+                pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+            }
+        }
+    }
+</script>
+
+<style>
+    /* Estilos para la paginación mejorada */
+    .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .page-info {
+        font-weight: 600;
+        color: #374151;
+        padding: 8px 12px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+    }
+
+    .pagination a {
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        background-color: white;
+    }
+
+    .pagination a:hover:not(.disabled) {
+        background-color: #e5e7eb;
+    }
+
+    .pagination a.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: #f8f9fa;
+    }
+
+    /* Ajustes responsive */
+    @media (max-width: 768px) {
+        .pagination {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .page-info {
+            order: -1;
+        }
+    }
+</style>
 </x-layout>

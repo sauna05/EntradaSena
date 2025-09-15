@@ -20,7 +20,7 @@ class RoleSeeder extends Seeder
         // Crear roles de gestion de asistencia y programacion para los diferentes usuarios en este caso por ahora solo esta Administrador programacion ADMIN PRINCIPAL
         // $role1 = Role::create(['name' => 'Administrador_asistencia']);
         //rolo administrador programacion ahora tambien sera de asitencias
-        $role10 = Role::create(['name' => 'Administrador_programacion']);
+        $role10 = Role::create(['name' => 'Coordinador']);
 
         $role2 = Role::create(['name' => 'Admin-Entrada']);
         // $role3 = Role::create(['name' => 'Acceso-Entrada']);

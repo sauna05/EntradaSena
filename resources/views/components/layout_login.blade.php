@@ -129,8 +129,7 @@
             justify-content: center;
             align-items: center;
             padding: 40px 20px;
-            background-color: rgb(241, 244, 245)
-            /* background-image: url({{asset('senav.jpg')}}) ; */
+            background-color: rgb(241, 244, 245);
         }
 
         /* Form Container */
@@ -235,6 +234,35 @@
             box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.3);
         }
 
+        /* Password visibility toggle */
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+            z-index: 2;
+        }
+
+        .show-password-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 5px;
+            gap: 5px;
+        }
+
+        .show-password-container label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+
         /* Buttons */
         .submit-btn {
             width: 100%;
@@ -250,6 +278,7 @@
             box-shadow: 0 5px 15px rgba(57, 169, 0, 0.3);
             position: relative;
             z-index: 1;
+            margin-top: 0.5rem;
         }
 
         .submit-btn:hover {
@@ -264,6 +293,7 @@
             font-size: 0.9rem;
             margin-top: 0.5rem;
             text-align: center;
+            margin-bottom: 1rem;
         }
 
         /* Footer */
@@ -335,9 +365,7 @@
     </style>
 </head>
 
-
 <body>
-
     <!-- Header -->
     <header class="header">
         <div class="header-container">
@@ -349,11 +377,9 @@
         </a>
     </header>
 
-
     <!-- Main Content -->
     <main class="main-content">
         <div class="form-container">
-
             <!-- FORMULARIO PROGRAMACIÓN -->
             <form class="login-form" action="{{ route('programming-login') }}" method="POST">
                 @csrf
@@ -369,51 +395,33 @@
                 <div class="input-group">
                     <label for="user_name_program">Usuario</label>
                     <i class="fas fa-user"></i>
-                    <input type="text" id="user_name_program" name="user_name" placeholder="Usuario">
+                    <input type="text" id="user_name_program" name="user_name" placeholder="Usuario" required>
                 </div>
-                <div class="input-group" style="position: relative;">
-                    <label for="password_program">Contraseña</label>
-
-                    <input type="password" id="password_program" name="password" placeholder="Tu contraseña">
-
-                    <!-- Ojito dentro del input -->
-                    <i class="fas fa-eye-slash" id="eyeIcon"
-                       style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #7f8c8d;"></i>
-
-                    <!-- Checkbox debajo a la derecha -->
-                    <div style="position: absolute; right: 10px; bottom: -25px; display: flex; align-items: center; gap: 4px;">
-                        <input type="checkbox" id="togglePassword" style="cursor: pointer;">
-                        <label for="togglePassword" style="cursor: pointer; font-size: 0.85rem; color: #7f8c8d;">Mostrar</label>
-                    </div>
-                </div>
-
-
-
-
 
                 <div class="input-group">
-                    <label for="module">Ingresar a:</label>
-                    <i class="fas fa-list"></i>
-                    <select id="module" name="module">
-                        <option value="Administrador_programacion">Gestión de Programación</option>
-                        {{-- <option value="Administrador_asistencia">Gestión de Asistencia</option> --}}
-                    </select>
+                    <label for="password_program">Contraseña</label>
+                    <div class="password-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password_program" name="password" placeholder="Tu contraseña" required>
+
+                    </div>
+                    {{-- <div class="show-password-container">
+                        <input type="checkbox" id="togglePassword">
+                        <label for="togglePassword">Mostrar contraseña</label>
+                    </div> --}}
                 </div>
 
                 <button type="submit" class="submit-btn">Ingresar</button>
-
             </form>
-
         </div>
     </main>
-
-
 
     <!-- Footer -->
     <footer class="footer">
         <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-footer" />
         <p>&copy; {{ date('Y') }} Centro Agroempresarial y Acuícola. Todos los derechos reservados.</p>
     </footer>
+
     <script>
         const toggle = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password_program');
@@ -430,7 +438,12 @@
                 eyeIcon.classList.add('fa-eye-slash');
             }
         });
-    </script>
 
+        // También permitir hacer toggle al hacer clic en el icono del ojo
+        eyeIcon.addEventListener('click', function() {
+            toggle.checked = !toggle.checked;
+            toggle.dispatchEvent(new Event('change'));
+        });
+    </script>
 </body>
 </html>

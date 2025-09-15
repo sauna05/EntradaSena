@@ -18,7 +18,7 @@ class PersonSeeder extends Seeder
             [3, 3, '7777777777', 'Juan Camilo Vargas', 'juan.vargas@example.com', 'Avenida 7#11-22', '3037778888'],
             [4, 4, '8888888888', 'Sara Juliana Lopez', 'sara.lopez@example.com', 'Calle 16#30-40', '3048889999'],
             [4, 2, '9999999999', 'David Esteban Castro', 'david.castro@example.com', 'Carrera 25#15-60', '3059990000'],
-            [4, 1, '1010101010', 'Valentina Rios', 'valentina.rios@example.com', 'Calle 3#9-87', '3061010101'],
+            [4, 1, '1010101010', 'Westcol hp', 'draxen537@gmail.com', 'Calle 3#9-87', '3061010101'],
             [4, 5, '1212121212', 'Alexander Loperena', 'alexandersauna05@gmail.com', 'Avenida 12#34-56', '3071212121'],
         ];
 
