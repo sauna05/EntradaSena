@@ -319,6 +319,9 @@ class EntranceAdminController extends Controller
                         'updated_at' => now()
                     ]);
 
+                    $person->days_available()->sync([1, 2, 3, 4, 5]);
+
+
                     Apprentice::create([
                         'id_person' => $person->id,
                         'id_status' => $status_apprentice->id,

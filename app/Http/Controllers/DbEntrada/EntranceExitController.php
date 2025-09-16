@@ -16,6 +16,7 @@ class EntranceExitController extends Controller
     public function create(){
         return view('pages.entrance.entrance');
     }
+    //metodo para la gestion de ingreso y salida controlador
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -86,8 +87,7 @@ class EntranceExitController extends Controller
                 'id_person' => $person->id,
                 'date_time' => now(),
                 'action' => $action
-            ]);
-        } else {
+            ]);        } else {
             // Entrada normal
             EntranceExit::create([
                 'id_person' => $person->id,
