@@ -699,6 +699,7 @@ class ProgramanController extends Controller
             }
 
             return redirect()->back()->with('success', 'Programación registrada correctamente');
+
         } catch (Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Error al registrar la programación: ' . $e->getMessage());
         }

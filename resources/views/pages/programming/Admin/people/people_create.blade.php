@@ -1,6 +1,7 @@
 <x-layout>
     <x-slot:title>CAA - Formulario de Registro</x-slot:title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* styles.css */
 .caas-form-container {
@@ -281,28 +282,37 @@
                 </div>
             </div>
 
-            <!-- Mensajes de alerta -->
-            @if($errors->any())
-            <div class="caas-alert caas-alert-danger">
-                <h4 style="margin-top: 0; margin-bottom: 10px;">¡Hay errores en el formulario!</h4>
-                <ul style="margin-bottom: 0;">
-                    @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
+            @if (session('success'))
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Acción exitosa!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#28a745'
+                    });
+                </script>
+                @endif
 
-            @if(session('succes'))
-            <div class="caas-alert caas-alert-success">
-                {{ session('succes') }}
-            </div>
-            @endif
+                @if (session('error'))
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al registrar',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#d33'
+                    });
+                </script>
+                @endif
 
-            @if(session('error'))
-            <div class="caas-alert caas-alert-danger">
-                {{ session('error') }}
-            </div>
+                @if ($errors->any())
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Errores de validación',
+                        html: '{!! implode("<br>", $errors->all()) !!}',
+                        confirmButtonColor: '#d33'
+                    });
+                </script>
             @endif
 
             <div class="caas-form-section">

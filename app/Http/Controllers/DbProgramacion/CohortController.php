@@ -21,16 +21,23 @@ use Illuminate\Support\Facades\DB;
 
 class CohortController extends Controller
 {
-    public function indexCohort()
+    public function indexCohort(Request $request)
     {
-        $instructors = Instructor::with('person')->get();
-        $programs = Program::all();
-        $towns = Town::all();
-        $classroom = Classroom::all();
-        $cohortimes = CohorTime::all();
+        // Traer de la vista la variable de búsqueda 'search'
+        $ficha_busqueda = $request->input('search');
 
-        // Obtener cohortes con relaciones necesarias
+        $instructors = Instructor::with('person')->get();
+        $programs    = Program::all();
+        $towns       = Town::all();
+        $classroom   = Classroom::all();
+        $cohortimes  = CohorTime::all();
+
+        // Consulta base con las relaciones necesarias
         $cohorts = Cohort::with(['program', 'cohortime', 'town'])
+            ->when($ficha_busqueda, function ($query, $ficha_busqueda) {
+                // Filtra por el campo number_cohort (usa LIKE para búsquedas parciales)
+                $query->where('number_cohort', 'LIKE', "%{$ficha_busqueda}%");
+            })
             ->get()
             ->each(function ($cohort) {
                 // Determinar si la ficha está activa o inactiva
@@ -48,7 +55,8 @@ class CohortController extends Controller
         ));
     }
 
-        public function registerCohort(Request $request)
+
+    public function registerCohort(Request $request)
         {
             $validator = Validator::make($request->all(), [
                 'number_cohort' => 'required|integer|unique:db_programacion.cohorts,number_cohort',

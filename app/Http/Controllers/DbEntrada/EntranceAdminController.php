@@ -81,12 +81,35 @@ class EntranceAdminController extends Controller
     }
 
     public function peopleStore(Request $request)
-{
-    DB::beginTransaction();
+    {
+        // Mensajes personalizados
+        $messages = [
+            'id_position.required' => 'Debe seleccionar un cargo.',
+            'id_position.exists' => 'El cargo seleccionado no existe.',
+            'id_town.required' => 'Debe seleccionar un municipio.',
+            'id_town.exists' => 'El municipio seleccionado no existe.',
+            'document_number.required' => 'El número de documento es obligatorio.',
+            'document_number.unique' => 'El número de documento ya está registrado.',
+            'name.required' => 'El nombre es obligatorio.',
+            'name.string' => 'El nombre debe ser un texto válido.',
+            'name.max' => 'El nombre no debe exceder los 255 caracteres.',
+            'phone_number.required' => 'El número de teléfono es obligatorio.',
+            'phone_number.string' => 'El número de teléfono debe ser válido.',
+            'phone_number.max' => 'El número de teléfono no debe exceder los 20 caracteres.',
+            'start_date.required' => 'La fecha de inicio es obligatoria.',
+            'start_date.date' => 'La fecha de inicio debe ser una fecha válida.',
+            'end_date.required' => 'La fecha de finalización es obligatoria.',
+            'end_date.date' => 'La fecha de finalización debe ser una fecha válida.',
+            'end_date.after_or_equal' => 'La fecha de finalización debe ser posterior o igual a la fecha de inicio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico debe ser válido.',
+            'address.required' => 'La dirección es obligatoria.',
+            'address.string' => 'La dirección debe ser un texto válido.',
+            'address.max' => 'La dirección no debe exceder los 255 caracteres.',
+        ];
 
-    try {
-        // Validación general
-        $request->validate([
+        // Validación afuera del try/catch
+        $validated = $request->validate([
             'id_position' => 'required|exists:positions,id',
             'id_town' => 'required|exists:towns,id',
             'document_number' => 'required|unique:people,document_number',
@@ -96,84 +119,79 @@ class EntranceAdminController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'email' => 'required|email',
             'address' => 'required|string|max:255',
-        ]);
+        ], $messages);
 
-        $position = Position::find($request->id_position);
+        DB::beginTransaction();
 
-        if (!$position) {
-            return back()->with('error', 'El cargo seleccionado no existe.');
-        }
+        try {
+            $position = Position::find($validated['id_position']);
 
-        // Crear persona
-        $person = Person::create([
-            'id_position'     => $position->id,
-            'document_number' => $request->document_number,
-            'name'            => $request->name,
-            'id_town'         => $request->id_town,
-            'email'           => $request->email,
-            'address'         => $request->address,
-            'phone_number'    => $request->phone_number,
-            'start_date'      => $request->start_date,
-            'end_date'        => $request->end_date,
-        ]);
+            $person = Person::create([
+                'id_position'     => $position->id,
+                'document_number' => $validated['document_number'],
+                'name'            => $validated['name'],
+                'id_town'         => $validated['id_town'],
+                'email'           => $validated['email'],
+                'address'         => $validated['address'],
+                'phone_number'    => $validated['phone_number'],
+                'start_date'      => $validated['start_date'],
+                'end_date'        => $validated['end_date'],
+            ]);
 
-        // Días disponibles
-        $person->days_available()->sync($request->days ?? []);
+            $person->days_available()->sync($request->days ?? []);
 
-        // Obtener nombre del cargo en minúscula
-        $positionName = strtolower($position->name);
+            // Resto del código: aprendiz o instructor
+            $positionName = strtolower($position->name);
 
-        // Si es aprendiz
-        if ($positionName === 'aprendiz') {
-            $status = ApprenticeStatus::where('name', 'En Formación')->first();
-            Apprentice::create([
+            if ($positionName === 'aprendiz') {
+                $status = ApprenticeStatus::where('name', 'En Formación')->first();
+                Apprentice::create([
+                    'id_person' => $person->id,
+                    'id_status' => $status ? $status->id : 1
+                ]);
+            }
+
+            if ($positionName === 'instructor') {
+                $instructorData = $request->validate([
+                    'id_link_type' => 'required|exists:link_types,id',
+                    'id_speciality' => 'required|exists:specialities,id',
+                    'id_instructor_status' => 'required|exists:instructors_status,id',
+                    'assigned_hours' => 'required|integer|min:1',
+                    'hours_day' => 'required|numeric|min:1'
+                ], [
+                    'required' => 'El campo :attribute es obligatorio.',
+                    'integer' => 'El campo :attribute debe ser un número entero.',
+                    'numeric' => 'El campo :attribute debe ser numérico.',
+                    'min' => 'El campo :attribute debe ser al menos :min.'
+                ]);
+
+                Instructor::create([
+                    'id_person'         => $person->id,
+                    'id_status'         => $instructorData['id_instructor_status'],
+                    'id_link_type'      => $instructorData['id_link_type'],
+                    'id_speciality'     => $instructorData['id_speciality'],
+                    'assigned_hours'    => $instructorData['assigned_hours'],
+                    'hours_day'         => $instructorData['hours_day'],
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ]);
+            }
+
+            $user = User::create([
                 'id_person' => $person->id,
-                'id_status' => $status ? $status->id : 1
+                'user_name' => $person->document_number,
+                'password' => bcrypt($person->document_number)
             ]);
+            $user->assignRole($position->name);
+
+            DB::commit();
+            return redirect()->route('entrance.people.index')->with('success', 'Persona registrada correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al registrar persona: ' . $e->getMessage());
+            return back()->with('error', 'Ocurrió un error al registrar la persona.');
         }
-
-        // Si es instructor
-        if ($positionName === 'instructor') {
-            $instructorData = $request->validate([
-                'id_link_type' => 'required|exists:link_types,id',
-                'id_speciality' => 'required|exists:specialities,id',
-                'id_instructor_status' => 'required|exists:instructors_status,id',
-                'assigned_hours' => 'required|integer|min:1',
-                // 'months_contract' => 'required|integer|min:1',
-                'hours_day' => 'required|numeric|min:1'
-            ], [
-                'required' => 'El campo :attribute es obligatorio.',
-            ]);
-
-            Instructor::create([
-                'id_person'         => $person->id,
-                'id_status'         => $instructorData['id_instructor_status'],
-                'id_link_type'      => $instructorData['id_link_type'],
-                'id_speciality'     => $instructorData['id_speciality'],
-                'assigned_hours'    => $instructorData['assigned_hours'],
-                // 'months_contract'   => $instructorData['months_contract'],
-                'hours_day'         => $instructorData['hours_day'],
-                'created_at'        => now(),
-                'updated_at'        => now(),
-            ]);
-        }
-
-        // Crear usuario con rol
-        $user = User::create([
-            'id_person' => $person->id,
-            'user_name' => $person->document_number,
-            'password' => bcrypt($person->document_number)
-        ]);
-        $user->assignRole($position->name);
-
-        DB::commit();
-        return redirect()->route('entrance.people.index')->with('message', 'Persona registrada correctamente.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Error al registrar persona: ' . $e->getMessage());
-        return back()->with('error', 'Ocurrió un error al registrar la persona.'. $e->getMessage());
     }
-}
 
 
 
@@ -204,7 +222,7 @@ class EntranceAdminController extends Controller
         ]);
         $personToUpdate->days_available()->sync($request->days);
 
-            return redirect()->route('entrance.people.index')->with('message', 'Datos actualizados exitosamente!');
+            return redirect()->route('entrance.people.index')->with('success', 'Datos actualizados exitosamente!');
 
     }
 

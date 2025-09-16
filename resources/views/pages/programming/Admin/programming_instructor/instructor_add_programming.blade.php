@@ -6,6 +6,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <style>
   body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
   #buscarInstructor { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; }
@@ -42,24 +45,39 @@
 <body>
 <div class="container">
   <h2>Programación de Cursos</h2>
+   @if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '¡Registro exitoso!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#28a745'
+        });
+    </script>
+    @endif
 
-  @if (session('success'))
-      <div class="alert-success">{{ session('success') }}</div>
-  @endif
+    @if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error en la programación',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#d33'
+        });
+    </script>
+    @endif
 
-  @if (session('error'))
-      <div class="alert-danger">{{ session('error') }}</div>
-  @endif
+    @if ($errors->any())
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Errores de validación',
+            html: '{!! implode("<br>", $errors->all()) !!}',
+            confirmButtonColor: '#d33'
+        });
+    </script>
+    @endif
 
-  @if ($errors->any())
-      <div class="alert-danger">
-          <ul>
-              @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-              @endforeach
-          </ul>
-      </div>
-  @endif
 
   <form id="programmingForm" action="{{ route('programming.register_programming_instructor_store') }}" method="POST">
     @csrf

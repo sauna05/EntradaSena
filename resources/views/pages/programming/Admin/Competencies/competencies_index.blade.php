@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrar Competencias - Ficha {{ $cohort->number_cohort }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"> // incluir libreria </script>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root {
@@ -471,27 +472,38 @@
 </head>
 <body>
     <div class="container">
-        <!-- Mensajes de alerta -->
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+
+        @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Acción exitosa!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#28a745'
+            });
+        </script>
         @endif
 
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
+        @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
         @endif
 
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Errores de validación',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
         @endif
 
         <div class="admin-header">

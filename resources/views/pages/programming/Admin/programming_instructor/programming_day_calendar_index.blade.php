@@ -1,6 +1,7 @@
 <x-layout>
     <x-slot:title>Calendario Académico</x-slot:title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"> // incluir libreria </script>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -184,17 +185,39 @@
             <button type="button" class="btn-nuevo" onclick="document.getElementById('modal').style.display='flex'" style="margin-left:auto;">➕ Nuevo Día</button>
         </form>
 
-        {{-- Mensajes --}}
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+        @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Acción exitosa!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#28a745'
+            });
+        </script>
         @endif
-        @if($errors->any())
-            <div class="alert alert-danger">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
+
+        @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
         @endif
+
+        @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Errores de validación',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
+        @endif
+
 
         {{-- Tabla --}}
         <div class="table-responsive">

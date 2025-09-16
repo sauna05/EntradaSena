@@ -2,6 +2,7 @@
     <x-slot:page_style></x-slot:page_style>
     <x-slot:title>Gestión de Fichas</x-slot:title>
 
+
     <style>
         * {
             box-sizing: border-box;
@@ -61,6 +62,93 @@
             font-size: 16px;
             margin-bottom: 25px;
         }
+        .filters-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-end;
+}
+
+/* Grupo de búsqueda ocupa más espacio */
+.search-group {
+    flex: 2;
+}
+
+/* Contenedor del input y botones */
+.search-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Input con ícono de lupa en el lado izquierdo */
+.search-input {
+    flex: 1;
+    padding: 12px 15px 12px 45px; /* espacio para el icono */
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat 15px center;
+    background-size: 18px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+/* Botones */
+.btn-search,
+.btn-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 45px;
+    text-decoration: none;
+}
+
+.btn-search {
+    background-color: #28a745;
+    color: #fff;
+}
+.btn-search:hover {
+    background-color: #218838;
+}
+
+.btn-reset {
+    background-color: #6c757d;
+    color: #fff;
+}
+.btn-reset:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filters-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-search,
+    .btn-reset {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 
         .btn-primary:hover {
             background-color: #218838;
@@ -208,33 +296,6 @@
             margin-bottom: 25px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #374151;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            font-size: 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
-        }
 
         .form-actions {
             display: flex;
@@ -282,6 +343,26 @@
             margin-top: 20px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
+        .filters-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-end;
+        }
+
+        .search-group {
+            flex: 2;
+        }
+
+        .search-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+
+
 
         table {
             width: 100%;
@@ -452,20 +533,53 @@
             </svg>
             Registrar Nueva Ficha
         </button>
-
-        <!-- Filtros -->
+                <!-- Filtros -->
         <div class="filters-container">
-            <div class="filter-group">
-                <label for="statusFilter">Filtrar por estado:</label>
-                <select id="statusFilter" onchange="filterTable()">
-                    <option value="all">Todas las fichas</option>
-                    <option value="active">Fichas activas</option>
-                    <option value="inactive">Fichas inactivas</option>
-                </select>
-            </div>
+            <form action="" method="GET" class="filters-form">
+                @csrf
+
+                <!-- Filtro de estado -->
+                <div class="filter-group">
+                    <label for="statusFilter">Estado de la ficha:</label>
+                    <select id="statusFilter" name="status" onchange="filterTable()">
+                        <option value="all" {{ request('status')=='all'?'selected':'' }}>Todas</option>
+                        <option value="active" {{ request('status')=='active'?'selected':'' }}>Activas</option>
+                        <option value="inactive" {{ request('status')=='inactive'?'selected':'' }}>Inactivas</option>
+                    </select>
+                </div>
+
+                <!-- Búsqueda por número de ficha -->
+                <div class="filter-group search-group">
+                    <label for="search">Número de ficha:</label>
+                    <div class="search-wrapper">
+                        <input type="text"
+                            id="search"
+                            name="search"
+                            class="search-input"
+                            placeholder="Buscar por número de ficha"
+                            value="{{ request('search') }}">
+                        <button type="submit" class="btn-search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Buscar
+                        </button>
+                        <a href="{{ route('programing.cohort_index') }}" class="btn-reset">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12l2-2 4 4 8-8 4 4"></path>
+                            </svg>
+                            Restablecer
+                        </a>
+                    </div>
+                </div>
+
+            </form>
         </div>
 
-        <!-- Tabla de fichas -->
+
+
+
        <div class="table-container">
             <table>
                 <thead>

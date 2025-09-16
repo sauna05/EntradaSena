@@ -1,6 +1,7 @@
 <x-layout>
     <x-slot:page_style></x-slot:page_style>
     <x-slot:title>Gestión de Personas</x-slot:title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"> // incluir libreria </script>
 
     <style>
         /* Tus estilos CSS existentes (se mantienen igual) */
@@ -345,26 +346,38 @@
           </p>
         </div>
 
+        @if (session('success'))
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Acción exitosa!',
+                            text: '{{ session('success') }}',
+                            confirmButtonColor: '#28a745'
+                        });
+                    </script>
+                    @endif
 
-        @if (session('message'))
-            <div class="alert-success">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                {{ session('message') }}
-            </div>
-            <script>
-                setTimeout(() => {
-                    const msg = document.querySelector('.alert-success');
-                    if (msg) {
-                        msg.style.transition = 'opacity 0.5s';
-                        msg.style.opacity = '0';
-                        setTimeout(() => msg.remove(), 500);
-                    }
-                }, 4000);
-            </script>
-        @endif
+                    @if (session('error'))
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al registrar',
+                            text: '{{ session('error') }}',
+                            confirmButtonColor: '#d33'
+                        });
+                    </script>
+                    @endif
+
+                    @if ($errors->any())
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Errores de validación',
+                            html: '{!! implode("<br>", $errors->all()) !!}',
+                            confirmButtonColor: '#d33'
+                        });
+                    </script>
+                @endif
 
         {{-- Búsqueda y Filtros --}}
         <section class="filters-container">
