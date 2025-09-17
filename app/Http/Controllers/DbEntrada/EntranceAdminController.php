@@ -328,12 +328,12 @@ class EntranceAdminController extends Controller
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
-                    //crear usuario
-                    User::create([
+                    $user = User::create([
                         'id_person' => $person->id,
                         'user_name' => $person->document_number,
                         'password' => bcrypt($person->document_number)
                     ]);
+                    $user->assignRole($position_apprentice->name);
 
                     $documentosExistentes[$document] = true;
                     $nuevosRegistros++;
