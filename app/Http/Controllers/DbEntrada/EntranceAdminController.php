@@ -12,8 +12,8 @@ use App\Models\DbProgramacion\ApprenticeStatus;
 use App\Models\DbProgramacion\Instructor;
 use App\Models\DbProgramacion\InstructorStatus;
 use App\Models\DbProgramacion\LinkType;
-use App\Models\DbProgramacion\Person as DbProgramacionPerson;
-use App\Models\DbProgramacion\Position as DbProgramacionPosition;
+// use App\Models\DbProgramacion\Person as DbProgramacionPerson;
+// use App\Models\DbProgramacion\Position as DbProgramacionPosition;
 use App\Models\DbProgramacion\Speciality;
 use App\Models\DbProgramacion\Town;
 use Illuminate\Http\Request;
@@ -327,6 +327,12 @@ class EntranceAdminController extends Controller
                         'id_status' => $status_apprentice->id,
                         'created_at' => now(),
                         'updated_at' => now()
+                    ]);
+                    //crear usuario
+                    User::create([
+                        'id_person' => $person->id,
+                        'user_name' => $person->document_number,
+                        'password' => bcrypt($person->document_number)
                     ]);
 
                     $documentosExistentes[$document] = true;

@@ -277,14 +277,6 @@
                     </select>
                 </div>
 
-                <div class="filter-group">
-                    <label for="etapa">Filtrar por Etapa:</label>
-                    <select name="etapa" id="etapa" onchange="this.form.submit()">
-                        <option value="">-- Todas las etapas --</option>
-                        <option value="lectiva" {{ request('etapa') == 'lectiva' ? 'selected' : '' }}>Lectiva</option>
-                        <option value="practica" {{ request('etapa') == 'practica' ? 'selected' : '' }}>Práctica</option>
-                    </select>
-                </div>
 
                 <div class="filter-group">
                     <label for="buscar">Buscar aprendiz:</label>

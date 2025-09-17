@@ -247,7 +247,7 @@ class AssistanceController extends Controller
             ];
         });
 
-        return view('pages.entrance.admin.assistance.assistance_show', compact('person', 'formattedEntrancesExits'));
+        return view('pages.programming.Admin.assistance.assistance_show', compact('person', 'formattedEntrancesExits'));
     }
 
     public function showPeoples_history($id)
@@ -264,7 +264,7 @@ class AssistanceController extends Controller
             ];
         });
 
-        return view('pages.entrance.admin.assistance.assistance_show_history', compact('person', 'formattedEntrancesExits'));
+        return view('pages.programming.Admin.assistance.assistance_show_history', compact('person', 'formattedEntrancesExits'));
     }
 
 

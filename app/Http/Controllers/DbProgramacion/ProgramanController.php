@@ -186,14 +186,31 @@ class ProgramanController extends Controller
 
 
     //metodos que permite asignar aprenices a sus fichas correspondientes
-    public function asignarAprendiz_index()
+
+    public function asignarAprendiz_index(Request $request)
     {
+        // Traer filtro de búsqueda del formulario (por nombre o documento)
+        $busqueda = $request->input('search');
+
+        // Todas las fichas (cohortes)
         $cohorts = Cohort::all();
 
-        // Aprendices que NO están en ninguna ficha
-        $aprentices = Apprentice::whereDoesntHave('cohorts')->with('person')->get();
+        // Aprendices que NO están en ninguna ficha,
+        // con filtro opcional por nombre o documento de la persona
+        $aprentices = Apprentice::whereDoesntHave('cohorts')
+            ->whereHas('person', function ($query) use ($busqueda) {
+                if (!empty($busqueda)) {
+                    $query->where('name', 'LIKE', "%{$busqueda}%")
+                        ->orWhere('document_number', 'LIKE', "%{$busqueda}%");
+                }
+            })
+            ->with('person')
+            ->get();
 
-        return view('pages.programming.Admin.Cohort.programming_asignarApprendices', compact('cohorts', 'aprentices'));
+        return view(
+            'pages.programming.Admin.Cohort.programming_asignarApprendices',
+            compact('cohorts', 'aprentices')
+        );
     }
 
 

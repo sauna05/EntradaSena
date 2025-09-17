@@ -51,10 +51,10 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'entrance.absence.index'])->syncRoles([$role10, $role2]);
         Permission::create(['name' => 'entrance.absence.show'])->syncRoles([$role10, $role2]);
 
-        // Permisos para asistencia
+        // Permisos para asistencia tanto para el cordinador y los aprendices
         Permission::create(['name' => 'entrance.assistance.index'])->syncRoles([$role10, $role2]);
-        Permission::create(['name' => 'entrance.assistance.show'])->syncRoles([$role10, $role2]);
-        Permission::create(['name' => 'entrance.assistance.show_history'])->syncRoles([$role10, $role2]);
+        Permission::create(['name' => 'entrance.assistance.show'])->syncRoles([$role10, $role2,$role9]);
+        Permission::create(['name' => 'entrance.assistance.show_history'])->syncRoles([$role10, $role2,$role9]);
         Permission::create(['name' => 'entrance.assistance.all'])->syncRoles([$role10, $role2]);
 
         // Permiso para exportar en Excel
@@ -73,7 +73,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role10, $role5]);
         Permission::create(['name' => 'programmig.programming_cohort_Register'])->syncRoles([$role10, $role5]);
         // Permiso para entrada de los aprendices
-        Permission::create(['name' => 'apprentice.show'])->assignRole($role10);
+        Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
 
         //permisos para la vista y de reprogramacion
         Permission::create(['name' => 'programmig.programming_update_index'])->syncRoles([$role10, $role5]);

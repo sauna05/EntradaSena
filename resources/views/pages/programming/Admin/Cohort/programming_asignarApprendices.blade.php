@@ -1,6 +1,7 @@
 <x-layout>
     <x-slot:page_style></x-slot:page_style>
     <x-slot:title>Asignar Aprendices</x-slot:title>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"> // incluir libreria </script>
 
     <style>
         * {
@@ -209,6 +210,80 @@
             gap: 10px;
             font-size: 16px;
         }
+        /* Contenedor del input y botones */
+.search-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Input con ícono de lupa en el lado izquierdo */
+.search-input {
+    flex: 1;
+    padding: 12px 15px 12px 45px; /* espacio para el icono */
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat 15px center;
+    background-size: 18px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+/* Botones */
+.btn-search,
+.btn-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 45px;
+    text-decoration: none;
+}
+
+.btn-search {
+    background-color: #28a745;
+    color: #fff;
+}
+.btn-search:hover {
+    background-color: #218838;
+}
+
+.btn-reset {
+    background-color: #6c757d;
+    color: #fff;
+}
+.btn-reset:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filters-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-search,
+    .btn-reset {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 
         .btn:hover {
             background-color: #218838;
@@ -249,30 +324,41 @@
         }
     </style>
 
-    {{-- Alertas --}}
-    @if (session('success'))
-        <div class="alert-success">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            {{ session('success') }}
-        </div>
-    @endif
+    {@if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Acción exitosa!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#28a745'
+            });
+        </script>
+        @endif
 
-    @if (session('error'))
-        <div class="alert-danger">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <line x1="9" y1="9" x2="15" y2="15"></line>
-            </svg>
-            {{ session('error') }}
-        </div>
-    @endif
+        @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
+        @endif
+
+        @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Errores de validación',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
+        @endif
 
     <div class="container">
-        
+
           <div class="dashboard-header">
                 <h1>Asignación de Aprendices</h1>
                 <p> En esta sección puede vincular aprendices a programas de formación y fichas específicas.
@@ -280,6 +366,21 @@
                     Esta acción asociará los aprendices seleccionados con el programa de formación elegido.
                 </p>
             </div>
+        <div class="search-wrapper">
+            <form action="" method="GET">
+
+            <input class="search-input" type="text" value="{{request('search')}}" name="search" placeholder="documento o nombre">
+            <button class="btn-search">Buscar</button>
+        </form>
+
+        <a href="{{ route('programing.add_apprentices_cohorts') }}" class="btn-reset">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12l2-2 4 4 8-8 4 4"></path>
+                            </svg>
+                            Restablecer
+                        </a>
+        </div>
+
 
         <form action="{{ route('programing.add_apprentices_store') }}" method="POST" id="asignarForm">
             @csrf
@@ -294,6 +395,7 @@
                         </option>
                     @endforeach
                 </select>
+
             </div>
 
             <div class="table-container">

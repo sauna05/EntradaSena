@@ -20,6 +20,17 @@
             --sombra: 0 2px 16px rgba(57, 169, 0, 0.15);
             --error-color: #ff8080;
         }
+        .error-message {
+            color: #ff8080;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 10px;
+            background-color: #fff0f0;
+            border-radius: 8px;
+            border: 1px solid #ffcccc;
+        }
 
         * {
             box-sizing: border-box;
@@ -386,12 +397,12 @@
                 <div class="icon-header"><i class="fas fa-calendar-check"></i></div>
                 <h2>Programación</h2>
 
-                @if ($errors->has('programming.user_name'))
+                  <!-- Mostrar errores de login -->
+                @if ($errors->has('login_error'))
                     <div class="error-message">
-                        {{ $errors->first('programming.user_name') }}
+                        <i class="fas fa-exclamation-circle"></i> {{ $errors->first('login_error') }}
                     </div>
                 @endif
-
                 <div class="input-group">
                     <label for="user_name_program">Usuario</label>
                     <i class="fas fa-user"></i>
@@ -405,10 +416,16 @@
                         <input type="password" id="password_program" name="password" placeholder="Tu contraseña" required>
 
                     </div>
-                    {{-- <div class="show-password-container">
-                        <input type="checkbox" id="togglePassword">
-                        <label for="togglePassword">Mostrar contraseña</label>
-                    </div> --}}
+                </div>
+
+                <div class="input-group">
+                    <label for="module">Seleccione rol</label>
+                    <i class="fas fa-user-tag"></i>
+                    <select name="module" id="module" required>
+                        <option value="">-- Seleccione rol --</option>
+                        <option value="Coordinador" {{ old('module') == 'Coordinador' ? 'selected' : '' }}>Coordinador</option>
+                        <option value="Aprendiz" {{ old('module') == 'Aprendiz' ? 'selected' : '' }}>Aprendiz</option>
+                    </select>
                 </div>
 
                 <button type="submit" class="submit-btn">Ingresar</button>
@@ -423,26 +440,17 @@
     </footer>
 
     <script>
-        const toggle = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password_program');
         const eyeIcon = document.getElementById('eyeIcon');
+        const passwordInput = document.getElementById('password_program');
 
-        toggle.addEventListener('change', function () {
-            if (this.checked) {
+        eyeIcon.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
+                eyeIcon.innerHTML = '<i class="fas fa-eye"></i>';
             } else {
                 passwordInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
+                eyeIcon.innerHTML = '<i class="fas fa-eye-slash"></i>';
             }
-        });
-
-        // También permitir hacer toggle al hacer clic en el icono del ojo
-        eyeIcon.addEventListener('click', function() {
-            toggle.checked = !toggle.checked;
-            toggle.dispatchEvent(new Event('change'));
         });
     </script>
 </body>

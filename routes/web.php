@@ -46,12 +46,16 @@ Route::delete('entrance/admin/people/{id}', [EntranceAdminController::class, 'pe
 Route::post('/entrance/upload/excel/people', [EntranceAdminController::class, 'storePeopleExcel'])->middleware('can:entrance.excel.upload')->name('entrance.excel.upload');
 
 //Modulo Entrada - Asistencias
-Route::get('/entrance/assistance/index', [AssistanceController::class, 'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
-//Route::get('/entrance/assistance_show_history/{$id}', [AssistanceController::class, 'showPeoples_history'])->middleware('can:entrance.assistance.show_history')->name('assistance_show_history');
+Route::get('/entrance/assistance/index', [AssistanceController::class, 'assistanceIndex'])
+->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
 
-Route::get('/entrance/assistance_show_history/{id}', [AssistanceController::class, 'showPeoples_history'])
-    ->middleware('can:entrance.assistance.show_history')
-    ->name('assistance_show_history');
+Route::get('/entrance/assistance_show_history/{$id}', [AssistanceController::class, 'showPeoples_history'])
+->middleware('can:entrance.assistance.show_history')
+->name('assistance_show_history');
+
+// Route::get('/entrance/assistance_show_history/{id}', [AssistanceController::class, 'showPeoples_history'])
+//     ->middleware('can:entrance.assistance.show_history')
+//     ->name('assistance_show_history');
 
 //ruta para exportacion en excel
 Route::get('/assistance/export', [AssistanceController::class, 'exportExcel'])->name('entrance.assistance.export');
@@ -81,7 +85,10 @@ Route::get('entrance/apprentice/{id}', [ApprenticeController::class, 'show'])->n
 //rutas de Asistencias Admin
 
 Route::get('entrance/admin/assistance', [AssistanceController::class, 'assistanceIndex'])->middleware('can:entrance.assistance.index')->name('entrance.assistance.index');
-Route::get('entrance/admin/assistance/{id}', [AssistanceController::class, 'showPeoples'])->middleware('can:entrance.assistance.show')->name('entrance.assistance.show');
+//ruta asistencias pór persona
+Route::get('entrance/admin/assistance/{id}', [AssistanceController::class, 'showPeoples'])
+->middleware('can:entrance.assistance.show')->name('entrance.assistance.show');
+//ruta todas las asistencias
 Route::get('/entrance/assistance/all', [AssistanceController::class, 'allAssistances'])
     ->middleware('can:entrance.assistance.all')
     ->name('entrance.assistance.all');

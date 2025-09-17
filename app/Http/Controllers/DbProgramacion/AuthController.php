@@ -15,46 +15,53 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-        public function login(Request $request)
-        {
-            $request->validate([
-                'user_name' => 'required',
-                'password' => 'required',
-                // 'module' => 'required|in:Coordinador',
-            ]);
+    public function login(Request $request)
+    {
+        // Validar campos obligatorios
+        $request->validate([
+            'user_name' => 'required|string',
+            'password'  => 'required|string',
+            'module' => 'required|in:Coordinador,Aprendiz',
+        ]);
 
-            // Solo se pasan las credenciales válidas al Auth
-            $credentials = $request->only('user_name', 'password');
+        // Solo se usan las credenciales para la autenticación
+        $credentials = $request->only('user_name', 'password');
 
-            if (Auth::attempt($credentials)) {
-                $user = Auth::user();
-                $selectedRole = "Coordinador";
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
-                if ($user->hasRole($selectedRole)) {
-                // Redirección según el módulo seleccionado
-                // if ($selectedRole === 'Administrador_programacion') {
-                //     return redirect()->route('programming.admin');
-                // } elseif ($selectedRole === 'Administrador_asistencia') {
-                //     return redirect()->route('entrance.people.index');
-                // }
-                   return redirect()->route('programing.admin_inicio');
-                } else {
-                    Auth::logout();
-                    $request->session()->invalidate();
-                    $request->session()->regenerateToken();
+            // Usar el rol seleccionado desde el formulario
+            $selectedRole = $request->module;
 
-                    return redirect()->route('login')->withErrors([
-                        'programming.user_name' => 'No tienes permisos para el módulo seleccionado.'
-                    ]);
+            // Verificar si el usuario tiene el rol
+            if ($user->hasRole($selectedRole)) {
+                // Redirección según el rol
+                if ($selectedRole === 'Aprendiz') {
+                    // Pasar el ID del usuario autenticado
+                    return redirect()->route('apprentice.show', ['id' => $user->id]);
                 }
 
-            } else {
-                return redirect()->route('login')->withErrors([
-                    'programming.user_name' => 'Las credenciales proporcionadas son incorrectas.'
-                ])->withInput();
+                return redirect()->route('programing.admin_inicio');
             }
+
+            // Si no tiene el rol, cerrar sesión y mostrar error
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()
+                ->route('login')
+                ->withErrors(['login_error' => 'No tienes permisos para el módulo seleccionado.']);
         }
-        public function dashboard()
+
+        // Credenciales inválidas
+        return redirect()
+            ->route('login')
+            ->withErrors(['login_error' => 'Las credenciales proporcionadas son incorrectas.'])
+            ->withInput($request->only('user_name'));
+    }
+
+    public function dashboard()
         {
             //hacer calculos reales de la cantidad de programaciones y demas
             $programaciones = Programming::all();
