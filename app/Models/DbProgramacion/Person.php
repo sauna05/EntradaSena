@@ -51,6 +51,11 @@ class Person extends Model
     {
         return $this->belongsTo(Position::class, 'id_position');
     }
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class, 'id_person');
+    }
+
 
     //Una persona viene de un municipio
     public function town()

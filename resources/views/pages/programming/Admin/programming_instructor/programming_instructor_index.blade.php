@@ -1,5 +1,5 @@
 <x-layout>
-    <x-slot:title>Listado de Instructores</x-slot:title>
+    <x-slot:title>Listado de Instructores con Programaciones</x-slot:title>
 
     <style>
         * {
@@ -15,7 +15,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 30px auto;
             padding: 30px;
             background-color: #fff;
@@ -23,24 +23,22 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .page-title {
-            font-size: 32px;
-            margin-bottom: 15px;
-            color: #28a745;
-            font-weight: 700;
-            text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #eaeaea;
+        .dashboard-header {
+            margin-bottom: 30px;
         }
 
-        .page-description {
-            text-align: center;
+        .dashboard-header h1 {
+            color: #28a745;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
             color: #000;
-            margin-bottom: 30px;
             font-size: 16px;
+            opacity: 0.8;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
             line-height: 1.5;
         }
 
@@ -79,17 +77,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Search box */
-        .search-container {
-            display: flex;
-            max-width: 400px;
-        }
 
         .search-input {
             flex: 1;
             padding: 12px 15px 12px 40px;
             border: 1px solid #ddd;
-            border-radius: 8px 0 0 8px;
+            border-radius: 8px;
             font-size: 16px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -103,70 +96,207 @@
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
         }
 
-        /* Tabla */
-        .table-container {
-            max-height: 500px;
-            overflow-y: auto;
-            border-radius: 10px;
-            border: 1px solid #dee2e6;
-            margin-top: 20px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            color: #444;
-        }
-
-        thead th {
-            background-color: #f1f5f9;
-            font-weight: 700;
-            padding: 15px;
-            text-align: left;
-            border-bottom: 2px solid #dee2e6;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            color: #2d3748;
-        }
-
-        tbody td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        tbody tr:hover {
-            background-color: #f8fafc;
-        }
-
-        table tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Botones de acción */
-        .btn-action {
-            padding: 8px 12px;
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
             border: none;
-            border-radius: 6px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
+            font-weight: 600;
+            color: #6c757d;
+            position: relative;
+            transition: all 0.3s;
         }
 
-        .btn-view {
-            background-color: #17a2b8;
+        .tab-btn.active {
+            color: #28a745;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #28a745;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-btn:hover {
+            color: #28a745;
+        }
+
+        /* Instructor cards */
+        .instructors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .instructor-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .instructor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .btn-view:hover {
-            background-color: #138496;
-            transform: translateY(-1px);
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .instructor-info h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .instructor-info p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .hours-assigned {
+            background-color: #e9f5ff;
+            color: #0066cc;
+        }
+
+        .hours-completed {
+            background-color: #e6f7ee;
+            color: #0b8c56;
+        }
+
+        .hours-remaining {
+            background-color: #fff4e6;
+            color: #e67700;
+        }
+
+        .programmings-list {
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .programmings-list h4 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .programming-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+        }
+
+        .programming-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #212529;
+        }
+
+        .programming-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-en_ejecucion {
+            background-color: #e2d51d;
+            color: #0c5460;
+        }
+
+        .status-finalizada_no_evaluada {
+            background-color: #d6d8d9;
+            color: #383d41;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state svg {
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
 
         /* Modal */
@@ -187,7 +317,7 @@
             padding: 30px;
             border-radius: 12px;
             width: 100%;
-            max-width: 700px;
+            max-width: 900px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             position: relative;
             animation: modalFadeIn 0.3s ease;
@@ -221,98 +351,14 @@
             color: #444;
         }
 
-        /* Perfil */
-        .profile-section {
-            margin-bottom: 25px;
-        }
-
-        .profile-section h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 18px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #eaeaea;
-        }
-
-        .profile-row {
-            display: flex;
-            margin-bottom: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .profile-label {
-            width: 180px;
-            font-weight: 600;
-            color: #6c757d;
-        }
-
-        .profile-value {
-            flex: 1;
-            color: #333;
-        }
-
-        .status-active {
-            color: #28a745;
-            font-weight: 600;
-        }
-
-        .status-inactive {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #6b7280;
-        }
-
-        .empty-state svg {
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        /* Badge para horas */
-        .hours-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-           .dashboard-header {
-            margin-bottom: 20px;
-        }
-
-        .dashboard-header h1 {
-            color: var(--verde-sena);
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .dashboard-header p {
-            color: var(--gris-texto);
-            font-size: 16px;
-            opacity: 0.8;
-        }
-
-        .hours-assigned {
-            background-color: #e9f5ff;
-            color: #0066cc;
-        }
-
-        .hours-completed {
-            background-color: #e6f7ee;
-            color: #0b8c56;
-        }
-
-        .hours-remaining {
-            background-color: #fff4e6;
-            color: #e67700;
-        }
-
         /* Responsive */
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
+            .instructors-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
             .container {
                 padding: 20px;
                 margin: 15px;
@@ -327,36 +373,21 @@
                 width: 100%;
             }
 
-            .table-container {
-                overflow-x: auto;
-            }
-
-            table {
-                min-width: 1000px;
-            }
-
-            .profile-row {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .profile-label {
-                width: 100%;
+            .stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 
     <div class="container">
-
-          <div class="dashboard-header">
-                <h1>Gestión de Instructores</h1>
-                <p >
-                En esta sección puede visualizar y gestionar todos los instructores del sistema.
-                Utilice el campo de búsqueda para encontrar instructores por número de documento.
-                Puede ver el perfil completo de cada instructor haciendo clic en el botón "Ver Perfil".
-                </p>
-            </div>
-
+        <div class="dashboard-header">
+            <h1>Gestión de Instructores y Programaciones</h1>
+            <p>
+                En esta sección puede visualizar y gestionar todos los instructores del sistema junto con sus programaciones asignadas.
+                Utilice el campo de búsqueda para encontrar instructores por nombre o documento. Puede ver el perfil completo
+                de cada instructor haciendo clic en el botón "Ver Perfil".
+            </p>
+        </div>
 
         <div class="action-buttons">
             <a href="{{ route('entrance.people.create') }}" class="btn btn-primary">
@@ -368,72 +399,106 @@
                 </svg>
                 Nuevo
             </a>
+            <input type="text" id="filtroInstructor" class="search-input" placeholder="Buscar por nombre o documento...">
 
-            <div class="search-container">
-                <input type="text" id="filtroDocumento" class="search-input" placeholder="Buscar por documento...">
-            </div>
+
+
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Documento</th>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Especialidad</th>
-                        <th>Horas Asignadas</th>
-                        <th>Horas Cumplidas</th>
-                        <th>Horas Restantes</th>
-                        <th>Zona</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($instructores as $index => $instructor)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $instructor->person->document_number }}</td>
-                            <td>{{ $instructor->person->name ?? 'Sin nombre' }}</td>
-                            <td>{{ $instructor->person->email ?? 'Sin email' }}</td>
-                            <td>{{ $instructor->speciality->name }}</td>
-                            <td>
-                                <span class="hours-badge hours-assigned">{{ $instructor->assigned_hours }} hr</span>
-                            </td>
-                            <td>
-                                <span class="hours-badge hours-completed">{{ $instructor->horas_programadas }} hr</span>
-                            </td>
-                            <td>
-                                <span class="hours-badge hours-remaining">{{ $instructor->horas_restantes }} hr</span>
-                            </td>
-                            <td>{{ $instructor->zona ?? 'Sin zona' }}</td>
-                            <td>
-                                <button class="btn-action btn-view" onclick="openModal('{{ $instructor->id }}')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
-                                    Ver Perfil
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="10">
-                                <div class="empty-state">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                    </svg>
-                                    <p>No se encontraron instructores registrados</p>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="all">Todos los Instructores</button>
+            <button class="tab-btn" data-tab="with-programming">Con Programaciones</button>
+            <button class="tab-btn" data-tab="without-programming">Sin Programaciones</button>
+        </div>
+
+        <div class="instructors-grid" id="instructores-container">
+            @forelse($instructores as $instructor)
+                <div class="instructor-card" data-name="{{ strtolower($instructor->person->name) }}" data-document="{{ $instructor->person->document_number }}" data-has-programming="{{ $instructor->programming->count() > 0 ? 'yes' : 'no' }}">
+                    <div class="card-header">
+                        <div class="avatar">
+                            {{ substr($instructor->person->name, 0, 1) }}{{ substr(($instructor->person->last_name ?? ''), 0, 1) }}
+                        </div>
+                        <div class="instructor-info">
+                            <h3>{{ $instructor->person->name }} {{ $instructor->person->last_name ?? '' }}</h3>
+                            <p>{{ $instructor->person->document_number }} | {{ $instructor->speciality->name }}</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="stats">
+                            <div class="stat-item hours-assigned">
+                                <div class="stat-value">{{ $instructor->assigned_hours }}h</div>
+                                <div class="stat-label">Asignadas</div>
+                            </div>
+                            <div class="stat-item hours-completed">
+                                <div class="stat-value">{{ $instructor->horas_programadas }}h</div>
+                                <div class="stat-label">Cumplidas</div>
+                            </div>
+                            <div class="stat-item hours-remaining">
+                                <div class="stat-value">{{ $instructor->horas_restantes }}h</div>
+                                <div class="stat-label">Restantes</div>
+                            </div>
+                        </div>
+
+                        <div class="programmings-list">
+                            <h4>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Programaciones ({{ $instructor->programming->count() }})
+                            </h4>
+
+                            @forelse($instructor->programming->take(3) as $programming)
+                                <div class="programming-item">
+                                    <div class="programming-title">{{ $programming->competencie->name ?? 'Sin competencia' }}</div>
+                                    <div class="programming-details">
+                                        <span>{{ \Carbon\Carbon::parse($programming->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($programming->end_date)->format('d/m/Y') }}</span>
+                                        <span class="status-badge status-{{ $programming->status }}">
+                                            @if($programming->status == 'pendiente')
+                                                Pendiente
+                                            @elseif($programming->status == 'en_ejecucion')
+                                                En ejecución
+                                            @elseif($programming->status == 'finalizada_no_evaluada')
+                                                Finalizada
+                                            @else
+                                                {{ $programming->status }}
+                                            @endif
+                                        </span>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            @empty
+                                <p style="text-align: center; color: #6c757d; font-size: 14px;">No hay programaciones asignadas</p>
+                            @endforelse
+
+                            @if($instructor->programming->count() > 3)
+                                <p style="text-align: center; margin-top: 10px; color: #28a745; font-weight: 600;">
+                                    +{{ $instructor->programming->count() - 3 }} más
+                                </p>
+                            @endif
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="openModal('{{ $instructor->id }}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            Ver Perfil Completo
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p>No se encontraron instructores registrados</p>
+                </div>
+            @endforelse
         </div>
     </div>
 
@@ -447,76 +512,112 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                Perfil del Instructor
+                Perfil del Instructor - {{ $instructor->person->name }}
             </h2>
 
-            <div class="profile-section">
-                <h3>Información Personal</h3>
-                <div class="profile-row">
-                    <div class="profile-label">Nombre completo:</div>
-                    <div class="profile-value">{{ $instructor->person->name }}</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Número de documento:</div>
-                    <div class="profile-value">{{ $instructor->person->document_number }}</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Correo electrónico:</div>
-                    <div class="profile-value">{{ $instructor->person->email }}</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Teléfono:</div>
-                    <div class="profile-value">{{ $instructor->person->phone_number ?? 'No registrado' }}</div>
-                </div>
-            </div>
-
-            <div class="profile-section">
-                <h3>Información Profesional</h3>
-                <div class="profile-row">
-                    <div class="profile-label">Tipo de vinculación:</div>
-                    <div class="profile-value">{{ $instructor->link_types->name }}</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Especialidad:</div>
-                    <div class="profile-value">{{ $instructor->speciality->name }}</div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Zona:</div>
-                    <div class="profile-value">{{ $instructor->zona ?? 'No especificada' }}</div>
-                </div>
-            </div>
-
-            <div class="profile-section">
-                <h3>Control de Horas</h3>
-                <div class="profile-row">
-                    <div class="profile-label">Horas asignadas:</div>
-                    <div class="profile-value">
-                        <span class="hours-badge hours-assigned">{{ $instructor->assigned_hours }} horas</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #28a745; margin-bottom: 15px;">Información Personal</h3>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Nombre completo:</div>
+                        <div>{{ $instructor->person->name }} {{ $instructor->person->last_name ?? '' }}</div>
+                    </div>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Número de documento:</div>
+                        <div>{{ $instructor->person->document_number }}</div>
+                    </div>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Correo electrónico:</div>
+                        <div>{{ $instructor->person->email }}</div>
+                    </div>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Teléfono:</div>
+                        <div>{{ $instructor->person->phone_number ?? 'No registrado' }}</div>
                     </div>
                 </div>
-                <div class="profile-row">
-                    <div class="profile-label">Horas cumplidas:</div>
-                    <div class="profile-value">
-                        <span class="hours-badge hours-completed">{{ $instructor->horas_programadas }} horas</span>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #28a745; margin-bottom: 15px;">Información Profesional</h3>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Tipo de vinculación:</div>
+                        <div>{{ $instructor->link_types->name }}</div>
                     </div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Horas restantes:</div>
-                    <div class="profile-value">
-                        <span class="hours-badge hours-remaining">{{ $instructor->horas_restantes }} horas</span>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Especialidad:</div>
+                        <div>{{ $instructor->speciality->name }}</div>
+                    </div>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Zona:</div>
+                        <div>{{ $instructor->zona ?? 'No especificada' }}</div>
+                    </div>
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <div style="width: 140px; font-weight: 600; color: #6c757d;">Estado:</div>
+                        <div>
+                            <span style="color: {{ $instructor->instructor_status->name ? '#28a745' : '#dc3545' }}; font-weight: 600;">
+                                {{ $instructor->instructor_status->name ?? 'Desconocido' }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-section">
-                <h3>Estado Actual</h3>
-                <div class="profile-row">
-                    <div class="profile-label">Estado:</div>
-                    <div class="profile-value">
-                        <span class="{{ $instructor->instructor_status->name ? 'status-active' : 'status-inactive' }}">
-                            {{ $instructor->instructor_status->name ?? 'Desconocido' }}
-                        </span>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #28a745; margin-bottom: 15px;">Control de Horas</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div style="text-align: center; padding: 15px; border-radius: 8px;" class="hours-assigned">
+                        <div style="font-size: 24px; font-weight: 700;">{{ $instructor->assigned_hours }}</div>
+                        <div style="font-size: 14px;">Horas asignadas</div>
                     </div>
+                    <div style="text-align: center; padding: 15px; border-radius: 8px;" class="hours-completed">
+                        <div style="font-size: 24px; font-weight: 700;">{{ $instructor->horas_programadas }}</div>
+                        <div style="font-size: 14px;">Horas cumplidas</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; border-radius: 8px;" class="hours-remaining">
+                        <div style="font-size: 24px; font-weight: 700;">{{ $instructor->horas_restantes }}</div>
+                        <div style="font-size: 14px;">Horas restantes</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 style="color: #28a745; margin-bottom: 15px;">Programaciones Asignadas</h3>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    @forelse($instructor->programming as $programming)
+                        <div style="padding: 15px; margin-bottom: 10px; border-radius: 8px; background-color: white; border-left: 4px solid #28a745;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <div style="font-weight: 600; font-size: 16px;">{{ $programming->competencie->name ?? 'Sin competencia' }}</div>
+                                <span class="status-badge status-{{ $programming->status }}">
+                                    @if($programming->status == 'pendiente')
+                                        Pendiente
+                                    @elseif($programming->status == 'en_ejecucion')
+                                        En ejecución
+                                    @elseif($programming->status == 'finalizada_no_evaluada')
+                                        Finalizada
+                                    @else
+                                        {{ $programming->status }}
+                                    @endif
+                                </span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
+                                <div><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($programming->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($programming->end_date)->format('d/m/Y') }}</div>
+                                <div><strong>Duración:</strong> {{ $programming->hours_duration }} horas</div>
+                                <div><strong>Programa:</strong> {{ $programming->cohort->program->name ?? 'N/A' }}</div>
+                                <div><strong>Aula:</strong> {{ $programming->classroom->name ?? 'N/A' }}</div>
+                            </div>
+                            @if($programming->days && count($programming->days) > 0)
+                                <div style="margin-top: 10px;">
+                                    <strong>Días:</strong>
+                                    @foreach($programming->days as $day)
+                                        <span style="background: #e9ecef; padding: 4px 8px; border-radius: 4px; margin-right: 5px; font-size: 12px;">
+                                            {{ $day->name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @empty
+                        <p style="text-align: center; padding: 20px; color: #6c757d;">No hay programaciones asignadas</p>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -525,15 +626,45 @@
 
     <script>
         // Búsqueda en tiempo real
-        document.getElementById('filtroDocumento').addEventListener('input', function() {
+        document.getElementById('filtroInstructor').addEventListener('input', function() {
             const filtro = this.value.trim().toLowerCase();
-            const filas = document.querySelectorAll('table tbody tr');
+            const cards = document.querySelectorAll('.instructor-card');
 
-            filas.forEach(fila => {
-                if (fila.cells.length > 1) { // Asegura que es una fila de datos
-                    const documento = fila.cells[1].textContent.toLowerCase();
-                    fila.style.display = documento.includes(filtro) ? '' : 'none';
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const document = card.getAttribute('data-document');
+
+                if (name.includes(filtro) || document.includes(filtro)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
                 }
+            });
+        });
+
+        // Funcionalidad de pestañas
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Actualizar estado activo de pestañas
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                const tab = this.getAttribute('data-tab');
+                const cards = document.querySelectorAll('.instructor-card');
+
+                cards.forEach(card => {
+                    const hasProgramming = card.getAttribute('data-has-programming');
+
+                    if (tab === 'all') {
+                        card.style.display = 'block';
+                    } else if (tab === 'with-programming' && hasProgramming === 'yes') {
+                        card.style.display = 'block';
+                    } else if (tab === 'without-programming' && hasProgramming === 'no') {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
             });
         });
 

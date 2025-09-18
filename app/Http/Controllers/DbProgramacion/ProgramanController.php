@@ -346,7 +346,7 @@ class ProgramanController extends Controller
 
 
 
-    //metodo de controlador para listar  los instructores que estan registrados
+    //metodo de controlador para listar  los instructores que estan registrados 
 
     public function instructores_index()
     {

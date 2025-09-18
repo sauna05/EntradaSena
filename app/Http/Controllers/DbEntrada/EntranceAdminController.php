@@ -55,13 +55,7 @@ class EntranceAdminController extends Controller
             'selectedPosition' => $selectedPosition
         ]);
     }
-    public function peopleShow($id){
 
-        $person = Person::with('days_available')->findOrFail($id);
-
-        // $email = DbProgramacionPerson::where('document_number',$person->document_number)->pluck('email');
-        return view('pages.programming.Admin.people.people_show',['person'=>$person]);
-    }
 
     public function peopleCreate(){
         $positions = Position::pluck('name','id');
@@ -194,37 +188,61 @@ class EntranceAdminController extends Controller
     }
 
 
+        public function peopleEdit($id)
+        {
+            $person = Person::with(['days_available', 'instructor'])->findOrFail($id);
 
-    public function peopleEdit($id){
-        $person = Person::findOrFail($id);
-        $positions = Position::all();
-        $days_available =  DayAvailable::all();
-        return view('pages.programming.Admin.people.people_edit',['person'=>$person,'positions'=>$positions,'days_available'=>$days_available]);
-    }
+            $positions        = Position::all();
+            $days_available   = DayAvailable::all();
+            $link_types       = LinkType::all();
+            $specialities     = Speciality::all();
+            // $instructorStatus = InstructorStatus::all();
 
-    public function peopleUpdate(Request $request, $id){
+            return view('pages.programming.Admin.people.people_edit', compact(
+                'person',
+                'positions',
+                'days_available',
+                'link_types',
+                'specialities',
+                // 'instructorStatus'
+            ));
+        }
+
+    public function peopleUpdate(Request $request, $id)
+    {
+        $person = Person::with('instructor')->findOrFail($id);
+
         $data = $request->validate([
-            'id_position' => 'required',
-            'name' => 'required',
+            'id_position'     => 'required|exists:positions,id',
+            'name'            => 'required',
             'document_number' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required|date|after_or_equal:start_date'
+            'start_date'      => 'required|date',
+            'end_date'        => 'required|date|after_or_equal:start_date'
         ]);
 
-        $personToUpdate = Person::findOrFail($id);
+        DB::transaction(function () use ($person, $data, $request) {
+            $person->update($data);
+            $person->days_available()->sync($request->days ?? []);
 
-        $personToUpdate->update([
-            'id_position' => $data['id_position'],
-            'name' => $data['name'],
-            'document_number' => $data['document_number'],
-            'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
-        ]);
-        $personToUpdate->days_available()->sync($request->days);
+            // Si el cargo es Instructor, actualizamos/creamos el registro
+            if (strtolower($person->position->name) === 'instructor') {
+                $instData = $request->validate([
+                    'id_link_type'        => 'required|exists:link_types,id',
+                    'id_speciality'       => 'required|exists:specialities,id',
+                    'assigned_hours'      => 'required|integer|min:1',
+                    'hours_day'           => 'required|numeric|min:1'
+                ]);
 
-            return redirect()->route('entrance.people.index')->with('success', 'Datos actualizados exitosamente!');
+                $person->instructor
+                    ? $person->instructor->update($instData)
+                    : $person->instructor()->create($instData);
+            }
+        });
 
+        return redirect()->route('entrance.people.index')
+            ->with('success', 'Datos actualizados correctamente');
     }
+
 
     public function peopleDelete($id){
         $person = Person::findOrFail($id);

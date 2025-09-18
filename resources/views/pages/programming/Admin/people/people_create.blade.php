@@ -4,6 +4,53 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* styles.css */
+
+        /* Mejora general */
+body {
+    background: #eef1f5;
+}
+
+/* Subtítulo elegante */
+.caas-subtitle {
+    color: #1e3a8a;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Estado Activo en verde */
+.caas-input-active {
+    background-color: #d1fae5;
+    color: #065f46;
+    font-weight: bold;
+    border: 1px solid #34d399;
+    text-align: center;
+}
+
+/* Contenedor centrado y amplio */
+.caas-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes de inputs */
+.caas-input, .caas-select {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+}
+.caas-input:focus, .caas-select:focus {
+    background-color: #fff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
 .caas-form-container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8fafc;
@@ -362,9 +409,11 @@
                 </div>
             </div>
 
+            <!-- ... resto del código ... -->
+
             <!-- Formulario de Instructor (oculto inicialmente) -->
             <div id="form_Instructor" class="caas-hidden">
-                <h3 style="color: #1e40af; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px;">
+                <h3 class="caas-subtitle">
                     Información del Instructor
                 </h3>
 
@@ -393,15 +442,15 @@
                         </select>
                     </div>
 
+                    {{-- Estado fijo en Activo --}}
                     <div class="caas-form-group">
-                        <label for="id_instructor_status" class="caas-label">Estado</label>
-                        <select name="id_instructor_status" id="id_instructor_status" class="caas-select">
-                            @foreach ($instructor_status as $id => $status)
-                                <option value="{{ $status->id }}" {{ old('id_instructor_status') == $status->id ? 'selected' : '' }}>
-                                    {{ $status->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label class="caas-label">Estado</label>
+                        <input type="text"
+                            value="Activo"
+                            class="caas-input caas-input-active"
+                            readonly
+                            style="cursor: not-allowed;">
+                        <input type="hidden" name="id_instructor_status" value="{{ $instructor_status->firstWhere('name','Activo')->id ?? '' }}">
                     </div>
 
                     <div class="caas-form-group">
@@ -415,6 +464,9 @@
                     </div>
                 </div>
             </div>
+
+<!-- ... resto del código ... -->
+
 
             <button type="submit" class="caas-button">Enviar Formulario</button>
 

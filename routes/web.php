@@ -39,7 +39,8 @@ Route::post('/entrance/store', [EntranceExitController::class, 'store'])->name('
 Route::get('entrance/admin/people', [EntranceAdminController::class, 'peopleIndex'])->middleware('can:entrance.people.index')->name('entrance.people.index');
 Route::get('entrance/admin/people/create', [EntranceAdminController::class, 'peopleCreate'])->middleware('can:entrance.people.create')->name('entrance.people.create');
 Route::post('entrance/admin/people/store', [EntranceAdminController::class, 'peopleStore'])->middleware('can:entrance.people.store')->name('entrance.people.store');
-Route::get('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleShow'])->middleware('can:entrance.people.show')->name('entrance.people.show');
+
+//Route::get('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleShow'])->middleware('can:entrance.people.show')->name('entrance.people.show');
 Route::get('entrance/admin/people/{id}/edit', [EntranceAdminController::class, 'peopleEdit'])->middleware('can:entrance.people.edit')->name('entrance.people.edit');
 Route::put('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleUpdate'])->middleware('can:entrance.people.update')->name('entrance.people.update');
 Route::delete('entrance/admin/people/{id}', [EntranceAdminController::class, 'peopleDelete'])->middleware('can:entrance.people.delete')->name('entrance.people.delete');
