@@ -665,7 +665,7 @@
                         card.style.display = 'none';
                     }
                 });
-            });
+                      });
         });
 
         // Funciones para modales

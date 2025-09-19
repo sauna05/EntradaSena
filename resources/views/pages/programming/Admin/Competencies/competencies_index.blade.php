@@ -567,16 +567,22 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Código</th>
+                                <th>Id</th>
                                 <th>Nombre de la Competencia</th>
                                 <th>Duración (Horas)</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
+                        @php
+                            $contador=0;
+                        @endphp
                         <tbody>
                             @foreach($assignedCompetencies as $competence)
+                            @php
+                                $contador=$contador+1;
+                            @endphp
                             <tr>
-                                <td>{{ $competence->code ?? 'N/A' }}</td>
+                                <td>{{ $contador ?? 'N/A' }}</td>
                                 <td>{{ $competence->name }}</td>
                                 <td>{{ $competence->duration_hours }} hrs</td>
                                 <td class="actions">
@@ -752,12 +758,12 @@
                            placeholder="Ingrese el nombre de la competencia">
                 </div>
 
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label for="code">Código de la competencia</label>
                     <input type="text" id="code" name="code"
                            value="{{ old('code') }}"
                            placeholder="Código de la competencia (opcional)">
-                </div>
+                </div> --}}
 
                 <div class="form-group">
                     <label for="duration_hours">Duración (horas) *</label>

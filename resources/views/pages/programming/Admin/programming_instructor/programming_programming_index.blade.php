@@ -373,16 +373,12 @@
                                             <i class="fas fa-check-circle"></i> Evaluar
                                         </button>
                                     </form>
+                                       {{-- ✅ Solo la última programación de la competencia puede reprogramarse --}}
 
                                 @elseif ($programacion->status === 'finalizada_evaluada')
                                     @if (in_array($programacion->id, $ultimasProgramaciones))
-                                        {{-- ✅ Solo la última programación de la competencia puede reprogramarse --}}
-                                        <form action="{{ route('programmig.reprogramming_index', $programacion->id) }}" method="GET" onsubmit="return confirm('¿Está seguro que desea reprogramar?')">
-                                            @csrf
-                                            <button type="submit" class="btn-reprogramar" style="cursor: pointer">
-                                                <i class="fas fa-calendar-alt"></i> Reprogramar
-                                            </button>
-                                        </form>
+
+                                             
                                     @else
                                         {{-- ❌ Esta ya fue reprogramada --}}
                                         <span class="text-muted">Reprogramado</span>

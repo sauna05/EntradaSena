@@ -343,11 +343,11 @@
                             <td>{{ $programacion->instructor->person->name ?? 'N/A' }}</td>
                             <td>
                                 {{ $programacion->competencie->name ?? 'N/A' }}
-                                @if($programacion->status === 'finalizada_evaluada')
+                                {{-- @if($programacion->status === 'finalizada_evaluada')
                                     <span class="disponible-badge" title="Esta competencia está disponible para reprogramación">
                                         (Disponible)
                                     </span>
-                                @endif
+                                @endif --}}
                             </td>
                             <td>{{$programacion->hours_duration}}  hrs </td>
                             <td>{{ $programacion->classroom->name ?? 'N/A' }}</td>
@@ -407,9 +407,9 @@
                                         </button>
                                     </form>
 
-                                @elseif ($programacion->status === 'finalizada_evaluada')
+                                {{-- {{-- @elseif ($programacion->status === 'finalizada_evaluada')
                                     @if (in_array($programacion->id, $ultimasProgramaciones))
-                                        {{-- ✅ Solo la última programación de la competencia puede reprogramarse --}}
+                                        {{-- ✅ Solo la última programación de la competencia puede reprogramarse
                                         <form action="{{ route('programmig.programming_update_index', $programacion->id) }}" method="GET" onsubmit="return confirm('¿Está seguro que desea reprogramar?')">
                                             @csrf
                                             <button type="submit" class="btn-reprogramar" style="cursor: pointer">
@@ -417,9 +417,9 @@
                                             </button>
                                         </form>
                                     @else
-                                        {{-- ❌ Esta ya fue reprogramada --}}
+
                                         <span class="text-muted">Reprogramado</span>
-                                    @endif
+                                    @endif --}}
 
                                 @else
                                     <span class="text-muted">N/A</span>

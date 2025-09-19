@@ -346,7 +346,7 @@ class ProgramanController extends Controller
 
 
 
-    //metodo de controlador para listar  los instructores que estan registrados 
+    //metodo de controlador para listar  los instructores que estan registrados
 
     public function instructores_index()
     {
@@ -738,7 +738,7 @@ class ProgramanController extends Controller
             'programacion' => $programacion,
             'instructors' => Instructor::with(['person', 'competencies', 'speciality'])->get(),
             'cohorts' => Cohort::with('program')
-                ->where('end_date_practical_stage', '>', Carbon::today())
+                ->where('end_date', '>', Carbon::today())
                 ->get(),
             'ambientes' => Classroom::with('towns')->get(),
 
