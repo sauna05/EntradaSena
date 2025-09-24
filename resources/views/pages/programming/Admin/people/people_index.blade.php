@@ -385,7 +385,7 @@
                 <div class="filter-group">
                     <label for="search">Buscar persona:</label>
                     <input type="text" id="search" name="search" value="{{ request('search') }}"
-                           class="search-input" placeholder="Nombre o número de documento">
+                     class="search-input" placeholder="Nombre o número de documento">
                 </div>
 
                 <div class="filter-group">
