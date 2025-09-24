@@ -872,14 +872,14 @@ form.logout-form {
             </div>
 
             <!-- Gráficos y programaciones recientes -->
-            <div class="dashboard-grid">
+            {{-- <div class="dashboard-grid">
                 <div class="chart-container">
                     <div class="chart-header">
                         <h2>Programaciones por Estado</h2>
                         <a href="#" class="view-all">Ver reporte completo</a>
                     </div>
                     <div class="chart-placeholder">
-                        <i class="fas fa-chart-pie" style="font-size: 24px; margin-right: 10px;"></i>   
+                        <i class="fas fa-chart-pie" style="font-size: 24px; margin-right: 10px;"></i>
                         Gráfico de programaciones por estado
                     </div>
                 </div>
@@ -926,7 +926,7 @@ form.logout-form {
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Acciones rápidas -->
             <div class="quick-actions">
