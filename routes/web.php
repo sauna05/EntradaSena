@@ -114,6 +114,12 @@ Route::get('programming/admin/Cohort', [CohortController::class, 'indexCohort'])
 Route::post('programming/admin/cohort', [CohortController::class, 'registerCohort'])
     ->middleware('can:programmig.programming_cohort_Register')->name('programming.Register');
 
+//programmig.programming_cohort_delete
+//ruta para eliminar ficha
+Route::delete('programming/admin/cohort/{id}', [CohortController::class, 'delete_cohort'])
+    ->middleware('can:programmig.programming_cohort_delete')
+    ->name('programming.cohort.delete');
+
 //ruta para agregar programa
 // Route::get('programming/admin/programan', [ProgramanController::class, 'indexPrograman'])
 //     ->middleware('can:programing.programan_add')->name('programming.Programan_add');

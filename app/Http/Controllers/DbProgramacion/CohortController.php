@@ -57,55 +57,88 @@ class CohortController extends Controller
 
 
     public function registerCohort(Request $request)
-        {
-            $validator = Validator::make($request->all(), [
-                'number_cohort' => 'required|integer|unique:db_programacion.cohorts,number_cohort',
-                'id_program' => 'required|exists:db_programacion.programs,id',
-                'id_time' => 'required|exists:db_programacion.cohort_times,id',
-                'id_town' => 'required|exists:db_programacion.towns,id',
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after_or_equal:start_date',
-                'enrolled_quantity' => 'required|integer|min:1',
-            ], [
-                'number_cohort.unique' => 'El número de ficha ya existe en el sistema.',
-                'end_date.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
-                'enrolled_quantity.min' => 'Debe haber al menos 1 matriculado.'
-            ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'number_cohort' => 'required|integer|unique:db_programacion.cohorts,number_cohort',
+            'id_program' => 'required|exists:db_programacion.programs,id',
+            'id_time' => 'required|exists:db_programacion.cohort_times,id',
+            'id_town' => 'required|exists:db_programacion.towns,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'enrolled_quantity' => 'required|integer|min:1',
+        ], [
+            'number_cohort.unique' => 'El número de ficha ya existe en el sistema.',
+            'end_date.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
+            'enrolled_quantity.min' => 'Debe haber al menos 1 matriculado.'
+        ]);
 
-            if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            try {
-                DB::beginTransaction();
-
-                $cohort = new Cohort();
-                $cohort->number_cohort = $request->number_cohort;
-                $cohort->id_program = $request->id_program;
-                $cohort->id_time = $request->id_time;
-                $cohort->id_town = $request->id_town;
-                $cohort->start_date = $request->start_date;
-                $cohort->end_date = $request->end_date;
-                $cohort->enrolled_quantity = $request->enrolled_quantity;
-                $cohort->save();
-
-                DB::commit();
-
-                return redirect()
-                    ->back()
-                    ->with('success', 'Ficha registrada exitosamente.');
-            } catch (\Exception $e) {
-                DB::rollBack();
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'Error al registrar la ficha: ' . $e->getMessage())
-                    ->withInput();
-            }
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
         }
+
+        try {
+            DB::beginTransaction();
+
+            $cohort = new Cohort();
+            $cohort->number_cohort = $request->number_cohort;
+            $cohort->id_program = $request->id_program;
+            $cohort->id_time = $request->id_time;
+            $cohort->id_town = $request->id_town;
+            $cohort->start_date = $request->start_date;
+            $cohort->end_date = $request->end_date;
+            $cohort->enrolled_quantity = $request->enrolled_quantity;
+            $cohort->save();
+
+            DB::commit();
+
+            return redirect()
+                ->back()
+                ->with('success', 'Ficha registrada exitosamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->with('error', 'Error al registrar la ficha: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    public function delete_cohort($id)
+    {
+        try {
+            // Buscar la cohorte por ID
+            $cohort = Cohort::findOrFail($id);
+
+            // Verificar que la fecha de finalización sea menor a la actual (ficha inactiva)
+            if ($cohort->end_date > now()) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'No se puede eliminar una ficha activa. Solo se pueden eliminar fichas inactivas.');
+            }
+
+            // Eliminar la cohorte
+            $cohort->delete();
+
+            return redirect()
+                ->back()
+                ->with('success', 'Ficha eliminada exitosamente.');
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'La ficha no existe.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Error al eliminar la ficha: ' . $e->getMessage());
+        }
+    }
+
+
 
     //  1. Listar competencias y programaciones de la ficha
     public function Listcompetencies(Request $request, $cohortId)
@@ -187,40 +220,41 @@ class CohortController extends Controller
 
     //  2. Registrar una NUEVA competencia y asignarla a la ficha
     public function competenciesAdd_store(Request $request)
-        {
-            $request->validate([
-                'cohort_id'      => 'required|exists:db_programacion.cohorts,id',
-                'speciality_id'  => 'required|exists:db_programacion.specialities,id',
-                'name'           => 'required|string|max:255',
-                'duration_hours' => 'required|integer|min:1',
+    {
+        $request->validate([
+            'cohort_id'      => 'required|exists:db_programacion.cohorts,id',
+            'speciality_id'  => 'required|exists:db_programacion.specialities,id',
+            'name'           => 'required|string|max:255',
+            'duration_hours' => 'required|integer|min:1',
+        ]);
+
+        try {
+            DB::connection('db_programacion')->beginTransaction();
+
+            $ficha = Cohort::findOrFail($request->cohort_id);
+
+            // Crear la competencia nueva
+            $competenciaNueva = Competencies::create([
+                'speciality_id'  => $request->speciality_id,
+                'name'           => $request->name,
+                'duration_hours' => $request->duration_hours,
             ]);
 
-            try {
-                DB::connection('db_programacion')->beginTransaction();
+            // Asignarla a la ficha
+            $ficha->competences()->attach($competenciaNueva->id, [
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
-                $ficha = Cohort::findOrFail($request->cohort_id);
+            DB::connection('db_programacion')->commit();
 
-                // Crear la competencia nueva
-                $competenciaNueva = Competencies::create([
-                    'speciality_id'  => $request->speciality_id,
-                    'name'           => $request->name,
-                    'duration_hours' => $request->duration_hours,
-                ]);
-
-                // Asignarla a la ficha
-                $ficha->competences()->attach($competenciaNueva->id, [
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-
-                DB::connection('db_programacion')->commit();
-
-                return redirect()->back()->with('success', '✅ Competencia creada y asignada correctamente.');
-            } catch (\Exception $e) {
-                DB::connection('db_programacion')->rollBack();
-                return redirect()->back()->with('error', '❌ Error: ' . $e->getMessage());
-            }
+            return redirect()->back()->with('success', '✅ Competencia creada y asignada correctamente.');
+        } catch (\Exception $e) {
+            DB::connection('db_programacion')->rollBack();
+            return redirect()->back()->with('error', '❌ Error: ' . $e->getMessage());
         }
+    }
+
 
 
      // 3. Copiar competencias desde OTRA ficha (manual)

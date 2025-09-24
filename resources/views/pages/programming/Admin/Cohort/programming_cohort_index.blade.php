@@ -165,7 +165,7 @@
                     background-size: 18px;
                     padding-left: 45px !important;
                 }
-        
+
         .search-input:focus {
             outline: none;
             border-color: #28a745;
@@ -458,6 +458,41 @@
             opacity: 0.8;
         }
 
+        /* stylos boton de eliminar*/
+            .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
+        color: white;
+    }
+
+    .btn-delete i {
+        font-size: 12px;
+    }
+
+    .d-inline {
+        display: inline-block;
+    }
+
+    /* Estilos para los formularios inline */
+    form.d-inline {
+        margin: 0;
+        padding: 0;
+    }
+
         /* Responsive mejorado */
         @media (max-width: 1024px) {
             .container {
@@ -598,7 +633,7 @@
             </form>
         </div>
 
-        <div class="table-container">
+       <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -637,6 +672,17 @@
                                 <a href="{{ route('programing.competencies_index_administrar', $cohort->id) }}" class="btn-admin">
                                     <i class="fas fa-cog"></i> Administrar
                                 </a>
+
+                                <!-- Botón de eliminar solo para fichas inactivas -->
+                                @if (!$isActive)
+                                    <form action="{{ route('programming.cohort.delete', $cohort->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete" onclick="return confirm('¿Está seguro de que desea eliminar la ficha {{ $cohort->number_cohort }}? Esta acción no se puede deshacer.')">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

@@ -72,6 +72,9 @@ class RoleSeeder extends Seeder
         //permiso del modulo de programacion de fichas
         Permission::create(['name' => 'programmig.programming_cohort_index'])->syncRoles([$role10, $role5]);
         Permission::create(['name' => 'programmig.programming_cohort_Register'])->syncRoles([$role10, $role5]);
+        //permiso para eliminar ficha solo cuando esta haya finalizado
+        Permission::create(['name' => 'programmig.programming_cohort_delete'])->syncRoles([$role10, $role5]);
+
         // Permiso para entrada de los aprendices
         Permission::create(['name' => 'apprentice.show'])->assignRole($role9);
 
