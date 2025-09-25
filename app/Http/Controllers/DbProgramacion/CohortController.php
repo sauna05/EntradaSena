@@ -158,22 +158,39 @@ class CohortController extends Controller
             ->where('id_cohort', $cohortId)
             ->get();
 
-        // Estados
+        // Estados - CORREGIDO: Guardar en la base de datos
         $now = Carbon::now();
         foreach ($programaciones as $prog) {
             $startDate = Carbon::parse($prog->start_date);
             $endDate   = Carbon::parse($prog->end_date);
 
             if ($now->lt($startDate)) {
-                $prog->status = 'pendiente';
+                $newStatus = 'pendiente';
             } elseif ($now->between($startDate, $endDate)) {
-                $prog->status = 'en_ejecucion';
+                $newStatus = 'en_ejecucion';
             } else {
-                $prog->status = $prog->evaluated
+                $newStatus = $prog->evaluated
                     ? 'finalizada_evaluada'
                     : 'finalizada_no_evaluada';
             }
+
+            // 🔥 ACTUALIZAR EN BASE DE DATOS si el estado cambió
+            if ($prog->status !== $newStatus) {
+                $prog->status = $newStatus;
+                $prog->save();
+            }
         }
+
+        // 🔥 RECARGAR las programaciones para obtener los estados actualizados
+        $programaciones = Programming::with([
+            'instructor.person',
+            'cohort.program',
+            'competencie',
+            'classroom',
+            'days'
+        ])
+            ->where('id_cohort', $cohortId)
+            ->get();
 
         $ultimasProgramaciones = Programming::selectRaw('MAX(id) as id')
             ->where('id_cohort', $cohortId)
@@ -210,7 +227,7 @@ class CohortController extends Controller
             'programaciones',
             'otherCohortsData'
         ));
-    }
+    }   
 
 
 

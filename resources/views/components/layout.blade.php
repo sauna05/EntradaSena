@@ -6,10 +6,7 @@
     <title>{{ $title ?? 'Sistema SENA' }}</title>
     <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <style>
-        /*===============================
-  VARIABLES ROOT - MEJORADAS
-===============================*/
+      <style>
 :root {
     --verde-sena: #39A900;
     --verde-header: #39A900;
@@ -311,11 +308,217 @@ body {
 }
 
 /*===============================
-  ICONOS / NOTIFICACIONES MEJORADOS
+  NOTIFICACIONES MEJORADAS
 ===============================*/
-.usuario-info,
-.notificaciones,
-.programaciones-info {
+.notifications-container {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-bell {
+    position: relative;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6c757d;
+    font-size: 1.2rem;
+}
+
+.notification-bell:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: scale(1.1);
+}
+
+.notification-bell.alert {
+    animation: pulse 2s infinite;
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.notification-counter {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+}
+
+.notifications-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 380px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: none;
+    margin-top: 10px;
+}
+
+.notifications-panel.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notifications-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+}
+
+.notifications-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.mark-all-read {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+}
+
+.mark-all-read:hover {
+    color: #0056b3;
+}
+
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background 0.2s ease;
+    position: relative;
+}
+
+.notification-item:hover {
+    background: #f8f9fa;
+}
+
+.notification-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+.notification-item.urgent::before { background: #dc3545; }
+.notification-item.warning::before { background: #ffc107; }
+.notification-item.success::before { background: #28a745; }
+.notification-item.info::before { background: #17a2b8; }
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
+
+.notification-item.urgent .notification-icon { background: #fee; color: #dc3545; }
+.notification-item.warning .notification-icon { background: #fff3cd; color: #856404; }
+.notification-item.success .notification-icon { background: #d4edda; color: #155724; }
+.notification-item.info .notification-icon { background: #d1ecf1; color: #0c5460; }
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+.notification-message {
+    margin: 0 0 5px 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #adb5bd;
+}
+
+.notification-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.notification-empty i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+/*===============================
+  USUARIO Y BOTONES
+===============================*/
+.usuario-info {
     display: inline-flex;
     align-items: center;
     font-size: 16px;
@@ -327,35 +530,14 @@ body {
     cursor: pointer;
 }
 
-.usuario-info:hover,
-.notificaciones:hover,
-.programaciones-info:hover {
+.usuario-info:hover {
     background-color: rgba(57, 169, 0, 0.1);
 }
 
-.usuario-info i,
-.notificaciones i,
-.programaciones-info i {
+.usuario-info i {
     font-size: 20px;
     margin-right: 8px;
     color: var(--verde-header);
-}
-
-.notificaciones .contador,
-.programaciones-info .contador {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #e74c3c;
-    color: white;
-    font-size: 11px;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
 }
 
 /*===============================
@@ -386,19 +568,6 @@ form.logout-form {
 }
 
 /*===============================
-  BADGE PARA ELEMENTOS NUEVOS
-===============================*/
-.menu-badge {
-    background: var(--verde-sena);
-    color: white;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    margin-left: 8px;
-    font-weight: bold;
-}
-
-/*===============================
   RESPONSIVE MEJORADO
 ===============================*/
 @media (max-width: 992px) {
@@ -423,15 +592,11 @@ form.logout-form {
         display: none;
     }
 
-    .usuario-info,
-    .notificaciones,
-    .programaciones-info {
+    .usuario-info {
         padding: 8px;
     }
 
-    .usuario-info i,
-    .notificaciones i,
-    .programaciones-info i {
+    .usuario-info i {
         margin-right: 0;
     }
 }
@@ -488,6 +653,22 @@ form.logout-form {
         box-shadow: none;
         background: transparent;
     }
+
+    .notifications-panel {
+        position: fixed;
+        top: 60px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .notification-bell {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -540,14 +721,12 @@ form.logout-form {
 .sidebar-menu li:nth-child(6) { animation-delay: 0.3s; }
 .sidebar-menu li:nth-child(7) { animation-delay: 0.35s; }
 .sidebar-menu li:nth-child(8) { animation-delay: 0.4s; }
-
     </style>
     {{-- llamada de icoconos para el menu --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-    <header class="header">
+ <header class="header">
         <div class="header-container">
             <img src="{{ asset('logoSena.png') }}" alt="Logo Sena" class="logo-header" />
             <h1 class="texto-header">Centro Agroempresarial y Acuícola</h1>
@@ -560,19 +739,127 @@ form.logout-form {
                 <span>{{ Auth::user()->user_name ?? 'Invitado' }}</span>
             </div>
 
-            <!-- Notificaciones -->
-            <div class="notificaciones" title="Notificaciones">
-                <i class="fa-solid fa-bell"></i>
-                <span class="contador">3</span>
+        <!-- Notificaciones -->
+<div class="notifications-container">
+    <div class="notifications-dropdown">
+        <button class="notification-bell" id="notificationBell">
+            <i class="fa-solid fa-bell"></i>
+            @if($totalNotificaciones > 0)
+                <span class="notification-counter">{{ $totalNotificaciones }}</span>
+            @endif
+        </button>
+
+        <div class="notifications-panel" id="notificationsPanel">
+            <div class="notifications-header">
+                <h3>Notificaciones</h3>
+                <button class="mark-all-read" id="markAllRead">Marcar todo como leído</button>
             </div>
 
-            <!-- Programaciones sin registrar -->
-            <a href="{{ route('programming.programming_update_index') }}" class="programaciones-info" title="Programaciones pendientes por registrar" style="text-decoration: none; color: inherit;">
-                <i class="fa-solid fa-calendar-xmark"></i>
-                <span class="contador">{{ $programacionesSinRegistrar ?? 0 }}</span>
-            </a>
+            <div class="notifications-list">
+                @if($programacionesSinRegistrar > 0)
+                <div class="notification-item urgent">
+                    <div class="notification-icon">
+                       <a href="{{route('programming.programming_update_index')}}"><i class="fa-solid fa-calendar-xmark"></i></a>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">Pendientes sin Registrar</p>
+                        <p class="notification-message">
+                            Tienes <strong>{{ $programacionesSinRegistrar }}</strong> programación(es) sin registrar
+                        </p>
+                        <span class="notification-time">Acción requerida</span>
+                    </div>
+                </div>
+                @endif
 
-          @auth
+                <!-- NUEVA CATEGORÍA: Programaciones que YA deberían haber finalizado hoy -->
+                @if($programacionesPendientesHoy > 0)
+                <div class="notification-item urgent">
+                    <div class="notification-icon">
+                        <a href="#"><i class="fa-solid fa-exclamation-triangle"></i></a>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">Finalizaciones pendientes</p>
+                        <p class="notification-message">
+                            <strong>{{ $programacionesPendientesHoy }}</strong> programación(es) deberían haber finalizado hoy
+                        </p>
+                        <span class="notification-time">Revisión urgente</span>
+                    </div>
+                </div>
+                @endif
+
+                @if($programacionesFinalizanHoy > 0)
+                <div class="notification-item warning">
+                    <div class="notification-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">Finalizan hoy</p>
+                        <p class="notification-message">
+                            <strong>{{ $programacionesFinalizanHoy }}</strong> programación(es) finalizan hoy
+                        </p>
+                        <span class="notification-time">Por finalizar</span>
+                    </div>
+                </div>
+                @endif
+
+                <!-- NUEVA CATEGORÍA: Programaciones en curso -->
+                @if($programacionesEnCurso > 0)
+                <div class="notification-item info">
+                    <div class="notification-icon">
+                        <i class="fa-solid fa-play-circle"></i>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">En curso</p>
+                        <p class="notification-message">
+                            <strong>{{ $programacionesEnCurso }}</strong> programación(es) activas actualmente
+                        </p>
+                        <span class="notification-time">En progreso</span>
+                    </div>
+                </div>
+                @endif
+
+                @if($programacionesProximas > 0)
+                <div class="notification-item info">
+                    <div class="notification-icon">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">Próximas a finalizar</p>
+                        <p class="notification-message">
+                            <strong>{{ $programacionesProximas }}</strong> programación(es) finalizan en los próximos 3 días
+                        </p>
+                        <span class="notification-time">Próximamente</span>
+                    </div>
+                </div>
+                @endif
+
+                @if($programacionesFinalizadas > 0)
+                <div class="notification-item success">
+                    <div class="notification-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">Programaciones finalizadas</p>
+                        <p class="notification-message">
+                            <strong>{{ $programacionesFinalizadas }}</strong> programación(es) finalizada(s) recientemente
+                        </p>
+                        <span class="notification-time">Últimos 7 días</span>
+                    </div>
+                </div>
+                @endif
+
+                @if($totalNotificaciones === 0)
+                <div class="notification-empty">
+                    <i class="fa-solid fa-bell-slash"></i>
+                    <p>No hay notificaciones nuevas</p>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+            @auth
             <form action="{{ route('logout') }}" method="POST" class="logout-form">
                 @csrf
                 <button type="submit" class="logout-button" title="Cerrar sesión"
@@ -582,7 +869,6 @@ form.logout-form {
                 </button>
             </form>
             @endauth
-
         </div>
     </header>
 
@@ -730,20 +1016,21 @@ form.logout-form {
     </footer>
 
     <!-- JS: Menú toggle mejorado -->
-    <script>
+     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const mainContent = document.getElementById('main-content');
+            const notificationBell = document.getElementById('notificationBell');
+            const notificationsPanel = document.getElementById('notificationsPanel');
+            const markAllRead = document.getElementById('markAllRead');
 
             // Función para alternar el menú lateral
             sidebarToggle.addEventListener('click', function() {
                 if (window.innerWidth > 768) {
-                    // En desktop: modo colapsado/expandido
                     sidebar.classList.toggle('collapsed');
                     mainContent.classList.toggle('expanded');
                 } else {
-                    // En móvil: mostrar/ocultar completamente
                     sidebar.classList.toggle('active');
                 }
             });
@@ -761,21 +1048,18 @@ form.logout-form {
             // Manejo de submenús
             document.querySelectorAll('.menu-toggle').forEach(menu => {
                 menu.addEventListener('click', function(e) {
-                    // En móviles, evitar que el clic se propague
                     if (window.innerWidth <= 768) {
                         e.stopPropagation();
                     }
 
                     const submenu = this.nextElementSibling;
 
-                    // Si estamos en modo colapsado en desktop, no cerrar otros menús
                     if (window.innerWidth > 768 && sidebar.classList.contains('collapsed')) {
                         submenu.classList.toggle('show');
                         this.classList.toggle('active');
                         return;
                     }
 
-                    // Comportamiento normal: cerrar otros menús
                     document.querySelectorAll('.sidebar-menu ul').forEach(ul => {
                         if (ul !== submenu && !sidebar.classList.contains('collapsed')) {
                             ul.classList.remove('show');
@@ -790,7 +1074,34 @@ form.logout-form {
                 });
             });
 
-            // Ajustar inicialmente según el tamaño de pantalla
+            // Notificaciones
+            notificationBell.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationsPanel.classList.toggle('show');
+                notificationBell.classList.remove('alert');
+            });
+
+            document.addEventListener('click', function() {
+                notificationsPanel.classList.remove('show');
+            });
+
+            notificationsPanel.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            markAllRead.addEventListener('click', function() {
+                notificationBell.querySelector('.notification-counter')?.remove();
+                notificationsPanel.classList.remove('show');
+                alert('Todas las notificaciones han sido marcadas como leídas');
+            });
+
+            // Animación de alerta si hay notificaciones urgentes
+            const urgentNotifications = document.querySelectorAll('.notification-item.urgent');
+            if (urgentNotifications.length > 0) {
+                notificationBell.classList.add('alert');
+            }
+
+            // Ajustar layout inicial
             function adjustLayout() {
                 if (window.innerWidth <= 768) {
                     sidebar.classList.remove('collapsed');
@@ -802,6 +1113,7 @@ form.logout-form {
             adjustLayout();
         });
     </script>
+
 
 </body>
 </html>

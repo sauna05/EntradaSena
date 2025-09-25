@@ -704,7 +704,7 @@
                                             </form>
                                         @elseif ($programacion->status === 'finalizada_evaluada')
                                             @if (in_array($programacion->id, $ultimasProgramaciones))
-                                                <a href="{{ route('programming.programming_update_index', $programacion->id) }}"
+                                                <a href="{{ route('programming.register_programming_instructor_index', $programacion->id) }}"
                                                    class="btn btn-primary btn-sm"
                                                    onclick="return confirm('¿Está seguro que desea reprogramar?')">
                                                     Reprogramar

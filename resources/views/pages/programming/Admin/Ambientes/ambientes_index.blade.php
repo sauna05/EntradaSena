@@ -395,29 +395,48 @@
                 </p>
         </div>
         @if (session('success'))
-            <div class="alert-success">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                {{ session('success') }}
-            </div>
-        @endif
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Acción exitosa!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#28a745'
+                });
+            </script>
+            @endif
 
-        @if (session('error'))
-            <div class="alert-danger">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                </svg>
-                {{ session('error') }}
-            </div>
-        @endif
+            @if (session('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#d33'
+                });
+            </script>
+            @endif
 
-
+            @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Errores de validación',
+                    html: '{!! implode("<br>", $errors->all()) !!}',
+                    confirmButtonColor: '#d33'
+                });
+            </script>
+            @endif
 
         <div class="filters-container">
+            <div class="filter-group">
+                <label for="filtroProgramacion">Filtrar por programación:</label>
+                <select id="filtroProgramacion" onchange="filtrarVista()">
+                    <option value="todos">Todos los ambientes</option>
+                    <option value="con-programacion">Con programación</option>
+                    <option value="sin-programacion">Sin programación</option>
+                </select>
+            </div>
+
             <div class="filter-group">
                 <label for="filtroAmbiente">Filtrar por ambiente:</label>
                 <select id="filtroAmbiente" onchange="filtrarVista()">
@@ -549,7 +568,8 @@
                 </thead>
                 <tbody>
                     @foreach($ambientes as $ambiente)
-                    <tr class="row-ambiente ambiente-{{ $ambiente->id }}">
+                    <tr class="row-ambiente ambiente-{{ $ambiente->id }}"
+                        data-tiene-programacion="{{ $ambiente->horas_programadas && count($ambiente->horas_programadas) > 0 ? 'si' : 'no' }}">
                         <td class="align-middle"><strong>{{ $ambiente->name }}</strong></td>
                         <td class="align-middle">
                         @if($ambiente->rango_fechas)
@@ -630,7 +650,6 @@
     </div>
 
     <script>
-        // Mantengo exactamente el mismo JavaScript original
         function openModal(type) {
             if(type === 'create') {
                 document.getElementById('modalRegistroAmbiente').style.display = 'flex';
@@ -690,19 +709,32 @@
         }
 
         function filtrarVista() {
+            const programacion = document.getElementById('filtroProgramacion').value;
             const ambiente = document.getElementById('filtroAmbiente').value;
             const mes = document.getElementById('filtroMes').value;
 
             document.querySelectorAll('.row-ambiente').forEach(row => {
-                if (ambiente === 'todos' || row.classList.contains(ambiente)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+                // Primero aplicar filtro de programación
+                let mostrarPorProgramacion = false;
+                if (programacion === 'todos') {
+                    mostrarPorProgramacion = true;
+                } else if (programacion === 'con-programacion') {
+                    mostrarPorProgramacion = row.dataset.tieneProgramacion === 'si';
+                } else if (programacion === 'sin-programacion') {
+                    mostrarPorProgramacion = row.dataset.tieneProgramacion === 'no';
                 }
-            });
 
-            document.querySelectorAll('.row-ambiente').forEach(row => {
-                if (row.style.display !== 'none') {
+                // Luego aplicar filtro de ambiente
+                let mostrarPorAmbiente = false;
+                if (ambiente === 'todos' || row.classList.contains(ambiente)) {
+                    mostrarPorAmbiente = true;
+                }
+
+                // Combinar ambos filtros
+                if (mostrarPorProgramacion && mostrarPorAmbiente) {
+                    row.style.display = '';
+
+                    // Aplicar filtro de mes a las filas visibles
                     row.querySelectorAll('.bloque-fecha').forEach(bloque => {
                         if (mes === 'todos' || bloque.dataset.mes === mes) {
                             bloque.style.display = '';
@@ -710,6 +742,8 @@
                             bloque.style.display = 'none';
                         }
                     });
+                } else {
+                    row.style.display = 'none';
                 }
             });
         }
