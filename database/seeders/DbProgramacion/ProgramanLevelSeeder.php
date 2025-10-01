@@ -16,11 +16,18 @@ class ProgramanLevelSeeder extends Seeder
         //
         Program_Level::create([
            "name"=> "Técnico",
-        
+
         ]);
         Program_Level::create([
             "name" => "	Tecnólogo",
         ]);
-        
+
+        Program_Level::create([
+            "name" => "Auxiliar"
+        ]);
+        Program_Level::create([
+            "name" => "Operario"
+        ]);
+
     }
 }

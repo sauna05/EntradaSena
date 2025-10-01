@@ -14,12 +14,12 @@ class TownSeeder extends Seeder
     public function run(): void
     {
         $municipios = [
+            "Fonseca",
             "Albania",
             "Barrancas",
             "Dibulla",
             "Distracción",
             "El Molino",
-            "Fonseca",
             "Hatonuevo",
             "La Jagua del Pilar",
             "Maicao",

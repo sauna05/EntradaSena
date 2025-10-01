@@ -12,23 +12,30 @@ class BlokSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear 30 bloques con nombres "bloque A", "bloque B", ..., "bloque AD"
-        $letters = range('A', 'Z'); // 26 letras
-        $blocksCount = 30;
+        $blocks = [
+            'Casa Blanca',
+            'B1',
+            'B4',
+            'B6',
+            'B7',
+            'B8',
+            'B9',
+            'B2',
+            'Bilinguismo',
+            'Comegenes',
+            'Bobino',
+            'Biblioteca',
+            'Acuicola',
+            'General',
+            'Villa Campo Alegre',
+            'Alcaldia',
+            'Creem',
+            'A',
+            'Virtual'
+        ];
 
-        for ($i = 0; $i < $blocksCount; $i++) {
-            // Para nombres después de Z, combinamos letras (AA, AB, AC, AD)
-            if ($i < 26) {
-                $name = "bloque " . $letters[$i];
-            } else {
-                $first = $letters[intval(($i - 26) / 26)];
-                $second = $letters[($i - 26) % 26];
-                $name = "bloque " . $first . $second;
-            }
-
-            Block::create([
-                'name' => $name,
-            ]);
+        foreach ($blocks as $block) {
+            Block::firstOrCreate(['name' => $block]);
         }
     }
 }

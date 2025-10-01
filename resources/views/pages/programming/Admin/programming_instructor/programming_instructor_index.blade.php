@@ -411,7 +411,7 @@
             <button class="tab-btn" data-tab="without-programming">Sin Programaciones</button>
         </div>
 
-        <div class="instructors-grid" id="instructores-container">
+        <div class="instructors-grid" id="instructores-container" style="max-height: 800px; overflow-y: auto; overflow-x: auto;">
             @forelse($instructores as $instructor)
                 <div class="instructor-card" data-name="{{ strtolower($instructor->person->name) }}" data-document="{{ $instructor->person->document_number }}" data-has-programming="{{ $instructor->programming->count() > 0 ? 'yes' : 'no' }}">
                     <div class="card-header">
